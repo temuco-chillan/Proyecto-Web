@@ -12,7 +12,10 @@ const PORT = 3000;
 const DATA_FILE = path.join(__dirname, 'data.json');
 
 app.use(express.json());
-app.use(express.static('public'));
+
+//podemos manipular este para movernos entre el directorio public y el user
+//en caso de colocar user cambiar el url a http://localhost:3000/index_user.html
+app.use(express.static('user'));
 
 // leemos los datos
 app.get('/api/products',(req,res)=>{

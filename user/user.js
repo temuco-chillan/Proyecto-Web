@@ -1,4 +1,3 @@
-const form = document.getElementById('formulario');
 const tabla =document.querySelector('#tabla tbody');
 
 //funcion para cargar los datos de productos
@@ -17,10 +16,6 @@ async function cargarDatos(){
                 <td>${producto.nombre}</td>
                 <td>${producto.cantidad}</td>
                 <td>${producto.proveedor}</td>
-                <td>
-                <button onclick="editar('${i}', '${producto.nombre}','${producto.cantidad}','${producto.proveedor}')">Editar</button>
-                <button onclick="eliminar(${i})">Eliminar</button>
-                </td>
             </tr>
         `;
     });
