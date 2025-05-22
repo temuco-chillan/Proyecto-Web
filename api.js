@@ -10,8 +10,7 @@ const bd_Computadores = require('./Scripts/Computadores/bd');
 const json_Computadores = require('./Scripts/Computadores/json');
 
 const app = express();
-const PORT = 3000;
-
+const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
