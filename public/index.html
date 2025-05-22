@@ -94,8 +94,8 @@
                         <!-- Aquí se mostrarán los computadores -->
                     </tbody>
                 </table>
-                <a href="public/login.html">loguear</a>
-                <a href="public/registro.html">registrar</a>
+                <a href="login.html">loguear</a>
+                <a href="registro.html">registrar</a>
                 <button onclick="logout()" class="btn">Cerrar sesión</button>
 
             </div>
@@ -103,7 +103,10 @@
     </div>
 
     <script>
-        const apiUrl = 'http://127.0.0.1:3000/api/computadores'; // Cambia esta URL si tu API tiene otra dirección
+        const apiUrl = window.location.hostname.includes('localhost')
+        ? 'http://localhost:3000/api/computadores'
+        : '/api/computadores';
+
 
         // Función para obtener computadores de la API
         function fetchComputadores() {
@@ -186,7 +189,7 @@
         }
         function logout() {
             localStorage.removeItem('loggedUser');
-            window.location.href = 'public/login.html';
+            window.location.href = 'login.html';
         }
         // Obtener computadores cuando cargue la página
         window.onload = function() {

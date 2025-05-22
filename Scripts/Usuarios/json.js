@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const DATA_FILE = path.join(__dirname, 'usarios.json');
+const DATA_FILE = path.join(__dirname, 'usuarios.json');
 
 function loadUsers() {
   if (!fs.existsSync(DATA_FILE)) return [];

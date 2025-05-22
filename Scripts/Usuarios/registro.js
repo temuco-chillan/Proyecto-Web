@@ -6,7 +6,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     const message = document.getElementById('message');
 
     try {
-        const response = await fetch('http://localhost:3000/api/users', {
+        const response = await fetch('/api/users', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
