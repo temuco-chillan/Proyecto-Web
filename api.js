@@ -11,6 +11,8 @@ const json_Computadores = require('./Scripts/Computadores/json');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+
 app.use(cors());
 app.use(express.json());
 
@@ -18,7 +20,8 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Servir JS desde scripts/
-app.use('/Scripts', express.static(path.join(__dirname, 'scripts')));
+app.use('/Scripts', express.static(path.join(__dirname, 'Scripts')));
+
 
 // Detectar si usar DB o JSON para usuarios
 async function getUserBackend() {
