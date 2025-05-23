@@ -15,9 +15,3 @@
     "mysql2": "^3.14.1"
   }
 }
-
-{
-  "dependencies": {
-    "express": "^5.1.0"
-  }
-}
