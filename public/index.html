@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -197,4 +198,39 @@
         };
     </script>
 </body>
+=======
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>revision de productos admin </title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section>
+        <form id="formulario">
+            <input type="hidden" id="index">
+            <input type="text" id="nombre" placeholder="Ingrese Nombre Producto" required>
+            <input type="text" id="cantidad" placeholder="Ingrese cantidad" required>
+            <input type="text" id="proveedor" placeholder="Ingrese Nombre proveedor" required>
+            <button type="submit">Guardar</button>
+            <button type="button" onclick="resetForm()">Cancelar</button>
+        </form>
+    </section>
+    <section>
+        <table id="tabla">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>nombre</th>
+                    <th>cantidad</th>
+                    <th>proveedor</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+</body>
+<script src="crudalservidor.js"></script>
+>>>>>>> index
 </html>
