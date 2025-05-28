@@ -1,12 +1,16 @@
 [
   {
     "nombre_maquina": "PC Gamer",
-    "estado": "No Disponible",
-    "id": 1
+    "estado": "activo",
+    "precio": "5",
+    "id": 1,
+    "fecha_add": "28/05/2025"
   },
   {
     "nombre_maquina": "pctantotanto",
-    "estado": "Disponible",
-    "id": 2
+    "estado": "inactivo",
+    "precio": "15",
+    "id": 2,
+    "fecha_add": "28/05/2025"
   }
 ]

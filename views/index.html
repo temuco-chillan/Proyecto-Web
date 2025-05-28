@@ -74,7 +74,13 @@
                 <form id="computerForm">
                     <input type="hidden" id="computerId" />
                     <input type="text" id="computerName" placeholder="Nombre del Computador" required><br>
-                    <input type="text" id="computerState" placeholder="Estado" required><br>
+                    <select id="computerState" name="estado" required>
+                        <option value="">-- Selecciona un estado --</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                        <option value="mantenimiento">Mantenimiento</option>
+                    </select>
+                    <input type="number" id="computerPrice" placeholder="Precio" required><br>
                     <button type="submit" class="btn" id="submitBtn">Agregar Computador</button>
                 </form>
             </div>
@@ -87,6 +93,7 @@
                             <th>ID</th>
                             <th>Nombre</th>
                             <th>Estado</th>
+                            <th>Precio</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -94,8 +101,8 @@
                         <!-- Aquí se mostrarán los computadores -->
                     </tbody>
                 </table>
-                <a href="login.html">loguear</a>
-                <a href="registro.html">registrar</a>
+                <a class="btn" href="login.html">loguear</a>
+                <a class="btn" href="registro.html">registrar</a>
                 <button onclick="logout()" class="btn">Cerrar sesión</button>
 
             </div>
@@ -106,8 +113,6 @@
         const apiUrl = window.location.hostname.includes('localhost')
         ? 'http://localhost:3000/api/computadores'
         : '/api/computadores';
-
-
         // Función para obtener computadores de la API
         function fetchComputadores() {
             fetch(apiUrl)
@@ -121,8 +126,9 @@
                             <td>${computador.id}</td>
                             <td>${computador.nombre_maquina}</td>
                             <td>${computador.estado}</td>
+                            <td>${computador.precio}</td>
                             <td>
-                                <button class="btn" onclick="editComputador(${computador.id}, '${computador.nombre_maquina}', '${computador.estado}')">Editar</button>
+                                <button class="btn" onclick="editComputador(${computador.id}, '${computador.nombre_maquina}', '${computador.estado}', '${computador.precio}')">Editar</button>
                                 <button class="btn" onclick="deleteComputador(${computador.id})">Eliminar</button>
                             </td>
                         `;
@@ -131,7 +137,6 @@
                 })
                 .catch(error => console.log('Error al obtener computadores:', error));
         }
-
         // Función para agregar un nuevo computador
         document.getElementById('computerForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -139,6 +144,7 @@
             const id = document.getElementById('computerId').value;
             const nombre = document.getElementById('computerName').value;
             const estado = document.getElementById('computerState').value;
+            const precio = document.getElementById('computerPrice').value;
 
             const method = id ? 'PUT' : 'POST'; // Si tiene id, se hace PUT (actualización), si no, POST (insertar)
             const url = id ? `${apiUrl}/${id}` : apiUrl;
@@ -151,6 +157,7 @@
                 body: JSON.stringify({
                     nombre_maquina: nombre,
                     estado: estado,
+                    precio: precio,
                 }),
             })
                 .then(response => response.json())
@@ -165,13 +172,13 @@
         });
 
         // Función para editar un computador
-        function editComputador(id, nombre, estado) {
+        function editComputador(id, nombre, estado, precio) {
             document.getElementById('computerId').value = id;
             document.getElementById('computerName').value = nombre;
             document.getElementById('computerState').value = estado;
+            document.getElementById('computerPrice').value = precio;
             document.getElementById('submitBtn').innerText = 'Actualizar Computador'; // Cambiar el texto del botón
         }
-
         // Función para eliminar un computador
         function deleteComputador(id) {
             if (confirm('¿Estás seguro de eliminar este computador?')) {

@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../views')));
 
 // Servir JS desde scripts/
-app.use('../models', express.static(path.join(__dirname, 'models')));
+app.use('/models', express.static(path.join(__dirname, '../models')));
 
 
 // Detectar si usar DB o JSON para usuarios
