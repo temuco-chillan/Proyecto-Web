@@ -51,7 +51,11 @@ async function createUser({ username, password }) {
 
 async function validateUser({ username, password }) {
   const [rows] = await db.query(
-    'SELECT * FROM usuarios WHERE username = ? AND password = ?',
+    `SELECT u.id, u.username, u.password, u.rol_id, r.nombre AS rol
+     FROM usuarios u
+     JOIN roles r ON u.rol_id = r.id
+     WHERE u.username = ? AND u.password = ?`,
+
     [username, password]
   );
   return rows[0] || null;
