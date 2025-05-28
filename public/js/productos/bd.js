@@ -58,6 +58,7 @@ async function updateComputador(id, { nombre_maquina, estado, precio}) {
   );
 }
 
+
 async function deleteComputador(id) {
   await db.query('DELETE FROM productos WHERE id = ?', [id]);
 }

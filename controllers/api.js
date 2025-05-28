@@ -3,11 +3,11 @@ const cors = require('cors');
 const path = require("path");
 
 // Importamos módulos de respaldo
-const bd_Users = require('../models/sesiones/bd');
-const json_Users = require('../models/sesiones/json');
+const bd_Users = require('../public/js/sesiones/bd');
+const json_Users = require('../public/js/sesiones/json');
 
-const bd_Computadores = require('../models/productos/bd');
-const json_Computadores = require('../models/productos/json');
+const bd_Computadores = require('../public/js/productos/bd');
+const json_Computadores = require('../public/js/productos/json');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,9 +18,8 @@ app.use(express.json());
 
 // Servir HTML desde public/
 app.use(express.static(path.join(__dirname, '../views')));
-
 // Servir JS desde scripts/
-app.use('/models', express.static(path.join(__dirname, '../models')));
+app.use(express.static(path.join(__dirname, '../public/js')));
 
 
 // Detectar si usar DB o JSON para usuarios
