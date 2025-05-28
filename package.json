@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "login.js",
   "scripts": {
-    "start": "node api.js"
+    "start": "node controllers/api.js"
   },
   "keywords": [],
   "author": "",
