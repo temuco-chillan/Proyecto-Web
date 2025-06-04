@@ -45,8 +45,9 @@ button:hover {
     border: 1px solid #ccc;
     border-radius: 5px;
   }  
-  
-  
-  
-
-
+/*ayuda en etiqueta a sovathor*/
+a {
+  text-decoration: none;
+  font-size: 1em;
+  color: black;
+}
