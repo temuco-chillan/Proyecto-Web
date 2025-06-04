@@ -1,0 +1,12 @@
+[
+  {
+    "nombre_maquina": "PC Gamer Mati",
+    "estado": "\"disponible\"",
+    "id": 1
+  },
+  {
+    "nombre_maquina": "test",
+    "estado": "test",
+    "id": 2
+  }
+]
