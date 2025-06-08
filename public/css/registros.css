@@ -1,0 +1,76 @@
+body {
+    font-family: 'Funnel Sans', sans-serif;
+    font-size: 18px;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .formularioRegistro {
+    background: gray;
+    padding: 40px 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    width: 400px;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  input[type="text"],
+  input[type="password"] {
+    width: 95%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  .btnRegistro {
+    width: 100%;
+    padding: 12px;
+    background-color: #000;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    display: block;
+    margin: 0 auto 20px auto;
+    font-size: 18px;
+  }
+  .btnRegistro:hover {
+  background-color: #333;
+  }
+
+  .linkLogin {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    align-items: center;
+  }
+  
+  .linkLogin span {
+    color: #000;
+  }
+
+  .linkLogin a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  #message {
+    text-align: center;
+    margin-top: 10px;
+    color: red;
+  }

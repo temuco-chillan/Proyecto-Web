@@ -115,7 +115,7 @@ app.post('/api/users/validate', async (req, res) => {
 });
 
 ////////////////////////
-// RUTAS - COMPUTADORES
+// RUTAS - COMPUTADORES //
 ////////////////////////
 
 app.get('/api/computadores', async (req, res) => {
