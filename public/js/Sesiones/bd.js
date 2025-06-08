@@ -1,20 +1,27 @@
-const mysql = require('mysql2');
+require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') });
+const mysql = require('mysql2/promise');
 
-const db = mysql.createConnection({
-  host: '127.0.0.1',
-  user: 'MBadmin',
-  password: 'mbserver2025',
-  database: 'Usuarios'
-});
+let db;
 
-db.connect(err => {
-  if (err) console.error('Error al conectar a MariaDB:', err.message);
-  else console.log('Conectado a MariaDB (bd.js)');
-});
+// Crear conexión con async/await
+(async () => {
+  try {
+    db = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME
+    });
+    console.log('Conectado a MariaDB (bd.js)');
+  } catch (err) {
+    console.error('Error al conectar a MariaDB:', err.message);
+  }
+})();
 
+// Función de prueba de conexión
 async function isConnected() {
   try {
-    await pool.query('SELECT 1'); // o una consulta liviana
+    await db.query('SELECT 1');
     return true;
   } catch (error) {
     console.error('DB connection failed:', error.message);
@@ -22,41 +29,36 @@ async function isConnected() {
   }
 }
 
+// Consultas usando async/await
 
-function getUsers() {
-  return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM usuarios', (err, results) => {
-      if (err) reject(err);
-      else resolve(results);
-    });
-  });
+async function getUsers() {
+  const [rows] = await db.query('SELECT * FROM usuarios');
+  return rows;
 }
 
-function getUserById(id) {
-  return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM usuarios WHERE id = ?', [id], (err, results) => {
-      if (err) reject(err);
-      else resolve(results[0] || null);
-    });
-  });
+async function getUserById(id) {
+  const [rows] = await db.query('SELECT * FROM usuarios WHERE id = ?', [id]);
+  return rows[0] || null;
 }
 
-function createUser({ username, password }) {
-  return new Promise((resolve, reject) => {
-    db.query('INSERT INTO usuarios (username, password) VALUES (?, ?)', [username, password], (err, result) => {
-      if (err) reject(err);
-      else resolve({ id: result.insertId, username, password });
-    });
-  });
+async function createUser({ username, password }) {
+  const [result] = await db.query(
+    'INSERT INTO usuarios (username, password) VALUES (?, ?)',
+    [username, password]
+  );
+  return { id: result.insertId, username, password };
 }
 
-function validateUser({ username, password }) {
-  return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM usuarios WHERE username = ? AND password = ?', [username, password], (err, results) => {
-      if (err) reject(err);
-      else resolve(results[0] || null);
-    });
-  });
+async function validateUser({ username, password }) {
+  const [rows] = await db.query(
+    `SELECT u.id, u.username, u.password, u.rol_id, r.nombre AS rol
+     FROM usuarios u
+     JOIN roles r ON u.rol_id = r.id
+     WHERE u.username = ? AND u.password = ?`,
+
+    [username, password]
+  );
+  return rows[0] || null;
 }
 
 module.exports = {

@@ -1,14 +1,24 @@
 const fs = require('fs');
 const path = require('path');
-const DATA_FILE = path.join(__dirname, 'usuarios.json');
+
+const USERS_FILE = path.join(__dirname, 'usuarios.json');
+const ROLES_FILE = path.join(__dirname, 'roles.json');
+
+function loadJSON(file) {
+  if (!fs.existsSync(file)) return [];
+  return JSON.parse(fs.readFileSync(file, 'utf8'));
+}
 
 function loadUsers() {
-  if (!fs.existsSync(DATA_FILE)) return [];
-  return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+  return loadJSON(USERS_FILE);
+}
+
+function loadRoles() {
+  return loadJSON(ROLES_FILE);
 }
 
 function saveUsers(users) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(users, null, 2));
+  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
 async function getUsers() {
@@ -20,7 +30,7 @@ async function getUserById(id) {
   return users.find(u => u.id === parseInt(id, 10)) || null;
 }
 
-async function createUser({ username, password }) {
+async function createUser({ username, password, id_rol }) {
   const users = loadUsers();
 
   if (users.find(u => u.username === username)) {
@@ -30,7 +40,8 @@ async function createUser({ username, password }) {
   const newUser = {
     id: users.length ? users[users.length - 1].id + 1 : 1,
     username,
-    password
+    password,
+    id_rol
   };
 
   users.push(newUser);
@@ -40,7 +51,16 @@ async function createUser({ username, password }) {
 
 async function validateUser({ username, password }) {
   const users = loadUsers();
-  return users.find(u => u.username === username && u.password === password) || null;
+  const roles = loadRoles();
+
+  const user = users.find(u => u.username === username && u.password === password);
+  if (!user) return null;
+
+  const rol = roles.find(r => r.id === user.id_rol);
+  return {
+    ...user,
+    rol: rol ? rol.nombre : null
+  };
 }
 
 module.exports = {

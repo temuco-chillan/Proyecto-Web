@@ -2,26 +2,36 @@
   {
     "id": 1,
     "username": "admin",
-    "password": "admin123"
+    "password": "admin123",
+    "id_rol": 1
   },
   {
     "id": 2,
     "username": "usuario1",
-    "password": "clave123"
+    "password": "clave123",
+    "id_rol": 2
   },
   {
     "id": 3,
     "username": "test",
-    "password": "testpass"
+    "password": "testpass",
+    "id_rol": 2
   },
   {
     "id": 4,
     "username": "australopitecus",
-    "password": "lol12"
+    "password": "lol12",
+    "id_rol": 2
   },
   {
     "id": 5,
     "username": "Cris",
-    "password": "1234"
+    "password": "1234",
+    "id_rol": 2
+  },
+  {
+    "id": 6,
+    "username": "Admin",
+    "password": "123"
   }
 ]

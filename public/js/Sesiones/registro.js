@@ -18,7 +18,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
             message.style.color = 'green';
             message.textContent = result.message;
             // Esperar 2 segundos y redirigir a login
-            setTimeout(() => window.location.href = '../../views/login.html', 2000);
+            setTimeout(() => window.location.href = 'login.html', 2000);
         } else {
             message.style.color = 'red';
             message.textContent = result.message;

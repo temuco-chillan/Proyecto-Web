@@ -1,23 +1,29 @@
-const mysql = require('mysql2');
+require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') });
+const mysql = require('mysql2/promise');
 
-const db = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'MBadmin',
-    password: 'mbserver2025',
-    database: 'Computadores'
-});
+let db;
 
-db.connect(err => {
-    if (err) {
-        console.error('Error al conectar a MariaDB:', err);
-    } else {
-        console.log('Conectado exitosamente a MariaDB');
-    }
-});
+// Crear conexión
+(async () => {
+  try {
+    db = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME
+    });
+    console.log('Conectado exitosamente a MariaDB');
+  } catch (err) {
+    console.error('Error al conectar a MariaDB:', err.message);
+    console.log('Usuario:', process.env.DB_USER);
+    console.log('Contraseña:', process.env.DB_PASSWORD ? '[OK]' : '[VACÍA]');
+  }
+})();
 
+// Función para probar conexión
 async function isConnected() {
   try {
-    await pool.query('SELECT 1'); // o una consulta liviana
+    await db.query('SELECT 1');
     return true;
   } catch (error) {
     console.error('DB connection failed:', error.message);
@@ -25,59 +31,43 @@ async function isConnected() {
   }
 }
 
+// Operaciones con computadores
 
-function getComputadores() {
-    return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM Computador', (err, results) => {
-            if (err) reject(err);
-            else resolve(results);
-        });
-    });
+async function getComputadores() {
+  const [rows] = await db.query('SELECT * FROM productos');
+  return rows;
 }
 
-function getComputadorById(id) {
-    return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM Computador WHERE id = ?', [id], (err, results) => {
-            if (err) reject(err);
-            else resolve(results[0] || null);
-        });
-    });
+async function getComputadorById(id) {
+  const [rows] = await db.query('SELECT * FROM productos WHERE id = ?', [id]);
+  return rows[0] || null;
 }
 
-function insertComputador(computador) {
-    return new Promise((resolve, reject) => {
-        const { nombre_maquina, estado } = computador;
-        db.query('INSERT INTO Computador (nombre_maquina, estado) VALUES (?, ?)', [nombre_maquina, estado], (err, results) => {
-            if (err) reject(err);
-            else resolve(results.insertId);
-        });
-    });
+async function insertComputador({ nombre_maquina, estado, precio}) {
+  const [result] = await db.query(
+    'INSERT INTO productos (nombre_maquina, estado, precio) VALUES (?, ?, ?)',
+    [nombre_maquina, estado, precio]
+  );
+  return result.insertId;
 }
 
-function updateComputador(id, computador) {
-    return new Promise((resolve, reject) => {
-        const { nombre_maquina, estado } = computador;
-        db.query('UPDATE Computador SET nombre_maquina = ?, estado = ? WHERE id = ?', [nombre_maquina, estado, id], (err) => {
-            if (err) reject(err);
-            else resolve();
-        });
-    });
+async function updateComputador(id, { nombre_maquina, estado, precio}) {
+  await db.query(
+    'UPDATE productos SET nombre_maquina = ?, estado = ?, precio = ? WHERE id = ?',
+    [nombre_maquina, estado, precio, id]
+  );
 }
 
-function deleteComputador(id) {
-    return new Promise((resolve, reject) => {
-        db.query('DELETE FROM Computador WHERE id = ?', [id], (err) => {
-            if (err) reject(err);
-            else resolve();
-        });
-    });
+
+async function deleteComputador(id) {
+  await db.query('DELETE FROM productos WHERE id = ?', [id]);
 }
 
 module.exports = {
-    isConnected,
-    getComputadores,
-    getComputadorById,
-    insertComputador,
-    updateComputador,
-    deleteComputador
+  isConnected,
+  getComputadores,
+  getComputadorById,
+  insertComputador,
+  updateComputador,
+  deleteComputador
 };

@@ -1,12 +1,16 @@
 [
   {
-    "nombre_maquina": "PC Gamer Mati",
-    "estado": "\"disponible\"",
-    "id": 1
+    "nombre_maquina": "ola",
+    "estado": "mantenimiento",
+    "precio": "54",
+    "id": 1,
+    "fecha_add": "2025-05-28T18:33:00.358Z"
   },
   {
-    "nombre_maquina": "test",
-    "estado": "test",
-    "id": 2
+    "nombre_maquina": "PC Gamer",
+    "estado": "activo",
+    "precio": "43241",
+    "id": 2,
+    "fecha_add": "2025-06-08T03:10:40.801Z"
   }
 ]

@@ -18,7 +18,7 @@ document.getElementById('loginForm').addEventListener('submit', async function (
             message.style.color = 'green';
             message.textContent = result.message;
             // Redirige a index.html o a otra página principal
-            window.location.href = '../views/index.html';
+            window.location.href = 'index.html';
             localStorage.setItem('loggedUser', JSON.stringify(result.user));
 
         } else {
