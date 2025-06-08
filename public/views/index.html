@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD de Computadores</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <meta http-equiv="refresh" href="login.html">
+</head>
+<body>    
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="registro.html">Registro</a></li>
+            </ul>
+            <button onclick="logout()" class="btn">Cerrar sesión</button>
+        </nav>
+        <h1>CRUD de Computadores</h1>
+    </header>
+    <div class="container">
+        <div class="content">
+            <!-- Formulario para insertar/actualizar computador -->
+            <div class="form-container">
+                <h2>Agregar / Actualizar Computador</h2>
+                <form id="computerForm">
+                    <input type="hidden" id="computerId" />
+                    <input type="text" id="computerName" placeholder="Nombre del Computador" required><br>
+                    <select id="computerState" name="estado" required>
+                        <option value="">-- Selecciona un estado --</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                        <option value="mantenimiento">Mantenimiento</option>
+                    </select>
+                    <input type="number" id="computerPrice" placeholder="Precio" required><br>
+                    <button type="submit" class="btn" id="submitBtn">Agregar Computador</button>
+                </form>
+            </div>
+            <!-- Tabla de computadores -->
+            <div class="table-container">
+                <h2>Lista de Computadores</h2>
+                <table id="computersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="computersList">
+                        <!-- Aquí se mostrarán los computadores -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="../js/index_raul.js"></script>
+</body>
+<!--se elimina el html extra y se linkea el main en su css correspondiente-->

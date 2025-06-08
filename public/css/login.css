@@ -1,0 +1,53 @@
+body {
+    font-family: Arial, sans-serif;
+    background-size: cover;
+    background-image: url(../images/LoginFondo.png);
+    padding: 20px;
+  }
+.login-container {
+    background: rgb(133, 247, 176);
+    padding: 20px;
+    max-width: 500px;
+    margin: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #807d7d;
+    min-height: 50vh;
+    background-size: cover;
+    padding: 20px;
+}
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #2e86de;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+  
+button:hover {
+    background-color: #1b4f72;
+    transform: scale(1.02);
+}
+  h2 {
+    text-align: center;
+    color: rgb(0, 0, 0);
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    color: rgb(0, 0, 0);
+  }
+  input {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }  
+/*ayuda en etiqueta a sovathor*/
+a {
+  text-decoration: none;
+  font-size: 1em;
+  color: black;
+}
