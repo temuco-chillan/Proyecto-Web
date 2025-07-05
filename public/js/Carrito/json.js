@@ -18,7 +18,7 @@ function writeCarrito(data) {
 
 async function getCarrito(usuario_id) {
   const data = readCarrito();
-  const productos = await productosBackend.getComputadores();
+  const productos = await productosBackend.getProducto();
 
   const itemsUsuario = data.filter(item => item.usuario_id === Number(usuario_id));
 
@@ -27,7 +27,7 @@ async function getCarrito(usuario_id) {
     return {
       producto_id: item.producto_id,
       cantidad: item.cantidad,
-      nombre_maquina: prod?.nombre_maquina || 'Desconocido',
+      nombre_Producto: prod?.nombre_Producto || 'Desconocido',
       precio: prod?.precio || null
     };
   });

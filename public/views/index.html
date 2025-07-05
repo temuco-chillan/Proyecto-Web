@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD de Computadores</title>
+    <title>CRUD de Productos</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/carrito.css">
     <meta http-equiv="refresh" href="login.html">
@@ -49,27 +49,26 @@
 
     <div class="container">
         <div class="content">
-            <!-- Formulario para insertar/actualizar computador -->
             <div class="form-container">
-                <h2>Agregar / Actualizar Computador</h2>
-                <form id="computerForm">
-                    <input type="hidden" id="computerId" />
-                    <input type="text" id="computerName" placeholder="Nombre del Computador" required><br>
-                    <select id="computerState" name="estado" required>
+                <h2>Agregar / Actualizar Productos</h2>
+                <form id="ProductosForm">
+                    <input type="hidden" id="productoId" />
+                    <input type="text" id="productoName" placeholder="Nombre del Producto" required><br>
+                    <select id="productoState" name="estado" required>
                         <option value="">-- Selecciona un estado --</option>
-                        <option value="activo">Activo</option>
-                        <option value="inactivo">Inactivo</option>
-                        <option value="mantenimiento">Mantenimiento</option>
+                        <option value="activo">con stock</option>
+                        <option value="Reposicion">En Reposicion</option>
+                        <option value="fuera-stock">sin stock</option>
                     </select>
-                    <input type="number" id="computerPrice" placeholder="Precio" required><br>
-                    <button type="submit" class="btn" id="submitBtn">Agregar Computador</button>
+                    <input type="number" id="productoPrice" placeholder="Precio" required><br>
+                    <button type="submit" class="btn" id="submitBtn">Agregar Producto</button>
                 </form>
             </div>
 
-            <!-- Tabla de computadores -->
+            <!-- Tabla de Productos-->
             <div class="table-container">
-                <h2>Lista de Computadores</h2>
-                <table id="computersTable">
+                <h2>Lista de Productos</h2>
+                <table id="ProductosTable">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -79,8 +78,8 @@
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="computersList">
-                        <!-- Aquí se mostrarán los computadores -->
+                    <tbody id="ProductosList">
+                        <!-- Aquí se mostrarán los productos -->
                     </tbody>
                 </table>
             </div>
@@ -106,4 +105,4 @@
     <script src="../js/Productos/Productos.js"></script>
     <script src="../js/Carrito/carrito.js"></script>
 </body>
-<!--se elimina el html extra y se linkea el main en su css correspondiente-->
+</html>

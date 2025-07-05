@@ -6,8 +6,8 @@ const path = require("path");
 const bd_Users = require('../public/js/Sesiones/bd');
 const json_Users = require('../public/js/Sesiones/json');
 
-const bd_Computadores = require('../public/js/Productos/bd');
-const json_Computadores = require('../public/js/Productos/json');
+const bd_Productos= require('../public/js/Productos/bd');
+const json_Productos = require('../public/js/Productos/json');
 
 const bd_Carrito = require('../public/js/Carrito/bd');
 const json_Carrito = require('../public/js/Carrito/json');
@@ -45,13 +45,13 @@ async function getUserBackend() {
     }
 }
 
-async function getComputadorBackend() {
+async function getProductoBackend() {
     try {
-        const connected = await bd_Computadores.isConnected();
-        return connected ? bd_Computadores : json_Computadores;
+        const connected = await bd_Productos.isConnected();
+        return connected ? bd_Productos : json_Productos;
     } catch (error) {
         console.error('Error checking computador DB connection:', error.message);
-        return json_Computadores; // fallback a JSON si falla la DB
+        return json_Productos; // fallback a JSON si falla la DB
     }
 }
 async function getCarritoBackend() {
@@ -132,53 +132,53 @@ app.post('/api/users/validate', async (req, res) => {
 // RUTAS - COMPUTADORES //
 ////////////////////////
 
-app.get('/api/computadores', async (req, res) => {
+app.get('/api/Productos', async (req, res) => {
     try {
-        const backend = await getComputadorBackend();
-        const data = await backend.getComputadores();
+        const backend = await getProductoBackend();
+        const data = await backend.getProducto();
         res.json(data);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-app.get('/api/computadores/:id', async (req, res) => {
+app.get('/api/Productos/:id', async (req, res) => {
     try {
-        const backend = await getComputadorBackend();
-        const computador = await backend.getComputadorById(req.params.id);
-        if (!computador) return res.status(404).json({ mensaje: 'No encontrado' });
-        res.json(computador);
+        const backend = await getProductoBackend();
+        const producto = await backend.getProductoById(req.params.id);
+        if (!producto) return res.status(404).json({ mensaje: 'No encontrado' });
+        res.json(producto);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-app.post('/api/computadores', async (req, res) => {
+app.post('/api/Productos', async (req, res) => {
     try {
-        const backend = await getComputadorBackend();
-        const id = await backend.insertComputador(req.body);
-        res.status(201).json({ mensaje: 'Computador creado', id });
+        const backend = await getProductoBackend();
+        const id = await backend.insertProducto(req.body);
+        res.status(201).json({ mensaje: 'producto creado', id });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-app.put('/api/computadores/:id', async (req, res) => {
+app.put('/api/Productos/:id', async (req, res) => {
     try {
-        const backend = await getComputadorBackend();
-        await backend.updateComputador(req.params.id, req.body);
-        res.json({ mensaje: 'Computador actualizado' });
+        const backend = await getProductoBackend();
+        await backend.updateProducto(req.params.id, req.body);
+        res.json({ mensaje: 'Producto actualizado' });
     } catch (error) {
         if (error.message === 'No encontrado') return res.status(404).json({ mensaje: 'No encontrado' });
         res.status(500).json({ error: error.message });
     }
 });
 
-app.delete('/api/computadores/:id', async (req, res) => {
+app.delete('/api/Productos/:id', async (req, res) => {
     try {
-        const backend = await getComputadorBackend();
-        await backend.deleteComputador(req.params.id);
-        res.json({ mensaje: 'Computador eliminado' });
+        const backend = await getProductoBackend();
+        await backend.deleteProducto(req.params.id);
+        res.json({ mensaje: 'producto eliminado' });
     } catch (error) {
         if (error.message === 'No encontrado') return res.status(404).json({ mensaje: 'No encontrado' });
         res.status(500).json({ error: error.message });

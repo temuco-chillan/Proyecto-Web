@@ -8,7 +8,7 @@ function getAccount() {
         console.warn('No hay usuario en sesión.');
         return null;
     }
-    console.log("Usuario: "+stored);
+    console.log("Usuario: " + stored);
     return JSON.parse(stored);
 }
 
@@ -21,11 +21,11 @@ function fetchCarrito() {
         .then(data => {
             const tableBody = document.getElementById('carritoList');
             tableBody.innerHTML = '';
-            
+
             data.forEach(item => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${item.nombre_maquina || 'Desconocido'}</td>
+                    <td>${item.nombre_Producto || 'Desconocido'}</td>
                     <td>${item.cantidad}</td>
                     <td>${item.precio ? `$${item.precio}` : '-'}</td>
                     <td>
@@ -33,7 +33,7 @@ function fetchCarrito() {
                         <button class="btn" onclick="removeFromCarrito(${item.producto_id})">Eliminar</button>
                     </td>
                 `;
-                console.log("Producto: "+item.producto_id)
+                console.log("Producto: " + item.producto_id)
                 tableBody.appendChild(row);
             });
         })
@@ -113,5 +113,5 @@ function vaciarCarrito() {
         .catch(error => console.error('Error al vaciar carrito:', error));
 }
 
-    fetchCarrito();
+fetchCarrito();
 
