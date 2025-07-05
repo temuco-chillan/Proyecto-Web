@@ -9,6 +9,10 @@ const json_Users = require('../public/js/Sesiones/json');
 const bd_Computadores = require('../public/js/Productos/bd');
 const json_Computadores = require('../public/js/Productos/json');
 
+const bd_Carrito = require('../public/js/Carrito/bd');
+const json_Carrito = require('../public/js/Carrito/json');
+
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -50,6 +54,16 @@ async function getComputadorBackend() {
         return json_Computadores; // fallback a JSON si falla la DB
     }
 }
+async function getCarritoBackend() {
+    try {
+        const connected = await bd_Carrito.isConnected();
+        return connected ? bd_Carrito : json_Carrito;
+    } catch (error) {
+        console.error('Error comprobando conexión a carrito DB:', error.message);
+        return json_Carrito;
+    }
+}
+
 
 
 ////////////////////////
@@ -168,6 +182,80 @@ app.delete('/api/computadores/:id', async (req, res) => {
     } catch (error) {
         if (error.message === 'No encontrado') return res.status(404).json({ mensaje: 'No encontrado' });
         res.status(500).json({ error: error.message });
+    }
+});
+
+////////////////////////
+// RUTAS - CARRITO
+////////////////////////
+
+// Obtener carrito de un usuario
+app.get('/api/carrito/:usuario_id', async (req, res) => {
+    try {
+        const backend = await getCarritoBackend();
+        const carrito = await backend.getCarrito(req.params.usuario_id);
+        res.json(carrito);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Agregar producto al carrito (o sumar cantidad)
+app.post('/api/carrito', async (req, res) => {
+    const { usuario_id, producto_id, cantidad } = req.body;
+    if (!usuario_id || !producto_id || !cantidad) {
+        return res.status(400).json({ error: 'Faltan datos obligatorios' });
+    }
+
+    try {
+        const backend = await getCarritoBackend();
+        await backend.agregarAlCarrito(usuario_id, producto_id, cantidad);
+        res.status(201).json({ mensaje: 'Producto agregado/actualizado en carrito' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Actualizar cantidad de un producto en el carrito
+app.put('/api/carrito', async (req, res) => {
+    const { usuario_id, producto_id, cantidad } = req.body;
+    if (!usuario_id || !producto_id || !cantidad) {
+        return res.status(400).json({ error: 'Faltan datos obligatorios' });
+    }
+
+    try {
+        const backend = await getCarritoBackend();
+        await backend.actualizarCantidadCarrito(usuario_id, producto_id, cantidad);
+        res.json({ mensaje: 'Cantidad actualizada' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Eliminar un producto del carrito
+app.delete('/api/carrito', async (req, res) => {
+    const { usuario_id, producto_id } = req.body;
+    if (!usuario_id || !producto_id) {
+        return res.status(400).json({ error: 'Faltan datos obligatorios' });
+    }
+
+    try {
+        const backend = await getCarritoBackend();
+        await backend.eliminarDelCarrito(usuario_id, producto_id);
+        res.json({ mensaje: 'Producto eliminado del carrito' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Vaciar carrito completo del usuario
+app.delete('/api/carrito/usuario/:usuario_id', async (req, res) => {
+    try {
+        const backend = await getCarritoBackend();
+        await backend.vaciarCarrito(req.params.usuario_id);
+        res.json({ mensaje: 'Carrito vaciado' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 
