@@ -1,4 +1,4 @@
-require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') });
+require('dotenv').config();
 const mysql = require('mysql2/promise');
 
 let db;
@@ -12,7 +12,7 @@ let db;
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME
     });
-    console.log('Conectado exitosamente a MariaDB');
+    console.log('Conectado a BD con Productos');
   } catch (err) {
     console.error('Error al conectar a MariaDB:', err.message);
     console.log('Usuario:', process.env.DB_USER);

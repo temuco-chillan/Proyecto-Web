@@ -102,7 +102,4 @@
             console.log(user.rol);       Ej: "usuario / admin"
             return user;
         }
-        // Obtener computadores cuando cargue la página
-        window.onload = function() {
-            fetchComputadores();
-        };
+    fetchComputadores();

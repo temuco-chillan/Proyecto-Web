@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const productosBackend = require('../Productos/json'); 
 
 const CARRITO_FILE = path.join(__dirname, 'carrito.json');
 
@@ -15,14 +16,30 @@ function writeCarrito(data) {
   fs.writeFileSync(CARRITO_FILE, JSON.stringify(data, null, 2));
 }
 
-function getCarrito(usuario_id) {
+async function getCarrito(usuario_id) {
   const data = readCarrito();
-  return Promise.resolve(data.filter(item => item.usuario_id === usuario_id));
+  const productos = await productosBackend.getComputadores();
+
+  const itemsUsuario = data.filter(item => item.usuario_id === Number(usuario_id));
+
+  const enriquecido = itemsUsuario.map(item => {
+    const prod = productos.find(p => p.id === item.producto_id);
+    return {
+      producto_id: item.producto_id,
+      cantidad: item.cantidad,
+      nombre_maquina: prod?.nombre_maquina || 'Desconocido',
+      precio: prod?.precio || null
+    };
+  });
+
+  return enriquecido;
 }
 
 function agregarAlCarrito(usuario_id, producto_id, cantidad = 1) {
   const data = readCarrito();
-  const index = data.findIndex(p => p.usuario_id === usuario_id && p.producto_id === producto_id);
+  const index = data.findIndex(p =>
+    p.usuario_id === Number(usuario_id) && p.producto_id === Number(producto_id)
+  );
   if (index >= 0) {
     data[index].cantidad += cantidad;
   } else {
@@ -39,7 +56,9 @@ function agregarAlCarrito(usuario_id, producto_id, cantidad = 1) {
 
 function actualizarCantidadCarrito(usuario_id, producto_id, cantidad) {
   const data = readCarrito();
-  const index = data.findIndex(p => p.usuario_id === usuario_id && p.producto_id === producto_id);
+  const index = data.findIndex(p =>
+  p.usuario_id === Number(usuario_id) && p.producto_id === Number(producto_id)
+  );
   if (index === -1) return Promise.reject(new Error('Producto no encontrado en carrito'));
   data[index].cantidad = cantidad;
   writeCarrito(data);

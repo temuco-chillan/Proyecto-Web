@@ -37,6 +37,19 @@
                     <button type="submit" class="btn" id="submitBtn">Agregar Computador</button>
                 </form>
             </div>
+            <div id="CarroContainer">
+                <table id="carritoTabla">
+                    <thead>
+                        <tr>
+                            <th>Cantidad</th>
+                            <th>NombreProducto</th>
+                            <th>Total</th>
+                            <th>acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="carritoList"></tbody> 
+                </table>
+            </div>
             <!-- Tabla de computadores -->
             <div class="table-container">
                 <h2>Lista de Computadores</h2>
@@ -46,6 +59,7 @@
                             <th>ID</th>
                             <th>Nombre</th>
                             <th>Estado</th>
+                            <th>Precio</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -57,5 +71,6 @@
         </div>
     </div>
     <script src="../js/index_raul.js"></script>
+    <script src="../js/Carrito/carrito.js"></script>
 </body>
 <!--se elimina el html extra y se linkea el main en su css correspondiente-->

@@ -12,5 +12,19 @@
     "precio": "43241",
     "id": 2,
     "fecha_add": "2025-06-08T03:10:40.801Z"
+  },
+  {
+    "nombre_maquina": "pctantotanto",
+    "estado": "activo",
+    "precio": "432",
+    "id": 3,
+    "fecha_add": "2025-07-05T03:16:44.658Z"
+  },
+  {
+    "nombre_maquina": "pctantotanto",
+    "estado": "inactivo",
+    "precio": "1245125",
+    "id": 4,
+    "fecha_add": "2025-07-05T03:17:03.608Z"
   }
 ]
