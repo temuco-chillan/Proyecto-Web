@@ -30,18 +30,32 @@
 
 .carrito-dropdown th,
 .carrito-dropdown td {
-    padding: 8px;
-    border-bottom: 1px solid #eee;
     font-size: 14px;
-    text-align: left;
     color: black;
-}
-
-.carrito-dropdown th {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
     background-color: #f8f8f8;
     font-weight: bold;
 }
 
+
 .oculto {
     display: none;
+}
+
+.carrito-dropdown input[type="number"] {
+    width: 60px;
+}
+
+.carrito-dropdown .btn {
+    background-color: red;
+    color: white;
+    padding: 4px 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.carrito-dropdown .btn:hover {
+    background-color: darkred;
 }

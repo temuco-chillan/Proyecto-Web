@@ -1,23 +1,23 @@
 const apiUrl = window.location.hostname.includes('localhost')
     ? 'http://localhost:3000/api/Productos'
     : '/api/Productos';
-// Función para obtener computadores de la API
+// Función para obtener Productos de la API
 function fetchProductos() {
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
             const tableBody = document.getElementById('ProductosList');
             tableBody.innerHTML = ''; // Limpiar la tabla antes de agregar los nuevos Productos
-            data.forEach(Productos => {
+            data.forEach(P => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                            <td>${Productos.id}</td>
-                            <td>${Productos.nombre_Producto}</td>
-                            <td>${Productos.estado}</td>
-                            <td>${Productos.precio}</td>
+                            <td>${P.id}</td>
+                            <td>${P.nombre_Producto}</td>
+                            <td>${P.estado}</td>
+                            <td>${P.precio}</td>
                             <td>
-                                <button class="btn" onclick="editProducto(${Productos.id}, '${Productos.nombre_Producto}', '${Productos.estado}', '${Productos.precio}')">Editar</button>
-                                <button class="btn" onclick="deleteProducto(${Productos.id})">Eliminar</button>
+                                <button class="btn" onclick="editProducto(${P.id}, '${P.nombre_Producto}', '${P.estado}', '${P.precio}')">Editar</button>
+                                <button class="btn" onclick="deleteProducto(${P.id})">Eliminar</button>
                             </td>
                         `;
                 tableBody.appendChild(row);

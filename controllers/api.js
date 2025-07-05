@@ -129,7 +129,7 @@ app.post('/api/users/validate', async (req, res) => {
 });
 
 ////////////////////////
-// RUTAS - COMPUTADORES //
+// RUTAS - Productos //
 ////////////////////////
 
 app.get('/api/Productos', async (req, res) => {

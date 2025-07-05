@@ -24,10 +24,11 @@ function fetchCarrito() {
 
             data.forEach(item => {
                 const row = document.createElement('tr');
+                //agrege una operacion para miltiplicar el precio segun la cantidad
                 row.innerHTML = `
-                    <td>${item.nombre_Producto || 'Desconocido'}</td>
                     <td>${item.cantidad}</td>
-                    <td>${item.precio ? `$${item.precio}` : '-'}</td>
+                    <td>${item.nombre_Producto || 'Desconocido'}</td>
+                    <td>${item.precio ? `$${item.precio * item.cantidad}` : '-'}</td>
                     <td>
                         <input type="number" min="1" value="${item.cantidad}" onchange="updateCantidad(${item.producto_id}, this.value)">
                         <button class="btn" onclick="removeFromCarrito(${item.producto_id})">Eliminar</button>
@@ -36,6 +37,8 @@ function fetchCarrito() {
                 console.log("Producto: " + item.producto_id)
                 tableBody.appendChild(row);
             });
+            let totalGeneral = data.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+            document.getElementById('totalCarrito').innerText = `Total General: $${totalGeneral}`;
         })
         .catch(error => console.error('Error al obtener carrito:', error));
 }
