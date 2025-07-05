@@ -1,24 +1,52 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRUD de Computadores</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/carrito.css">
     <meta http-equiv="refresh" href="login.html">
 </head>
-<body>    
+
+<body>
     <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="registro.html">Registro</a></li>
-            </ul>
+        <div class="header-container">
             <button onclick="logout()" class="btn">Cerrar sesión</button>
-        </nav>
-        <h1>CRUD de Computadores</h1>
+
+            <h1>Panel de Administrador</h1>
+
+            <nav>
+                <ul>
+                    <li>
+                        <div class="carrito-container">
+                            <div class="carrito-icono" onclick="toggleCarrito()">🛒</div>
+                            <div id="CarroContainer" class="carrito-dropdown oculto">
+                                <table id="carritoTabla">
+                                    <thead>
+                                        <tr>
+                                            <th>Cantidad</th>
+                                            <th>Nombre Producto</th>
+                                            <th>Total</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="carritoList">
+                                        <!-- Productos del carrito -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </li>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="registro.html">Registro</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
+
     <div class="container">
         <div class="content">
             <!-- Formulario para insertar/actualizar computador -->
@@ -37,19 +65,7 @@
                     <button type="submit" class="btn" id="submitBtn">Agregar Computador</button>
                 </form>
             </div>
-            <div id="CarroContainer">
-                <table id="carritoTabla">
-                    <thead>
-                        <tr>
-                            <th>Cantidad</th>
-                            <th>NombreProducto</th>
-                            <th>Total</th>
-                            <th>acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="carritoList"></tbody> 
-                </table>
-            </div>
+
             <!-- Tabla de computadores -->
             <div class="table-container">
                 <h2>Lista de Computadores</h2>
@@ -70,7 +86,24 @@
             </div>
         </div>
     </div>
-    <script src="../js/index_raul.js"></script>
+    <script>
+        function toggleCarrito() {
+            const carrito = document.getElementById('CarroContainer');
+            carrito.classList.toggle('oculto');
+        }
+
+        document.addEventListener('click', function (event) {
+            const carrito = document.getElementById('CarroContainer');
+            const icono = document.querySelector('.carrito-icono');
+            const contenedor = document.querySelector('.carrito-container');
+
+            if (!contenedor.contains(event.target)) {
+                carrito.classList.add('oculto');
+            }
+        });
+
+    </script>
+    <script src="../js/Productos/Productos.js"></script>
     <script src="../js/Carrito/carrito.js"></script>
 </body>
 <!--se elimina el html extra y se linkea el main en su css correspondiente-->
