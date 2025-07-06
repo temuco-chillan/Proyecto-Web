@@ -1,53 +1,77 @@
 body {
     font-family: Arial, sans-serif;
-    background-size: cover;
-    background-image: url(../images/LoginFondo.png);
+    background: radial-gradient(circle at 50% 40%, #176d67 60%, #2e7c6b 100%);
+    background-attachment: fixed;
     padding: 20px;
-  }
+}
 .login-container {
-    background: rgb(133, 247, 176);
-    padding: 20px;
-    max-width: 500px;
-    margin: auto;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #807d7d;
+    background: linear-gradient(to bottom, #4cff4c 0%, #3a5a2b 20%, #2e4d3a 100%);
+    border: 4px solid #000;
+    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.5);
+    border-radius: 10px;
+    padding: 30px 30px 20px 30px;
+    max-width: 600px;
+    margin: 60px auto;
     min-height: 50vh;
-    background-size: cover;
-    padding: 20px;
+}
+h2 {
+    text-align: center;
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #fff;
+    font-size: 1.5rem;
+}
+input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #222;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    background: linear-gradient(90deg, #7fd6e7 0%, #3a6a8a 100%);
+    color: #fff;
+    font-size: 1.2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+input::placeholder {
+    color: #e0e0e0;
 }
 button {
     width: 100%;
-    padding: 10px;
-    background-color: #2e86de;
-    color: white;
+    padding: 14px;
+    background: linear-gradient(90deg, #4ca1af 0%, #003366 100%);
+    color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
     cursor: pointer;
+    margin-top: 10px;
     transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
-  
 button:hover {
-    background-color: #1b4f72;
-    transform: scale(1.02);
+    background: linear-gradient(90deg, #003366 0%, #4ca1af 100%);
+    transform: scale(1.03);
 }
-  h2 {
-    text-align: center;
-    color: rgb(0, 0, 0);
-  }
-  label {
-    display: block;
-    margin-bottom: 5px;
-    color: rgb(0, 0, 0);
-  }
-  input {
-    width: 90%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }  
-/*ayuda en etiqueta a sovathor*/
 a {
-  text-decoration: none;
-  font-size: 1em;
-  color: black;
+    text-decoration: none;
+    font-size: 1em;
+    color: #00f;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+a:hover {
+    color: #fff;
+}
+/* Para el texto de registro */
+.login-container p, .login-container span {
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1em;
 }
