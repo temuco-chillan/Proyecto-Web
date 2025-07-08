@@ -1,5 +1,5 @@
 const { DataTypes, Model } = require('sequelize');
-const sequelize = require('../config/database');
+const sequelize = require('../Config/database');
 
 class Producto extends Model {
   toSimpleJSON() {

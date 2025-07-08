@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const sequelize = require('../Config/database');
 
 const Carrito = sequelize.define('Carrito', {
   cantidad: {
