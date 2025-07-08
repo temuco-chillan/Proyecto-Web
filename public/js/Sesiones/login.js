@@ -16,14 +16,16 @@ document.getElementById('loginForm').addEventListener('submit', async function (
 
         if (response.ok) {
             message.style.color = 'green';
-            message.textContent = result.message;
-            // Redirige a index.html o a otra página principal
-            window.location.href = 'index.html';
+            message.textContent = result.message || 'Login exitoso';
+
+            // Guardar usuario logueado en localStorage
             localStorage.setItem('loggedUser', JSON.stringify(result.user));
 
+            // Redirigir a página principal
+            window.location.href = 'index.html';
         } else {
             message.style.color = 'red';
-            message.textContent = result.message;
+            message.textContent = result.message || 'Usuario o contraseña incorrectos';
         }
     } catch (error) {
         message.style.color = 'red';

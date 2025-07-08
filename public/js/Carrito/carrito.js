@@ -2,13 +2,13 @@ const carritoApiUrl = window.location.hostname.includes('localhost')
     ? 'http://localhost:3000/api/carrito'
     : '/api/carrito';
 
+// Obtener cuenta activa desde localStorage
 function getAccount() {
     const stored = localStorage.getItem('loggedUser');
     if (!stored) {
         console.warn('No hay usuario en sesión.');
         return null;
     }
-    console.log("Usuario: " + stored);
     return JSON.parse(stored);
 }
 
@@ -16,6 +16,7 @@ function getAccount() {
 function fetchCarrito() {
     const user = getAccount();
     if (!user) return;
+
     fetch(`${carritoApiUrl}/${user.id}`)
         .then(response => response.json())
         .then(data => {
@@ -23,24 +24,24 @@ function fetchCarrito() {
             tableBody.innerHTML = '';
 
             data.forEach(item => {
+                const total = item.precio * item.cantidad;
                 const row = document.createElement('tr');
-                //agrege una operacion para miltiplicar el precio segun la cantidad
                 row.innerHTML = `
                     <td>${item.cantidad}</td>
-                    <td>${item.nombre_Producto || 'Desconocido'}</td>
-                    <td>${item.precio ? `$${item.precio * item.cantidad}` : '-'}</td>
+                    <td>${item.nombre || 'Desconocido'}</td>
+                    <td>${item.precio ? `$${total.toFixed(2)}` : '-'}</td>
                     <td>
                         <input type="number" min="1" value="${item.cantidad}" onchange="updateCantidad(${item.producto_id}, this.value)">
                         <button class="btn" onclick="removeFromCarrito(${item.producto_id})">Eliminar</button>
                     </td>
                 `;
-                console.log("Producto: " + item.producto_id)
                 tableBody.appendChild(row);
             });
-            let totalGeneral = data.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
-            document.getElementById('totalCarrito').innerText = `Total General: $${totalGeneral}`;
+
+            const totalGeneral = data.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+            document.getElementById('totalCarrito').innerText = `Total General: $${totalGeneral.toFixed(2)}`;
         })
-        .catch(error => console.error('Error al obtener carrito:', error));
+        .catch(error => console.error('❌ Error al obtener carrito:', error));
 }
 
 // === Agregar producto al carrito ===
@@ -55,10 +56,10 @@ function addToCarrito(producto_id, cantidad = 1) {
     })
         .then(res => res.json())
         .then(data => {
-            alert('Producto agregado al carrito');
+            alert('🛒 Producto agregado al carrito');
             fetchCarrito();
         })
-        .catch(error => console.error('Error al agregar producto al carrito:', error));
+        .catch(error => console.error('❌ Error al agregar producto al carrito:', error));
 }
 
 // === Actualizar cantidad ===
@@ -72,10 +73,11 @@ function updateCantidad(producto_id, cantidad) {
         body: JSON.stringify({ usuario_id: user.id, producto_id, cantidad })
     })
         .then(res => res.json())
-        .then(data => {
-            console.log('Cantidad actualizada');
+        .then(() => {
+            console.log('✅ Cantidad actualizada');
+            fetchCarrito();
         })
-        .catch(error => console.error('Error al actualizar cantidad:', error));
+        .catch(error => console.error('❌ Error al actualizar cantidad:', error));
 }
 
 // === Eliminar producto del carrito ===
@@ -83,7 +85,7 @@ function removeFromCarrito(producto_id) {
     const user = getAccount();
     if (!user) return;
 
-    if (!confirm('¿Deseas eliminar este producto del carrito?')) return;
+    if (!confirm('¿Eliminar este producto del carrito?')) return;
 
     fetch(carritoApiUrl, {
         method: 'DELETE',
@@ -91,11 +93,11 @@ function removeFromCarrito(producto_id) {
         body: JSON.stringify({ usuario_id: user.id, producto_id })
     })
         .then(res => res.json())
-        .then(data => {
-            alert('Producto eliminado del carrito');
+        .then(() => {
+            alert('🗑️ Producto eliminado del carrito');
             fetchCarrito();
         })
-        .catch(error => console.error('Error al eliminar producto:', error));
+        .catch(error => console.error('❌ Error al eliminar producto:', error));
 }
 
 // === Vaciar carrito completo ===
@@ -103,18 +105,18 @@ function vaciarCarrito() {
     const user = getAccount();
     if (!user) return;
 
-    if (!confirm('¿Deseas vaciar tu carrito completo?')) return;
+    if (!confirm('¿Vaciar todo el carrito?')) return;
 
     fetch(`${carritoApiUrl}/usuario/${user.id}`, {
         method: 'DELETE'
     })
         .then(res => res.json())
-        .then(data => {
-            alert('Carrito vaciado');
+        .then(() => {
+            alert('🧹 Carrito vaciado');
             fetchCarrito();
         })
-        .catch(error => console.error('Error al vaciar carrito:', error));
+        .catch(error => console.error('❌ Error al vaciar carrito:', error));
 }
 
+// === Cargar carrito al iniciar ===
 fetchCarrito();
-
