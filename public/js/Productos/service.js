@@ -1,4 +1,4 @@
-const { Producto } = require('../models');
+const { Producto } = require('../Models');
 const jsonFallback = require('./json');
 
 let useFallback = false;

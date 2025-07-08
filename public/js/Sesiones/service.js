@@ -1,4 +1,4 @@
-const { Usuario, Rol } = require('../models');
+const { Usuario, Rol } = require('../Models');
 const jsonFallback = require('./json');
 
 let useFallback = false;

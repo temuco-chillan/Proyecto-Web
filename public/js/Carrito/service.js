@@ -1,4 +1,4 @@
-const { Carrito, Producto } = require('../models');
+const { Carrito, Producto } = require('../Models');
 const jsonFallback = require('../Carrito/json');
 
 let useFallback = false;
