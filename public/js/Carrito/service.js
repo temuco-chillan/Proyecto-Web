@@ -28,7 +28,7 @@ async function getCarrito(usuario_id) {
   return carrito.map(item => ({
     producto_id: item.producto_id,
     cantidad: item.cantidad,
-    nombre_Producto: item.Producto.nombre,
+    nombre: item.Producto.nombre,
     precio: item.Producto.precio
   }));
 }

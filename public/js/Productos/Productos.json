@@ -2,7 +2,7 @@
   {
     "nombre": "elpepe",
     "estado": "activo",
-    "precio": 600,
+    "precio": 800,
     "id": 1,
     "fecha_add": "2025-07-05T17:23:39.831Z"
   },
@@ -12,5 +12,12 @@
     "precio": 63463,
     "id": 2,
     "fecha_add": "2025-07-07T20:13:46.590Z"
+  },
+  {
+    "nombre": "Producto2",
+    "estado": "inactivo",
+    "precio": 62362,
+    "id": 3,
+    "fecha_add": "2025-07-09T18:27:22.555Z"
   }
 ]

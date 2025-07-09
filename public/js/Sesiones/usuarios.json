@@ -7,20 +7,11 @@
   },
   {
     "id": 2,
-    "username": "usuario1",
+    "username": "Admin5",
+    "email": "admin3@gmail.com",
     "password": "123",
-    "id_rol": 2
-  },
-  {
-    "id": 3,
-    "username": "Admin",
-    "password": "123",
-    "id_rol": 2
-  },
-  {
-    "id": 4,
-    "username": "Admin2",
-    "password": "123",
-    "id_rol": 2
+    "estado": "activo",
+    "rol_id": 2,
+    "creado_en": "2025-07-09T17:49:25.669Z"
   }
 ]

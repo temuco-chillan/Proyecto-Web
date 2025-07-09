@@ -37,7 +37,9 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="4" id="totalCarrito" style="text-align: left; font-weight: bold; display: flex; position: relative;"></td>
+                                            <td colspan="4" id="totalCarrito"
+                                                style="text-align: left; font-weight: bold; display: flex; position: relative;">
+                                            </td>
                                             <td><button>comming soon</button></td>
                                         </tr>
                                     </tfoot>
@@ -62,10 +64,11 @@
                     <input type="text" id="productoName" placeholder="Nombre del Producto" required><br>
                     <select id="productoState" name="estado" required>
                         <option value="">-- Selecciona un estado --</option>
-                        <option value="activo">con stock</option>
-                        <option value="Reposicion">En Reposicion</option>
-                        <option value="fuera-stock">sin stock</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                        <option value="mantenimiento">Mantenimiento</option>
                     </select>
+
                     <input type="number" id="productoPrice" placeholder="Precio" required><br>
                     <button type="submit" class="btn" id="submitBtn">Agregar Producto</button>
                 </form>
@@ -111,4 +114,5 @@
     <script src="../js/Productos/Productos.js"></script>
     <script src="../js/Carrito/carrito.js"></script>
 </body>
+
 </html>

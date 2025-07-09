@@ -31,16 +31,22 @@ async function getUserById(id) {
   return await Usuario.findByPk(id, { include: Rol });
 }
 
-async function createUser({ username, password, rol_id }) {
-  if (useFallback) return jsonFallback.createUser({ username, password, id_rol: rol_id });
+async function createUser({ username, email, password, rol_id }) {
+  if (useFallback) return jsonFallback.createUser({ username, email, password, id_rol: rol_id });
 
-  // Valida que no exista
-  const exists = await Usuario.findOne({ where: { username } });
-  if (exists) throw new Error('EXISTS');
+  // Verificar si el username ya existe
+  const existingUser = await Usuario.findOne({ where: { username } });
+  if (existingUser) throw new Error('USERNAME_EXISTS');
 
-  const user = await Usuario.create({ username, password, rol_id });
+  // Verificar si el email ya existe
+  const existingEmail = await Usuario.findOne({ where: { email } });
+  if (existingEmail) throw new Error('EMAIL_EXISTS');
+
+  const user = await Usuario.create({ username, email, password, rol_id });
   return user;
 }
+
+
 
 async function validateUser({ username, password }) {
   if (useFallback) return jsonFallback.validateUser({ username, password });
