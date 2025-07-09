@@ -69,6 +69,7 @@ button:hover {
     color: white;
     font-weight: normal;
     font-size: 1.1em;
+    text-align: center;
 }
 .login-container a {
     color: white;
@@ -80,6 +81,13 @@ button:hover {
 .login-container a:hover {
     color: #57D39F;
     text-decoration: underline;
+}
+.linkRegister {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    align-items: center;
+    font-size: 20px;
 }
 #message {
     text-align: center;
