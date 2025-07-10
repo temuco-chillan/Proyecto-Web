@@ -68,11 +68,21 @@
                         <option value="inactivo">Inactivo</option>
                         <option value="mantenimiento">Mantenimiento</option>
                     </select>
+                    <label for="categoria">Categoría:</label>
+                    <select id="productoCategorias" multiple></select>
+                    <input id="nuevaCategoriaInput" style="display:none" />
+                    <button id="crearCategoriaBtn" style="display:none">Crear</button>
 
                     <input type="number" id="productoPrice" placeholder="Precio" required><br>
                     <button type="submit" class="btn" id="submitBtn">Agregar Producto</button>
                 </form>
+                <form id="formCategoria">
+                    <input type="text" id="nombreCategoria" placeholder="Nombre de la categoría" required>
+                    <button type="submit">Crear categoría</button>
+                </form>
+                <p id="mensajeCategoria"></p>
             </div>
+
 
             <!-- Tabla de Productos-->
             <div class="table-container">
@@ -111,6 +121,7 @@
         });
 
     </script>
+    <script src="../js/Categorias/Categorias.js"></script>
     <script src="../js/Productos/Productos.js"></script>
     <script src="../js/Carrito/carrito.js"></script>
 </body>

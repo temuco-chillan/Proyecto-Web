@@ -3,6 +3,7 @@
     "nombre": "elpepe",
     "estado": "activo",
     "precio": 800,
+    "categorias": [],
     "id": 1,
     "fecha_add": "2025-07-05T17:23:39.831Z"
   },
@@ -17,7 +18,32 @@
     "nombre": "Producto2",
     "estado": "inactivo",
     "precio": 62362,
+    "categoria_ids": [
+      1
+    ],
     "id": 3,
     "fecha_add": "2025-07-09T18:27:22.555Z"
+  },
+  {
+    "id": 4,
+    "nombre": "Producto4",
+    "descripcion": null,
+    "precio": 60000000,
+    "descuento": 0,
+    "stock": 0,
+    "imagen_url": null,
+    "estado": "activo",
+    "fecha_add": "2025-07-10T20:12:40.818Z"
+  },
+  {
+    "id": 5,
+    "nombre": "dasd",
+    "descripcion": null,
+    "precio": 12,
+    "descuento": 0,
+    "stock": 0,
+    "imagen_url": null,
+    "estado": "activo",
+    "fecha_add": "2025-07-10T23:08:43.583Z"
   }
 ]

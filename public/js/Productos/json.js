@@ -2,21 +2,61 @@ const fs = require('fs');
 const path = require('path');
 const { Producto } = require('../Models');
 
-const DATA_FILE = path.join(__dirname, 'Productos.json');
+// Rutas a los archivos JSON
+const PRODUCTOS_FILE = path.join(__dirname, 'Productos.json');
+const CATEGORIAS_FILE = path.join(__dirname, 'Categorias.json');
+const RELACION_FILE = path.join(__dirname, 'ProductoCategorias.json');
+
 const ESTADOS_VALIDOS = ['activo', 'inactivo', 'mantenimiento'];
 
+// === Utilidades base ===
+function readJSON(file, fallback = []) {
+  if (!fs.existsSync(file)) fs.writeFileSync(file, JSON.stringify(fallback), 'utf8');
+  return JSON.parse(fs.readFileSync(file, 'utf8'));
+}
+
+function writeJSON(file, data) {
+  fs.writeFileSync(file, JSON.stringify(data, null, 2));
+}
+
+// === Lectura principal de productos ===
 function readData() {
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, '[]', 'utf8');
-  }
-  const data = fs.readFileSync(DATA_FILE, 'utf8');
-  return JSON.parse(data);
+  return readJSON(PRODUCTOS_FILE);
 }
 
 function writeData(data) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+  writeJSON(PRODUCTOS_FILE, data);
 }
 
+// === Categorías y relaciones ===
+function getCategorias() {
+  return readJSON(CATEGORIAS_FILE);
+}
+
+function getRelaciones() {
+  return readJSON(RELACION_FILE);
+}
+
+function addRelaciones(productoId, categoriaIds = []) {
+  const relaciones = getRelaciones();
+  const nuevasRelaciones = categoriaIds.map(id => ({
+    producto_id: productoId,
+    categoria_id: id
+  }));
+  const sinProducto = relaciones.filter(r => r.producto_id !== productoId);
+  writeJSON(RELACION_FILE, [...sinProducto, ...nuevasRelaciones]);
+}
+
+function getCategoriasDeProducto(productoId) {
+  const relaciones = getRelaciones();
+  const categorias = getCategorias();
+  const ids = relaciones
+    .filter(r => r.producto_id === productoId)
+    .map(r => r.categoria_id);
+  return categorias.filter(c => ids.includes(c.id));
+}
+
+// === Generador de producto desde modelo Sequelize ===
 function generateDefaultProductData(data = {}) {
   const fields = Producto.rawAttributes;
   const productos = readData();
@@ -48,14 +88,25 @@ function generateDefaultProductData(data = {}) {
   return item;
 }
 
+// === CRUD básico ===
+
 function getProducto() {
-  return Promise.resolve(readData());
+  const productos = readData();
+  return Promise.resolve(productos);
 }
 
 function getProductoById(id) {
-  const data = readData();
-  const producto = data.find(p => p.id === Number(id));
+  const productos = readData();
+  const producto = productos.find(p => p.id === Number(id));
   return Promise.resolve(producto || null);
+}
+
+// Producto + categorías
+function getProductoCompletoById(id) {
+  const producto = readData().find(p => p.id === Number(id));
+  if (!producto) return Promise.resolve(null);
+  const categorias = getCategoriasDeProducto(producto.id);
+  return Promise.resolve({ ...producto, categorias });
 }
 
 function insertProducto(productoData) {
@@ -63,16 +114,21 @@ function insertProducto(productoData) {
     return Promise.reject(new Error('Estado inválido'));
   }
 
-  const data = readData();
-  const newProducto = generateDefaultProductData(productoData);
-  data.push(newProducto);
-  writeData(data);
-  return Promise.resolve(newProducto.id);
+  const productos = readData();
+  const nuevo = generateDefaultProductData(productoData);
+  productos.push(nuevo);
+  writeData(productos);
+
+  if (productoData.categorias && Array.isArray(productoData.categorias)) {
+    addRelaciones(nuevo.id, productoData.categorias);
+  }
+
+  return Promise.resolve(nuevo.id);
 }
 
 function updateProducto(id, productoData) {
-  const data = readData();
-  const index = data.findIndex(p => p.id === Number(id));
+  const productos = readData();
+  const index = productos.findIndex(p => p.id === Number(id));
   if (index === -1) return Promise.reject(new Error('No encontrado'));
 
   if (!ESTADOS_VALIDOS.includes(productoData.estado)) {
@@ -80,27 +136,41 @@ function updateProducto(id, productoData) {
   }
 
   productoData.id = Number(id);
-  productoData.fecha_add = data[index].fecha_add || new Date().toISOString();
+  productoData.fecha_add = productos[index].fecha_add || new Date().toISOString();
 
-  data[index] = productoData;
-  writeData(data);
+  productos[index] = productoData;
+  writeData(productos);
+
+  if (productoData.categorias && Array.isArray(productoData.categorias)) {
+    addRelaciones(productoData.id, productoData.categorias);
+  }
+
   return Promise.resolve();
 }
 
 function deleteProducto(id) {
-  const data = readData();
-  const index = data.findIndex(p => p.id === Number(id));
+  const productos = readData();
+  const index = productos.findIndex(p => p.id === Number(id));
   if (index === -1) return Promise.reject(new Error('No encontrado'));
 
-  data.splice(index, 1);
-  writeData(data);
+  productos.splice(index, 1);
+  writeData(productos);
+
+  // Eliminar también relaciones
+  const relaciones = getRelaciones().filter(r => r.producto_id !== Number(id));
+  writeJSON(RELACION_FILE, relaciones);
+
   return Promise.resolve();
 }
 
+// === Exportar todo ===
 module.exports = {
   getProducto,
   getProductoById,
+  getProductoCompletoById,
   insertProducto,
   updateProducto,
-  deleteProducto
+  deleteProducto,
+  getCategorias,
+  getCategoriasDeProducto
 };

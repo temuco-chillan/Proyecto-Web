@@ -12,12 +12,18 @@ Usuario.belongsTo(Rol, { foreignKey: 'rol_id' });
 
 Producto.belongsToMany(Categoria, {
   through: ProductoCategoria,
-  foreignKey: 'producto_id'
+  as: 'Categorias',
+  foreignKey: 'producto_id',
+  otherKey: 'categoria_id'
 });
+
 Categoria.belongsToMany(Producto, {
   through: ProductoCategoria,
-  foreignKey: 'categoria_id'
+  as: 'Productos',
+  foreignKey: 'categoria_id',
+  otherKey: 'producto_id'
 });
+
 
 Usuario.hasMany(Carrito, { foreignKey: 'usuario_id' });
 Carrito.belongsTo(Usuario, { foreignKey: 'usuario_id' });

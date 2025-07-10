@@ -5,6 +5,8 @@ const path = require('path');
 const sesiones = require('../public/js/Sesiones/service');
 const productos = require('../public/js/Productos/service');
 const carrito = require('../public/js/Carrito/service');
+const { Categoria } = require('../public/js/Models');
+const categorias = require('../public/js/Categorias/service');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -46,22 +48,27 @@ app.get('/api/users/:id', async (req, res) => {
 });
 
 app.post('/api/users', async (req, res) => {
-    const { username, password, rol_id = 2 } = req.body;
-    if (!username || !password) {
-        return res.status(400).json({ message: 'Usuario y contraseña requeridos' });
+    const { username, email, password, rol_id = 2 } = req.body;
+
+    if (!username || !email || !password) {
+        return res.status(400).json({ message: 'Todos los campos son requeridos' });
     }
 
     try {
-        const user = await sesiones.createUser({ username, password, rol_id });
+        const user = await sesiones.createUser({ username, email, password, rol_id });
         res.status(201).json({ message: 'Usuario creado', user });
     } catch (err) {
-        if (err.message === 'EXISTS') {
-            res.status(409).json({ message: 'El usuario ya existe' });
+        if (err.message === 'USERNAME_EXISTS') {
+            res.status(409).json({ message: 'El nombre de usuario ya está en uso' });
+        } else if (err.message === 'EMAIL_EXISTS') {
+            res.status(409).json({ message: 'El correo electrónico ya está en uso' });
         } else {
-            res.status(500).json({ error: err.message });
+            console.error('Error en registro:', err);
+            res.status(500).json({ message: 'Error interno del servidor' });
         }
     }
 });
+
 
 app.post('/api/users/validate', async (req, res) => {
     const { username, password } = req.body;
@@ -107,15 +114,17 @@ app.post('/api/Productos', async (req, res) => {
 app.put('/api/Productos/:id', async (req, res) => {
     try {
         await productos.updateProducto(req.params.id, req.body);
-        res.json({ mensaje: 'Producto actualizado' });
+        res.json({ mensaje: 'Producto actualizado' }); // ✅ importante
     } catch (error) {
         if (error.message === 'No encontrado') {
             res.status(404).json({ mensaje: 'No encontrado' });
         } else {
-            res.status(500).json({ error: error.message });
+            console.error('❌ Error en PUT /api/Productos/:id:', error); // 👈 muestra el error
+            res.status(500).json({ error: error.message }); // ✅ importante
         }
     }
 });
+
 
 app.delete('/api/Productos/:id', async (req, res) => {
     try {
@@ -192,6 +201,81 @@ app.delete('/api/carrito/usuario/:usuario_id', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+});
+////////////////////////
+// CATEGORIAS
+////////////////////////
+
+app.get('/api/categorias', async (req, res) => {
+  try {
+    const data = await categorias.getCategorias();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+app.post('/api/categorias', async (req, res) => {
+  const { nombre } = req.body;
+  if (!nombre) return res.status(400).json({ error: 'Nombre requerido' });
+
+  try {
+    const nueva = await categoriasService.insertCategoria(nombre);
+    res.status(201).json(nueva);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Obtener las categorías de un producto
+app.get('/api/Productos/:id/categorias', async (req, res) => {
+  try {
+    const data = await productos.getCategoriasDeProducto(req.params.id);
+    if (!data) {
+      return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+
+    res.json(data); // Puede ser `[]` si no hay categorías
+  } catch (error) {
+    console.error('❌ Error en ruta /categorias:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+// Asignar categorías (reemplaza todas las anteriores)
+app.post('/api/Productos/:id/categorias', async (req, res) => {
+  const { categorias } = req.body; // array de IDs
+  if (!Array.isArray(categorias)) {
+    return res.status(400).json({ error: 'Debe enviar un array de IDs de categorías' });
+  }
+
+  try {
+    await productos.asignarCategoriasAProducto(req.params.id, categorias);
+    res.status(200).json({ mensaje: 'Categorías asignadas correctamente' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Agregar una sola categoría (sin borrar las anteriores)
+app.post('/api/Productos/:id/categorias/:categoriaId', async (req, res) => {
+  try {
+    await productos.agregarCategoriaAProducto(req.params.id, req.params.categoriaId);
+    res.status(200).json({ mensaje: 'Categoría añadida al producto' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Quitar una categoría del producto
+app.delete('/api/Productos/:id/categorias/:categoriaId', async (req, res) => {
+  try {
+    await productos.quitarCategoriaAProducto(req.params.id, req.params.categoriaId);
+    res.status(200).json({ mensaje: 'Categoría eliminada del producto' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 ////////////////////////

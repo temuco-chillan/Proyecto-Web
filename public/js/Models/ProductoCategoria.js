@@ -1,18 +1,18 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../Config/database');
 
-const ProductoCategoria = sequelize.define('ProductoCategoria', {
+const ProductoCategoria = sequelize.define('producto_categorias', {
   producto_id: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    primaryKey: true
   },
   categoria_id: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    primaryKey: true
   }
 }, {
-  tableName: 'producto_categorias',
-  timestamps: false
+  timestamps: false,
+  tableName: 'producto_categorias'
 });
 
 module.exports = ProductoCategoria;
