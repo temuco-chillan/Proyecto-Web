@@ -14,8 +14,9 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "joi": "^17.13.3",
-    "mercadopago": "^2.8.0",
+    "mercadopago": "^1.5.14",
     "mysql2": "^3.14.1",
+    "path": "^0.12.7",
     "sequelize": "^6.37.7"
   }
 }

@@ -2,11 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
+const mercadopago = require('mercadopago');
+
 const sesiones = require('../public/js/Sesiones/service');
 const productos = require('../public/js/Productos/service');
 const carrito = require('../public/js/Carrito/service');
 const { Categoria } = require('../public/js/Models');
 const categorias = require('../public/js/Categorias/service');
+const { title } = require('process');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -207,76 +210,122 @@ app.delete('/api/carrito/usuario/:usuario_id', async (req, res) => {
 ////////////////////////
 
 app.get('/api/categorias', async (req, res) => {
-  try {
-    const data = await categorias.getCategorias();
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    try {
+        const data = await categorias.getCategorias();
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 app.post('/api/categorias', async (req, res) => {
-  const { nombre } = req.body;
-  if (!nombre) return res.status(400).json({ error: 'Nombre requerido' });
+    const { nombre } = req.body;
+    if (!nombre) return res.status(400).json({ error: 'Nombre requerido' });
 
-  try {
-    const nueva = await categoriasService.insertCategoria(nombre);
-    res.status(201).json(nueva);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    try {
+        const nueva = await categoriasService.insertCategoria(nombre);
+        res.status(201).json(nueva);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // Obtener las categorías de un producto
 app.get('/api/Productos/:id/categorias', async (req, res) => {
-  try {
-    const data = await productos.getCategoriasDeProducto(req.params.id);
-    if (!data) {
-      return res.status(404).json({ error: 'Producto no encontrado' });
-    }
+    try {
+        const data = await productos.getCategoriasDeProducto(req.params.id);
+        if (!data) {
+            return res.status(404).json({ error: 'Producto no encontrado' });
+        }
 
-    res.json(data); // Puede ser `[]` si no hay categorías
-  } catch (error) {
-    console.error('❌ Error en ruta /categorias:', error.message);
-    res.status(500).json({ error: error.message });
-  }
+        res.json(data); // Puede ser `[]` si no hay categorías
+    } catch (error) {
+        console.error('❌ Error en ruta /categorias:', error.message);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 
 
 // Asignar categorías (reemplaza todas las anteriores)
 app.post('/api/Productos/:id/categorias', async (req, res) => {
-  const { categorias } = req.body; // array de IDs
-  if (!Array.isArray(categorias)) {
-    return res.status(400).json({ error: 'Debe enviar un array de IDs de categorías' });
-  }
+    const { categorias } = req.body; // array de IDs
+    if (!Array.isArray(categorias)) {
+        return res.status(400).json({ error: 'Debe enviar un array de IDs de categorías' });
+    }
 
-  try {
-    await productos.asignarCategoriasAProducto(req.params.id, categorias);
-    res.status(200).json({ mensaje: 'Categorías asignadas correctamente' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        await productos.asignarCategoriasAProducto(req.params.id, categorias);
+        res.status(200).json({ mensaje: 'Categorías asignadas correctamente' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // Agregar una sola categoría (sin borrar las anteriores)
 app.post('/api/Productos/:id/categorias/:categoriaId', async (req, res) => {
-  try {
-    await productos.agregarCategoriaAProducto(req.params.id, req.params.categoriaId);
-    res.status(200).json({ mensaje: 'Categoría añadida al producto' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        await productos.agregarCategoriaAProducto(req.params.id, req.params.categoriaId);
+        res.status(200).json({ mensaje: 'Categoría añadida al producto' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // Quitar una categoría del producto
 app.delete('/api/Productos/:id/categorias/:categoriaId', async (req, res) => {
-  try {
-    await productos.quitarCategoriaAProducto(req.params.id, req.params.categoriaId);
-    res.status(200).json({ mensaje: 'Categoría eliminada del producto' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        await productos.quitarCategoriaAProducto(req.params.id, req.params.categoriaId);
+        res.status(200).json({ mensaje: 'Categoría eliminada del producto' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
+
+////////////////////////
+// MercadoPago
+////////////////////////
+// Usa tu access_token de prueba o producción
+mercadopago.configure({
+    access_token: "APP_USR-5491912017954458-071117-bb82d2bc034b99dfd56644e4caf03e1a-2549815434" // Reemplaza con tu token
+});
+app.post('/api/pago', async (req, res) => {
+    const { usuario_id } = req.body;
+
+    if (!usuario_id) {
+        return res.status(400).json({ error: 'Falta el ID del usuario' });
+    }
+
+    try {
+        const items = await carrito.getCarrito(usuario_id);
+
+        if (!items || items.length === 0) {
+            return res.status(400).json({ error: 'Carrito vacío' });
+        }
+
+        const preference = {
+            items: items.map(item => ({
+                title: item.nombre,
+                quantity: parseInt(item.cantidad),
+                unit_price: parseFloat(item.precio),
+                currency_id: "CLP"
+            })),
+            back_urls: {
+                success: "http://localhost:3000/pago-exitoso",
+                failure: "http://localhost:3000/pago-fallido",
+                pending: "http://localhost:3000/pago-pendiente"
+            },
+            //auto_return: "approved"
+        };
+
+        const response = await mercadopago.preferences.create(preference);
+        res.json({ init_point: response.body.init_point });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al crear la preferencia de pago' });
+    }
+});
+app.get('/api/pago-exitoso', (req,res) => res.send("pago hecho"));
 
 ////////////////////////
 // INICIAR SERVIDOR

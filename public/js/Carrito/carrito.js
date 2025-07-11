@@ -117,6 +117,27 @@ function vaciarCarrito() {
         })
         .catch(error => console.error('❌ Error al vaciar carrito:', error));
 }
+// === Enviar carrito a backend y redirigir a Mercado Pago ===
+function pagarCarrito() {
+    const user = getAccount();
+    if (!user) return;
+
+    fetch('/api/pago', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ usuario_id: user.id })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.init_point) {
+                window.location.href = data.init_point;
+            } else {
+                alert('❌ Error al generar el link de pago');
+            }
+        })
+        .catch(error => console.error('❌ Error al procesar pago:', error));
+}
+
 
 // === Cargar carrito al iniciar ===
 fetchCarrito();
