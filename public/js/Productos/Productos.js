@@ -21,6 +21,7 @@ function fetchProductos() {
           <td>
             <button class="btn" onclick="editProducto(${P.id}, '${P.nombre}', '${P.estado}', '${P.precio}')">Editar</button>
             <button class="btn" onclick="deleteProducto(${P.id})">Eliminar</button>
+            <button class="btn" onclick="addToCarrito(${P.id})">agregar al carro</button> 
           </td>
         `;
         tableBody.appendChild(row);
