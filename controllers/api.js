@@ -286,7 +286,7 @@ app.delete('/api/Productos/:id/categorias/:categoriaId', async (req, res) => {
 ////////////////////////
 // Usa tu access_token de prueba o producción
 mercadopago.configure({
-    access_token: "APP_USR-5491912017954458-071117-bb82d2bc034b99dfd56644e4caf03e1a-2549815434" // Reemplaza con tu token
+    access_token: "APP_USR-5491912017954458-071117-bb82d2bc034b99dfd56644e4caf03e1a-2549815434" 
 });
 app.post('/api/pago', async (req, res) => {
     const { usuario_id } = req.body;
