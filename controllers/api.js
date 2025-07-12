@@ -284,7 +284,7 @@ app.delete('/api/Productos/:id/categorias/:categoriaId', async (req, res) => {
 ////////////////////////
 // MercadoPago
 ////////////////////////
-// Usa tu access_token de prueba o producción
+// configuramos el access token
 mercadopago.configure({
     //configuracion de usuario vendedor en mercado libre de prueba.
     access_token: "APP_USR-5491912017954458-071117-bb82d2bc034b99dfd56644e4caf03e1a-2549815434" 
