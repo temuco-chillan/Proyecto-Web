@@ -4,7 +4,8 @@
     "estado": "activo",
     "precio": 800,
     "categorias": [
-      1
+      1,
+      4
     ],
     "id": 1,
     "fecha_add": "2025-07-05T17:23:39.831Z"

@@ -7,8 +7,9 @@ const mercadopago = require('mercadopago');
 const sesiones = require('../public/js/Sesiones/service');
 const productos = require('../public/js/Productos/service');
 const carrito = require('../public/js/Carrito/service');
-const { Categoria } = require('../public/js/Models');
 const categorias = require('../public/js/Categorias/service');
+const { Categoria } = require('../public/js/Models');
+
 const { title } = require('process');
 
 const app = express();
@@ -222,7 +223,7 @@ app.post('/api/categorias', async (req, res) => {
     if (!nombre) return res.status(400).json({ error: 'Nombre requerido' });
 
     try {
-        const nueva = await categoriasService.insertCategoria(nombre);
+        const nueva = await categorias.insertCategoria(nombre); // ✅
         res.status(201).json(nueva);
     } catch (err) {
         res.status(500).json({ error: err.message });
