@@ -286,11 +286,13 @@ app.delete('/api/Productos/:id/categorias/:categoriaId', async (req, res) => {
 ////////////////////////
 // Usa tu access_token de prueba o producción
 mercadopago.configure({
+    //configuracion de usuario vendedor en mercado libre de prueba.
     access_token: "APP_USR-5491912017954458-071117-bb82d2bc034b99dfd56644e4caf03e1a-2549815434" 
 });
+//metodo post para la creacion del pago
 app.post('/api/pago', async (req, res) => {
     const { usuario_id } = req.body;
-
+    //validara el id del usuario
     if (!usuario_id) {
         return res.status(400).json({ error: 'Falta el ID del usuario' });
     }
@@ -301,7 +303,7 @@ app.post('/api/pago', async (req, res) => {
         if (!items || items.length === 0) {
             return res.status(400).json({ error: 'Carrito vacío' });
         }
-
+        //tomara las preferencias del carrito 
         const preference = {
             items: items.map(item => ({
                 title: item.nombre,
@@ -310,13 +312,12 @@ app.post('/api/pago', async (req, res) => {
                 currency_id: "CLP"
             })),
             back_urls: {
-                success: "http://localhost:3000/pago-exitoso",
-                failure: "http://localhost:3000/pago-fallido",
-                pending: "http://localhost:3000/pago-pendiente"
+                success: "http://localhost:3000/api/pago-exitoso",
+                failure: "http://localhost:3000/api/pago-fallido",
+                pending: "http://localhost:3000/api/pago-pendiente"
             },
             //auto_return: "approved"
         };
-
         const response = await mercadopago.preferences.create(preference);
         res.json({ init_point: response.body.init_point });
 

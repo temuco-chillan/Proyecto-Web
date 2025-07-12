@@ -138,6 +138,7 @@ function pagarCarrito() {
         .catch(error => console.error('❌ Error al procesar pago:', error));
 }
 
-
 // === Cargar carrito al iniciar ===
+//matias comentario => para el que quiera obtener el carrito todo el rato sin tener que recargar la pagina no intenten
+//un while true sino se van a pitear la ram y tendran que reiniciar la pc, me paso ya ljsadnjlkdsandsalñ 
 fetchCarrito();
