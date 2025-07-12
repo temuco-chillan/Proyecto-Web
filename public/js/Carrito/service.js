@@ -75,7 +75,7 @@ async function vaciarCarrito(usuario_id) {
 // Inicializa el sistema y decide si usar fallback
 (async () => {
   useFallback = !(await isConnected());
-  console.log(useFallback ? 'Fallback JSON activado' : 'Conectado a base de datos');
+  console.log(useFallback ? '🟡 Fallback JSON activado para Carrito' : '🟢 DB conectada para Carrito');
 })();
 
 module.exports = {

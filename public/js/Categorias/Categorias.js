@@ -5,7 +5,7 @@ document.getElementById('formCategoria').addEventListener('submit', async functi
   const mensaje = document.getElementById('mensajeCategoria');
 
   if (!nombre) {
-    mensaje.textContent = 'El nombre no puede estar vacío.';
+    mensaje.textContent = '⚠️ El nombre no puede estar vacío.';
     return;
   }
 
@@ -24,11 +24,15 @@ document.getElementById('formCategoria').addEventListener('submit', async functi
     const nuevaCategoria = await res.json();
     mensaje.textContent = `✅ Categoría "${nuevaCategoria.nombre}" creada con éxito.`;
 
-    // Opcional: limpiar campo
     document.getElementById('nombreCategoria').value = '';
 
+    // Recargar combo si existe
+    if (typeof fetchCategorias === 'function') {
+      fetchCategorias();
+    }
+
   } catch (err) {
+    console.error('❌ Error al crear categoría:', err);
     mensaje.textContent = `❌ Error al crear categoría: ${err.message}`;
-    console.error(err);
   }
 });

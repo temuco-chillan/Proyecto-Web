@@ -4,8 +4,8 @@ const { Producto } = require('../Models');
 
 // Rutas a los archivos JSON
 const PRODUCTOS_FILE = path.join(__dirname, 'Productos.json');
-const CATEGORIAS_FILE = path.join(__dirname, 'Categorias.json');
-const RELACION_FILE = path.join(__dirname, 'ProductoCategorias.json');
+const CATEGORIAS_FILE = path.join(__dirname, '../Categorias/Categorias.json');
+const RELACION_FILE = path.join(__dirname, '../Categorias/ProductoCategorias.json');
 
 const ESTADOS_VALIDOS = ['activo', 'inactivo', 'mantenimiento'];
 
@@ -34,8 +34,9 @@ function getCategorias() {
 }
 
 function getRelaciones() {
-  return readJSON(RELACION_FILE);
+  return readJSON(RELACION_FILE); // ← este archivo debe estar definido arriba
 }
+
 
 function addRelaciones(productoId, categoriaIds = []) {
   const relaciones = getRelaciones();
@@ -48,13 +49,17 @@ function addRelaciones(productoId, categoriaIds = []) {
 }
 
 function getCategoriasDeProducto(productoId) {
-  const relaciones = getRelaciones();
-  const categorias = getCategorias();
+  const relaciones = getRelaciones();        // ProductoCategorias.json
+  const categorias = getCategorias();        // Categorias.json
+
   const ids = relaciones
-    .filter(r => r.producto_id === productoId)
+    .filter(r => r.producto_id === Number(productoId))
     .map(r => r.categoria_id);
+
   return categorias.filter(c => ids.includes(c.id));
 }
+
+
 
 // === Generador de producto desde modelo Sequelize ===
 function generateDefaultProductData(data = {}) {
@@ -172,5 +177,6 @@ module.exports = {
   updateProducto,
   deleteProducto,
   getCategorias,
-  getCategoriasDeProducto
+  getCategoriasDeProducto,
+  getRelaciones
 };

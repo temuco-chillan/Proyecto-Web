@@ -1,9 +1,9 @@
 const { Producto, Categoria } = require('../Models');
 const jsonFallback = require('./json');
-
+const { getRelaciones,getCategorias } = require('../Productos/json');
 let useFallback = false;
 
-// Verificar conexión
+// Verifica conexión a la base de datos
 async function isConnected() {
   try {
     await Producto.sequelize.authenticate();
@@ -14,19 +14,18 @@ async function isConnected() {
   }
 }
 
-// Obtener todos los productos
+// === CRUD de Productos ===
+
 async function getProductos() {
   if (useFallback) return jsonFallback.getProducto();
   return await Producto.findAll();
 }
 
-// Obtener producto por ID
 async function getProductoById(id) {
   if (useFallback) return jsonFallback.getProductoById(id);
   return await Producto.findByPk(id);
 }
 
-// Insertar nuevo producto
 async function insertProducto(data) {
   if (useFallback) return jsonFallback.insertProducto(data);
 
@@ -40,7 +39,6 @@ async function insertProducto(data) {
   return producto.id;
 }
 
-// Actualizar producto
 async function updateProducto(id, data) {
   if (useFallback) return jsonFallback.updateProducto(id, data);
 
@@ -55,38 +53,24 @@ async function updateProducto(id, data) {
   }
 }
 
-// Eliminar producto
 async function deleteProducto(id) {
   if (useFallback) return jsonFallback.deleteProducto(id);
   await Producto.destroy({ where: { id } });
 }
 
-// Obtener categorías de un producto
-async function getCategoriasDeProducto(productoId) {
-  if (useFallback) return jsonFallback.getCategoriasDeProducto(productoId);
+// === Relación Producto <-> Categorías ===
 
-  console.log('🔍 Buscando producto ID:', productoId);
+function getCategoriasDeProducto(productoId) {
+  const relaciones = getRelaciones();        // lee ProductoCategorias.json
+  const categorias = getCategorias();        // lee Categorias.json
+  const ids = relaciones
+    .filter(r => r.producto_id === Number(productoId))
+    .map(r => r.categoria_id);
 
-  const producto = await Producto.findByPk(productoId, {
-    include: [{
-      model: Categoria,
-      as: 'Categorias',
-      through: { attributes: [] }
-    }]
-  });
-
-  if (!producto) {
-    console.log('❌ Producto no encontrado');
-    return null;
-  }
-
-  console.log('✅ Producto encontrado:', producto.nombre);
-  console.log('📦 Categorías asociadas:', producto.Categorias);
-
-  return producto.Categorias;
+  return categorias.filter(c => ids.includes(c.id));
 }
 
-// Asignar todas las categorías
+
 async function asignarCategoriasAProducto(productoId, categoriaIds) {
   if (useFallback) return jsonFallback.asignarCategoriasAProducto(productoId, categoriaIds);
 
@@ -97,7 +81,6 @@ async function asignarCategoriasAProducto(productoId, categoriaIds) {
   return true;
 }
 
-// Agregar una categoría
 async function agregarCategoriaAProducto(productoId, categoriaId) {
   if (useFallback) return jsonFallback.agregarCategoriaAProducto(productoId, categoriaId);
 
@@ -108,7 +91,6 @@ async function agregarCategoriaAProducto(productoId, categoriaId) {
   return true;
 }
 
-// Quitar una categoría
 async function quitarCategoriaAProducto(productoId, categoriaId) {
   if (useFallback) return jsonFallback.quitarCategoriaAProducto(productoId, categoriaId);
 
@@ -119,12 +101,14 @@ async function quitarCategoriaAProducto(productoId, categoriaId) {
   return true;
 }
 
-// Inicializa fallback
+// === Inicializa fallback automáticamente ===
 (async () => {
   useFallback = !(await isConnected());
   console.log(useFallback ? '🟡 Fallback JSON activado para Productos' : '🟢 DB conectada para Productos');
 })();
 
+
+// === Exportar funciones ===
 module.exports = {
   getProductos,
   getProductoById,
