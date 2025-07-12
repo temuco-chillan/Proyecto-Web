@@ -4,19 +4,5 @@
     "producto_id": 1,
     "cantidad": "1",
     "fecha_add": "2025-07-09T14:22:10.123Z"
-  },
-  {
-    "id": null,
-    "cantidad": 1,
-    "usuario_id": 1,
-    "producto_id": 3,
-    "fecha_add": "2025-07-11T23:56:02.219Z"
-  },
-  {
-    "id": 1,
-    "cantidad": "3",
-    "usuario_id": 1,
-    "producto_id": 5,
-    "fecha_add": "2025-07-11T23:56:22.254Z"
   }
 ]

@@ -16,6 +16,7 @@ function fetchProductos() {
         row.innerHTML = `
           <td>${P.id}</td>
           <td>${P.nombre}</td>
+          <td>${P.categorias}</td>
           <td>${P.estado}</td>
           <td>$${P.precio}</td>
           <td>

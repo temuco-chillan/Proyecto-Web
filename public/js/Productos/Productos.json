@@ -9,5 +9,17 @@
     ],
     "id": 1,
     "fecha_add": "2025-07-05T17:23:39.831Z"
+  },
+  {
+    "id": 2,
+    "nombre": "laptop",
+    "descripcion": null,
+    "precio": 8000,
+    "descuento": 0,
+    "stock": 0,
+    "imagen_url": null,
+    "estado": "inactivo",
+    "fecha_add": "2025-07-12T05:14:47.924Z",
+    "categorias": [1]
   }
 ]

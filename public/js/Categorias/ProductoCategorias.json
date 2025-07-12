@@ -6,5 +6,9 @@
   {
     "producto_id": 1,
     "categoria_id": 4
+  },
+  {
+    "producto_id": 2,
+    "categoria_id": 5
   }
 ]

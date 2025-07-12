@@ -1,0 +1,1 @@
+carpeta para el front que se encarga de almacenar la imagenes que cargaran los productos
