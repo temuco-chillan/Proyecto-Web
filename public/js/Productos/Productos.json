@@ -3,9 +3,12 @@
     "nombre": "elpepe",
     "estado": "activo",
     "precio": 800,
+    "descuento": 0,
+    "stock": 0,
+    "imagen_url": "https://cdnx.jumpseller.com/oym-agencia/image/50842405/618610425_-_SECADORA_VENTILACION_UT_G8K-15P_5.jpg?1721313080",
     "categorias": [
-      1,
-      4
+      2,
+      3
     ],
     "id": 1,
     "fecha_add": "2025-07-05T17:23:39.831Z"
@@ -20,6 +23,22 @@
     "imagen_url": null,
     "estado": "inactivo",
     "fecha_add": "2025-07-12T05:14:47.924Z",
-    "categorias": [1]
+    "categorias": [
+      1
+    ]
+  },
+  {
+    "nombre": "Secadora",
+    "estado": "activo",
+    "precio": 322222,
+    "descuento": 29,
+    "stock": 53,
+    "imagen_url": "https://cdnx.jumpseller.com/electromundo/image/52219109/thumb/540/540?1724877298",
+    "categorias": [
+      4,
+      5
+    ],
+    "id": 3,
+    "fecha_add": "2025-07-13T18:21:05.506Z"
   }
 ]

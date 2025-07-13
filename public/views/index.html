@@ -40,7 +40,8 @@
                                             <td colspan="4" id="totalCarrito"
                                                 style="text-align: left; font-weight: bold; display: flex; position: relative;">
                                             </td>
-                                            <td><button onclick="pagarCarrito()" class="btn btn-pago">Mercado Pago</button></td>
+                                            <td><button onclick="pagarCarrito()" class="btn btn-pago">Mercado
+                                                    Pago</button></td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -71,9 +72,12 @@
                     <label for="categoria">Categoría:</label>
                     <select id="productoCategorias" multiple></select>
                     <input id="nuevaCategoriaInput" style="display:none" />
-                    <button id="crearCategoriaBtn" style="display:none">Crear</button>
-
+                    <button id="crearCategoriaBtn" style="display:none">Crear</button><br>
                     <input type="number" id="productoPrice" placeholder="Precio" required><br>
+                    <input type="number" id="productoDescuento" placeholder="Descuento (%)" min="0" max="100"><br>
+                    <input type="number" id="productoStock" placeholder="Stock" min="0"><br>
+                    <input type="text" id="productoImagen" placeholder="URL de la imagen"><br>
+
                     <button type="submit" class="btn" id="submitBtn">Agregar Producto</button>
                 </form>
                 <form id="formCategoria">
@@ -95,6 +99,9 @@
                             <th>Categorias</th>
                             <th>Estado</th>
                             <th>Precio</th>
+                            <th>Descuento</th>
+                            <th>Stock</th>
+                            <th>Imagen</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>

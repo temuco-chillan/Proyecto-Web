@@ -61,8 +61,8 @@ async function deleteProducto(id) {
 // === Relación Producto <-> Categorías ===
 
 function getCategoriasDeProducto(productoId) {
-  const relaciones = getRelaciones();        // lee ProductoCategorias.json
-  const categorias = getCategorias();        // lee Categorias.json
+  const relaciones = getRelaciones(); 
+  const categorias = getCategorias();        
   const ids = relaciones
     .filter(r => r.producto_id === Number(productoId))
     .map(r => r.categoria_id);

@@ -19,10 +19,13 @@ function fetchProductos() {
           <td>${P.categorias}</td>
           <td>${P.estado}</td>
           <td>$${P.precio}</td>
+          <td>${P.descuento}%</td>
+          <td>${P.stock}</td>
+          <td><img src="${P.imagen_url}" alt="Imagen" width="50" height="50"></td>
           <td>
-            <button class="btn" onclick="editProducto(${P.id}, '${P.nombre}', '${P.estado}', '${P.precio}')">Editar</button>
+            <button class="btn" onclick="editProducto(${P.id})">Editar</button>
             <button class="btn" onclick="deleteProducto(${P.id})">Eliminar</button>
-            <button class="btn" onclick="addToCarrito(${P.id})">agregar al carro</button> 
+            <button class="btn" onclick="addToCarrito(${P.id})">agregar al carro</button>
           </td>
         `;
         tableBody.appendChild(row);
@@ -42,6 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const nombre = document.getElementById('productoName').value.trim();
       const estado = document.getElementById('productoState').value.trim();
       const precio = parseFloat(document.getElementById('productoPrice').value);
+      const descuento = parseInt(document.getElementById('productoDescuento').value) || 0;
+      const stock = parseInt(document.getElementById('productoStock').value) || 0;
+      const imagen_url = document.getElementById('productoImagen').value.trim();
       let categorias = [];
 
       const categoriasSelect = document.getElementById('productoCategorias');
@@ -55,7 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
       fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, estado, precio, categorias })
+        body: JSON.stringify({
+          nombre,
+          estado,
+          precio,
+          descuento,
+          stock,
+          imagen_url,
+          categorias
+        })
       })
         .then(async res => {
           if (!res.ok) {
@@ -68,6 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
           alert(id ? 'Producto actualizado' : 'Producto agregado');
           fetchProductos();
           form.reset();
+          document.getElementById('productoDescuento').value = '';
+          document.getElementById('productoStock').value = '';
+          document.getElementById('productoImagen').value = '';
           document.getElementById('productoId').value = '';
           document.getElementById('submitBtn').innerText = 'Agregar Producto';
         })
@@ -79,42 +96,44 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchCategorias();
 });
 
-function editProducto(id, nombre, estado, precio) {
-  document.getElementById('productoId').value = id;
-  document.getElementById('productoName').value = nombre;
-  document.getElementById('productoState').value = estado;
-  document.getElementById('productoPrice').value = precio;
-  document.getElementById('submitBtn').innerText = 'Actualizar Producto';
-
-  fetch(`/api/Productos/${id}/categorias`)
-    .then(async res => {
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(errorText || 'Error cargando categorías');
-      }
+function editProducto(id) {
+  fetch(`${apiUrl}/${id}`)
+    .then(res => {
+      if (!res.ok) throw new Error('Error al cargar el producto');
       return res.json();
     })
-    .then(data => {
-      if (!Array.isArray(data)) {
-        console.error('❌ Categorías no válidas:', data);
-        return;
-      }
+    .then(producto => {
+      // Asignar valores al formulario
+      document.getElementById('productoId').value = producto.id;
+      document.getElementById('productoName').value = producto.nombre;
+      document.getElementById('productoState').value = producto.estado;
+      document.getElementById('productoPrice').value = producto.precio;
+      document.getElementById('productoDescuento').value = producto.descuento || 0;
+      document.getElementById('productoStock').value = producto.stock || 0;
+      document.getElementById('productoImagen').value = producto.imagen_url || '';
 
+      document.getElementById('submitBtn').innerText = 'Actualizar Producto';
+
+      // Ahora carga sus categorías
+      return fetch(`${apiUrl}/${id}/categorias`);
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Error al cargar categorías del producto');
+      return res.json();
+    })
+    .then(categorias => {
       const select = document.getElementById('productoCategorias');
-      if (!select) {
-        console.warn('⚠️ No se encontró el elemento select con ID "productoCategorias"');
-        return;
-      }
+      const idsSeleccionados = categorias.map(c => c.id);
 
-      const idsSeleccionados = data.map(c => c.id);
       Array.from(select.options).forEach(opt => {
         opt.selected = idsSeleccionados.includes(Number(opt.value));
       });
     })
     .catch(error => {
-      console.error('❌ Error al cargar categorías del producto:', error.message);
+      console.error('❌ Error al editar producto:', error.message);
     });
 }
+
 
 function deleteProducto(id) {
   if (confirm('¿Eliminar este producto?')) {
