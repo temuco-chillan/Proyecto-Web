@@ -5,6 +5,8 @@ const Producto = require('./Producto');
 const Categoria = require('./Categoria');
 const ProductoCategoria = require('./ProductoCategoria');
 const Carrito = require('./Carrito');
+const Venta = require('./Venta');
+const DetalleVenta = require('./DetalleVenta');
 
 // Relaciones
 Rol.hasMany(Usuario, { foreignKey: 'rol_id' });
@@ -31,6 +33,13 @@ Carrito.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 Producto.hasMany(Carrito, { foreignKey: 'producto_id' });
 Carrito.belongsTo(Producto, { foreignKey: 'producto_id' });
 
+// Definir relaciones para Venta y DetalleVenta
+Venta.hasMany(DetalleVenta, { foreignKey: 'venta_id' });
+DetalleVenta.belongsTo(Venta, { foreignKey: 'venta_id' });
+
+DetalleVenta.belongsTo(Producto, { foreignKey: 'producto_id' });
+Venta.belongsTo(Usuario, { foreignKey: 'usuario_id' });
+
 module.exports = {
   sequelize,
   Rol,
@@ -38,5 +47,7 @@ module.exports = {
   Producto,
   Categoria,
   ProductoCategoria,
-  Carrito
+  Carrito,
+  Venta,
+  DetalleVenta
 };

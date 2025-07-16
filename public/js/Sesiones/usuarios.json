@@ -13,5 +13,14 @@
     "estado": "activo",
     "rol_id": 2,
     "creado_en": "2025-07-09T17:49:25.669Z"
+  },
+  {
+    "id": 3,
+    "username": "Admin",
+    "email": "micorreo@gmail.com",
+    "password": "123",
+    "estado": "activo",
+    "rol_id": 2,
+    "creado_en": "2025-07-15T15:32:06.754Z"
   }
 ]
