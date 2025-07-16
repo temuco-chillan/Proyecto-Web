@@ -9,6 +9,7 @@ const productos = require('../public/js/Productos/service');
 const carrito = require('../public/js/Carrito/service');
 const categorias = require('../public/js/Categorias/service');
 const { Categoria } = require('../public/js/Models');
+const historial = require('../public/js/Historial/service');
 
 const { title } = require('process');
 
@@ -335,4 +336,46 @@ app.get('/api/pago-exitoso', (req,res) => res.send("pago hecho"));
 
 app.listen(PORT, () => {
     console.log(`✅ API corriendo en http://localhost:${PORT}`);
+});
+
+
+////////////////////////
+// RUTAS - HISTORIAL
+////////////////////////
+
+app.get('/api/historial/:usuario_id', async (req, res) => {
+    try {
+        const data = await historial.getHistorial(req.params.usuario_id);
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/historial', async (req, res) => {
+    const { usuario_id, detalles } = req.body;
+    if (!usuario_id || !detalles || !Array.isArray(detalles) || detalles.length === 0) {
+        return res.status(400).json({ error: 'Datos de venta inválidos' });
+    }
+
+    try {
+        const ventaId = await historial.crearVenta(usuario_id, detalles);
+        res.status(201).json({ mensaje: 'Venta registrada', venta_id: ventaId });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.put('/api/historial/:venta_id/estado', async (req, res) => {
+    const { estado } = req.body;
+    if (!estado || !['completada', 'cancelada', 'pendiente'].includes(estado)) {
+        return res.status(400).json({ error: 'Estado inválido' });
+    }
+
+    try {
+        await historial.actualizarEstadoVenta(req.params.venta_id, estado);
+        res.json({ mensaje: 'Estado de venta actualizado' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
