@@ -1,136 +1,110 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD de Productos</title>
+    <title>Panel de Administrador</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/carrito.css">
-    <meta http-equiv="refresh" href="login.html">
 </head>
-
 <body>
-    <header>
-        <div class="header-container">
-            <button onclick="logout()" class="btn">Cerrar sesión</button>
-
-            <h1>Panel de Administrador</h1>
-
-            <nav>
-                <ul>
-                    <li>
-                        <div class="carrito-container">
-                            <div class="carrito-icono" onclick="toggleCarrito()">🛒</div>
-                            <div id="CarroContainer" class="carrito-dropdown oculto">
-                                <table id="carritoTabla">
-                                    <thead>
-                                        <tr>
-                                            <th>Cantidad</th>
-                                            <th>Nombre Producto</th>
-                                            <th>Total</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="carritoList">
-                                        <!-- Productos del carrito -->
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="4" id="totalCarrito"
-                                                style="text-align: left; font-weight: bold; display: flex; position: relative;">
-                                            </td>
-                                            <td><button onclick="pagarCarrito()" class="btn btn-pago">Mercado
-                                                    Pago</button></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-                    </li>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="login.html">Login</a></li>
-                    <li><a href="registro.html">Registro</a></li>
-                </ul>
-            </nav>
-        </div>
+    <header style="background: #333; color: #fff; padding: 32px 0 24px 0; text-align: center; position: relative;">
+        <h1 style="margin: 0; font-size: 2.8rem; font-weight: 600; letter-spacing: 1px;">Panel de Administrador</h1>
+        <button onclick="document.getElementById('CarroContainer').style.display='block'" style="position: absolute; top: 32px; right: 32px; background: none; border: none; font-size: 2em; cursor: pointer; color: #e50914;">🛒</button>
     </header>
-
-    <div class="container">
-        <div class="content">
-            <div class="form-container">
-                <h2>Agregar / Actualizar Productos</h2>
-                <form id="ProductosForm">
-                    <input type="hidden" id="productoId" />
-                    <input type="text" id="productoName" placeholder="Nombre del Producto" required><br>
-                    <select id="productoState" name="estado" required>
-                        <option value="">-- Selecciona un estado --</option>
-                        <option value="activo">Activo</option>
-                        <option value="inactivo">Inactivo</option>
-                        <option value="mantenimiento">Mantenimiento</option>
-                    </select>
-                    <label for="categoria">Categoría:</label>
-                    <select id="productoCategorias" multiple></select>
-                    <input id="nuevaCategoriaInput" style="display:none" />
-                    <button id="crearCategoriaBtn" style="display:none">Crear</button><br>
-                    <input type="number" id="productoPrice" placeholder="Precio" required><br>
-                    <input type="number" id="productoDescuento" placeholder="Descuento (%)" min="0" max="100"><br>
-                    <input type="number" id="productoStock" placeholder="Stock" min="0"><br>
-                    <input type="text" id="productoImagen" placeholder="URL de la imagen"><br>
-
-                    <button type="submit" class="btn" id="submitBtn">Agregar Producto</button>
-                </form>
-                <form id="formCategoria">
-                    <input type="text" id="nombreCategoria" placeholder="Nombre de la categoría" required>
-                    <button type="submit">Crear categoría</button>
-                </form>
-                <p id="mensajeCategoria"></p>
-            </div>
-
-
-            <!-- Tabla de Productos-->
-            <div class="table-container">
-                <h2>Lista de Productos</h2>
-                <table id="ProductosTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Categorias</th>
-                            <th>Estado</th>
-                            <th>Precio</th>
-                            <th>Descuento</th>
-                            <th>Stock</th>
-                            <th>Imagen</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ProductosList">
-                        <!-- Aquí se mostrarán los productos -->
-                    </tbody>
-                </table>
-            </div>
+    <main style="background: #fff; padding: 40px 32px; min-height: 100vh;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h2 style="font-size: 2rem; font-weight: bold; margin: 0;">Lista de Productos</h2>
+            <button id="btnMostrarFormulario" style="background: #e50914; color: #fff; border: none; border-radius: 6px; padding: 12px 28px; font-size: 1rem; font-weight: 600; cursor: pointer;">Crear Producto</button>
         </div>
-    </div>
-    <script>
-        function toggleCarrito() {
-            const carrito = document.getElementById('CarroContainer');
-            carrito.classList.toggle('oculto');
-        }
-
-        document.addEventListener('click', function (event) {
-            const carrito = document.getElementById('CarroContainer');
-            const icono = document.querySelector('.carrito-icono');
-            const contenedor = document.querySelector('.carrito-container');
-
-            if (!contenedor.contains(event.target)) {
-                carrito.classList.add('oculto');
-            }
-        });
-    </script>
+        <div id="formularioProducto" style="display:none; margin-bottom: 32px; background: #f5f5f5; padding: 24px; border-radius: 8px; max-width: 600px;">
+            <form id="ProductosForm">
+                <input type="hidden" id="productoId" />
+                <div style="margin-bottom: 12px;">
+                    <input type="text" id="productoName" placeholder="Nombre del Producto" required style="width: 100%; padding: 8px;">
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <select id="productoState" required style="width: 100%; padding: 8px;">
+                        <option value="">-- Selecciona un estado --</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <select id="productoCategorias" multiple style="width: 100%; padding: 8px;"></select>
+                    <input id="nuevaCategoriaInput" style="display:none; width: 100%; margin-top: 8px; padding: 8px;" placeholder="Nueva categoría" />
+                    <button id="crearCategoriaBtn" type="button" style="display:none; margin-top: 8px;">Crear</button>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <input type="number" id="productoPrice" placeholder="Precio" required style="width: 100%; padding: 8px;">
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <input type="number" id="productoDescuento" placeholder="Descuento (%)" min="0" max="100" style="width: 100%; padding: 8px;">
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <input type="number" id="productoStock" placeholder="Stock" min="0" style="width: 100%; padding: 8px;">
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <input type="text" id="productoImagen" placeholder="URL de la imagen" style="width: 100%; padding: 8px;">
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button type="submit" id="submitBtn" style="background: #2196f3; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; font-weight: 600; cursor: pointer;">Agregar Producto</button>
+                    <button type="button" id="btnCancelar" style="background: #888; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; font-weight: 600; cursor: pointer;">Cancelar</button>
+                </div>
+            </form>
+        </div>
+        <form id="formCategoria" style="margin-bottom: 16px; max-width: 600px;">
+            <input type="text" id="nombreCategoria" placeholder="Nombre de la categoría" required style="padding: 8px;">
+            <button type="submit" style="padding: 8px 16px;">Crear categoría</button>
+        </form>
+        <p id="mensajeCategoria"></p>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 1rem;">
+                <thead style="background: #222; color: #fff;">
+                    <tr>
+                        <th style="padding: 10px;">ID</th>
+                        <th style="padding: 10px;">Nombre</th>
+                        <th style="padding: 10px;">Categorías</th>
+                        <th style="padding: 10px;">Estado</th>
+                        <th style="padding: 10px;">Precio</th>
+                        <th style="padding: 10px;">Descuento</th>
+                        <th style="padding: 10px;">Stock</th>
+                        <th style="padding: 10px;">Imagen</th>
+                        <th style="padding: 10px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="ProductosList">
+                </tbody>
+            </table>
+        </div>
+        <div id="CarroContainer" style="display:none; position:fixed; top:60px; right:20px; background:#fff; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.2); z-index:1000; width:400px; max-width:90vw;">
+            <h3 style="margin:16px;">Carrito de Compras</h3>
+            <table style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th>Cantidad</th>
+                        <th>Nombre Producto</th>
+                        <th>Total</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="carritoList"></tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" id="totalCarrito" style="text-align:left; font-weight:bold;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="text-align:right;">
+                            <button onclick="pagarCarrito()" style="background:#e50914; color:#fff; border:none; border-radius:6px; padding:8px 16px; font-weight:600;">Pagar</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            <button onclick="document.getElementById('CarroContainer').style.display='none'" style="margin:16px; background:#888; color:#fff; border:none; border-radius:6px; padding:8px 16px;">Cerrar</button>
+        </div>
+    </main>
     <script src="../js/Categorias/Categorias.js"></script>
     <script src="../js/Productos/Productos.js"></script>
     <script src="../js/Carrito/carrito.js"></script>
 </body>
-
 </html>
