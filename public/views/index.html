@@ -122,6 +122,24 @@
             document.getElementById('productoId').value = '';
             document.getElementById('submitBtn').innerText = 'Agregar Producto';
         });
+
+        // Agregar listener adicional para el formulario para debuggear
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('ProductosForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    console.log('Formulario enviado');
+                    console.log('Nombre:', document.getElementById('productoName').value);
+                    console.log('Estado:', document.getElementById('productoState').value);
+                    console.log('Precio:', document.getElementById('productoPrice').value);
+                    
+                    // Ocultar formulario después de un envío exitoso
+                    setTimeout(() => {
+                        document.getElementById('formularioProducto').style.display = 'none';
+                    }, 1000);
+                });
+            }
+        });
     </script>
 </body>
 </html>
