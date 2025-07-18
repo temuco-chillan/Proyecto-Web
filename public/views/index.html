@@ -107,10 +107,8 @@
     <script src="../js/Productos/Productos.js"></script>
     <script src="../js/Carrito/carrito.js"></script>
     <script>
-        // Lógica para mostrar/ocultar el formulario de productos
         document.getElementById('btnMostrarFormulario').addEventListener('click', function() {
             document.getElementById('formularioProducto').style.display = 'block';
-            // Limpiar el formulario
             document.getElementById('ProductosForm').reset();
             document.getElementById('productoId').value = '';
             document.getElementById('submitBtn').innerText = 'Agregar Producto';
@@ -123,7 +121,6 @@
             document.getElementById('submitBtn').innerText = 'Agregar Producto';
         });
 
-        // Agregar listener adicional para el formulario para debuggear
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('ProductosForm');
             if (form) {
@@ -133,7 +130,15 @@
                     console.log('Estado:', document.getElementById('productoState').value);
                     console.log('Precio:', document.getElementById('productoPrice').value);
                     
-                    // Ocultar formulario después de un envío exitoso
+                    fetch('http://localhost:3000/api/Productos')
+                        .then(response => {
+                            console.log('✅ Servidor respondiendo:', response.status);
+                        })
+                        .catch(error => {
+                            console.error('❌ Error de conexión al servidor:', error);
+                            alert('Error: No se puede conectar al servidor. Asegúrate de que esté corriendo en el puerto 3000.');
+                        });
+                    
                     setTimeout(() => {
                         document.getElementById('formularioProducto').style.display = 'none';
                     }, 1000);
