@@ -106,5 +106,22 @@
     <script src="../js/Categorias/Categorias.js"></script>
     <script src="../js/Productos/Productos.js"></script>
     <script src="../js/Carrito/carrito.js"></script>
+    <script>
+        // Lógica para mostrar/ocultar el formulario de productos
+        document.getElementById('btnMostrarFormulario').addEventListener('click', function() {
+            document.getElementById('formularioProducto').style.display = 'block';
+            // Limpiar el formulario
+            document.getElementById('ProductosForm').reset();
+            document.getElementById('productoId').value = '';
+            document.getElementById('submitBtn').innerText = 'Agregar Producto';
+        });
+
+        document.getElementById('btnCancelar').addEventListener('click', function() {
+            document.getElementById('formularioProducto').style.display = 'none';
+            document.getElementById('ProductosForm').reset();
+            document.getElementById('productoId').value = '';
+            document.getElementById('submitBtn').innerText = 'Agregar Producto';
+        });
+    </script>
 </body>
 </html>
