@@ -50,13 +50,12 @@
                 </form>
                 <p id="mensajeCategoria" style="margin: 0; align-self: center;"></p>
             </div>
-            <div class="form-container" id="formularioProducto" style="display: none; margin-bottom: 32px; background: #f5f5f5; padding: 24px; border-radius: 8px; max-width: 800px;">
+            <div class="form-container" id="formularioProducto" style="display: none; margin-bottom: 32px; background: #f5f5f5; padding: 24px; border-radius: 8px; width: 100%;">
                 <h2 style="font-size: 2rem; font-weight: bold; margin: 0 0 24px 0;">Agregar / Actualizar Producto</h2>
                 <form id="ProductosForm">
                     <input type="hidden" id="productoId" />
-                    <div style="display: flex; gap: 24px;">
-                        <!-- Columna Izquierda -->
-                        <div style="flex: 1;">
+                    <div style="display: flex; gap: 32px; align-items: flex-start;">
+                        <div style="flex: 2; min-width: 0;">
                             <div style="margin-bottom: 16px;">
                                 <label style="display: block; margin-bottom: 4px; font-weight: 600;">Nombre</label>
                                 <input type="text" id="productoName" placeholder="Nombre del Producto" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
@@ -70,8 +69,7 @@
                                 <input type="number" id="productoStock" placeholder="Stock" min="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                             </div>
                         </div>
-                        <!-- Columna Derecha -->
-                        <div style="flex: 1;">
+                        <div style="flex: 2; min-width: 0;">
                             <div style="margin-bottom: 16px;">
                                 <label style="display: block; margin-bottom: 4px; font-weight: 600;">Categoría</label>
                                 <select id="productoCategorias" multiple style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></select>
@@ -92,12 +90,11 @@
                                 <input type="number" id="productoDescuento" placeholder="Descuento (%)" min="0" max="100" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                             </div>
                         </div>
-                        <!-- Área de Imagen -->
-                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; align-items: center;">
                             <label style="display: block; margin-bottom: 4px; font-weight: 600;">Imagen</label>
-                            <div style="width: 150px; height: 150px; border: 2px dashed #ddd; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fafafa; cursor: pointer;" onclick="document.getElementById('productoImagen').click()">
-                                <div style="font-size: 2em; color: #666;">📄</div>
-                                <div style="font-size: 0.8em; color: #666; text-align: center; margin-top: 8px;">Haz clic para subir imagen</div>
+                            <div style="width: 120px; height: 120px; border: 2px dashed #ddd; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fafafa; cursor: pointer;" onclick="document.getElementById('productoImagen').click()">
+                                <div style="font-size: 1.5em; color: #666;">📄</div>
+                                <div style="font-size: 0.7em; color: #666; text-align: center; margin-top: 4px;">Haz clic para subir imagen</div>
                             </div>
                             <input type="text" id="productoImagen" placeholder="URL de la imagen" style="width: 100%; margin-top: 8px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                         </div>
@@ -147,11 +144,26 @@
             document.getElementById('productoId').value = '';
             document.getElementById('submitBtn').innerText = 'Agregar Producto';
         });
+
         document.getElementById('btnCancelar').addEventListener('click', function() {
             document.getElementById('formularioProducto').style.display = 'none';
             document.getElementById('ProductosForm').reset();
             document.getElementById('productoId').value = '';
             document.getElementById('submitBtn').innerText = 'Agregar Producto';
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('ProductosForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    setTimeout(() => {
+                        document.getElementById('formularioProducto').style.display = 'none';
+                        document.getElementById('ProductosForm').reset();
+                        document.getElementById('productoId').value = '';
+                        document.getElementById('submitBtn').innerText = 'Agregar Producto';
+                    }, 1000);
+                });
+            }
         });
     </script>
     <script src="../js/Categorias/Categorias.js"></script>
