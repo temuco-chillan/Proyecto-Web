@@ -3,150 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD de Productos</title>
+    <title>Panel de Administrador</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/carrito.css">
     <meta http-equiv="refresh" href="login.html">
 </head>
 <body>
-    <header style="background: #333; color: #fff; padding: 32px 0 24px 0; text-align: center; position: relative;">
-        <div class="header-container">
-            <button onclick="logout()" class="btn" style="position: absolute; top: 32px; left: 32px;">Cerrar sesión</button>
-            <h1 style="margin: 0; font-size: 2.8rem; font-weight: 600; letter-spacing: 1px;">Panel de Administrador</h1>
-            <nav style="position: absolute; top: 32px; right: 32px;">
-                <ul style="list-style: none; margin: 0; padding: 0; display: flex; gap: 20px;">
-                    <li>
-                        <div class="carrito-container">
-                            <div class="carrito-icono" onclick="toggleCarrito()" style="font-size: 2em; cursor: pointer; color: #e50914;">🛒</div>
-                            <div id="CarroContainer" class="carrito-dropdown oculto" style="position: absolute; top: 100%; right: 0; background: #fff; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1000; width: 400px; max-width: 90vw;">
-                                <table id="carritoTabla" style="width: 100%; border-collapse: collapse;">
-                                    <thead>
-                                        <tr>
-                                            <th>Cantidad</th>
-                                            <th>Nombre Producto</th>
-                                            <th>Total</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="carritoList">
-                                        <!-- Productos del carrito -->
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="4" id="totalCarrito" style="text-align: left; font-weight: bold; display: flex; position: relative;"></td>
-                                            <td><button onclick="pagarCarrito()" class="btn btn-pago">Mercado Pago</button></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-                    </li>
-                    <li><a href="index.html" style="color: #fff; text-decoration: none;">Inicio</a></li>
-                    <li><a href="login.html" style="color: #fff; text-decoration: none;">Login</a></li>
-                    <li><a href="registro.html" style="color: #fff; text-decoration: none;">Registro</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <div class="container" style="background: #fff; padding: 40px 32px; min-height: 100vh;">
-        <div class="content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                <h2 style="font-size: 2rem; font-weight: bold; margin: 0;">Lista de Productos</h2>
-                <button id="btnMostrarFormulario" style="background: #e50914; color: #fff; border: none; border-radius: 6px; padding: 12px 28px; font-size: 1rem; font-weight: 600; cursor: pointer;">Crear Producto</button>
-            </div>
-            <div class="form-container" id="formularioProducto" style="display: none; margin-bottom: 32px; background: #f5f5f5; padding: 24px; border-radius: 8px; max-width: 600px;">
-                <h2 style="font-size: 2rem; font-weight: bold; margin: 0 0 24px 0;">Agregar / Actualizar Productos</h2>
-                <form id="ProductosForm">
-                    <input type="hidden" id="productoId" />
-                    <div style="margin-bottom: 12px;">
-                        <input type="text" id="productoName" placeholder="Nombre del Producto" required style="width: 100%; padding: 8px;">
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <select id="productoState" name="estado" required style="width: 100%; padding: 8px;">
-                            <option value="">-- Selecciona un estado --</option>
-                            <option value="activo">Activo</option>
-                            <option value="inactivo">Inactivo</option>
-                            <option value="mantenimiento">Mantenimiento</option>
-                        </select>
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <label for="categoria">Categoría:</label>
-                        <select id="productoCategorias" multiple style="width: 100%; padding: 8px;"></select>
-                        <input id="nuevaCategoriaInput" style="display:none; width: 100%; margin-top: 8px; padding: 8px;" placeholder="Nueva categoría" />
-                        <button id="crearCategoriaBtn" style="display:none; margin-top: 8px;">Crear</button>
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <input type="number" id="productoPrice" placeholder="Precio" required style="width: 100%; padding: 8px;">
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <input type="number" id="productoDescuento" placeholder="Descuento (%)" min="0" max="100" style="width: 100%; padding: 8px;">
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <input type="number" id="productoStock" placeholder="Stock" min="0" style="width: 100%; padding: 8px;">
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <input type="text" id="productoImagen" placeholder="URL de la imagen" style="width: 100%; padding: 8px;">
-                    </div>
-                    <div style="display: flex; gap: 12px;">
-                        <button type="submit" class="btn" id="submitBtn" style="background: #2196f3; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; font-weight: 600; cursor: pointer;">Agregar Producto</button>
-                        <button type="button" id="btnCancelar" style="background: #888; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; font-weight: 600; cursor: pointer;">Cancelar</button>
-                    </div>
-                </form>
-                <form id="formCategoria" style="margin-top: 16px;">
-                    <input type="text" id="nombreCategoria" placeholder="Nombre de la categoría" required style="padding: 8px;">
-                    <button type="submit" style="padding: 8px 16px;">Crear categoría</button>
-                </form>
-                <p id="mensajeCategoria"></p>
-            </div>
-
-            <div class="table-container">
-                <h2 style="font-size: 2rem; font-weight: bold; margin: 0 0 24px 0;">Lista de Productos</h2>
-                <div style="overflow-x: auto;">
-                    <table id="ProductosTable" style="width: 100%; border-collapse: collapse; font-size: 1rem;">
-                        <thead style="background: #222; color: #fff;">
+    <header style="background: #333; color: #fff; padding: 32px 0 24px 0; text-align: center;">
+        <h1 style="margin: 0; font-size: 2.8rem; font-weight: 700; letter-spacing: 1px;">PANEL DE ADMINISTRADOR</h1>
+        <button onclick="logout()" class="btn" style="position: absolute; top: 32px; left: 32px;">Cerrar sesión</button>
+        <div style="position: absolute; top: 32px; right: 32px;">
+            <div class="carrito-container">
+                <div class="carrito-icono" onclick="toggleCarrito()" style="font-size: 2em; cursor: pointer; color: #e50914;">🛒</div>
+                <div id="CarroContainer" class="carrito-dropdown oculto" style="position: absolute; top: 100%; right: 0; background: #fff; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1000; width: 400px; max-width: 90vw;">
+                    <table id="carritoTabla" style="width: 100%; border-collapse: collapse;">
+                        <thead>
                             <tr>
-                                <th style="padding: 10px;">ID</th>
-                                <th style="padding: 10px;">Nombre</th>
-                                <th style="padding: 10px;">Categorias</th>
-                                <th style="padding: 10px;">Estado</th>
-                                <th style="padding: 10px;">Precio</th>
-                                <th style="padding: 10px;">Descuento</th>
-                                <th style="padding: 10px;">Stock</th>
-                                <th style="padding: 10px;">Imagen</th>
-                                <th style="padding: 10px;">Acciones</th>
+                                <th>Cantidad</th>
+                                <th>Nombre Producto</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="ProductosList">
-                        </tbody>
+                        <tbody id="carritoList"></tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" id="totalCarrito" style="text-align: left; font-weight: bold; display: flex; position: relative;"></td>
+                                <td><button onclick="pagarCarrito()" class="btn btn-pago">Mercado Pago</button></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
+    <main style="background: #fff; min-height: 100vh; padding: 0;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 40px 32px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h2 style="font-size: 2rem; font-weight: bold; margin: 0;">Lista de Productos</h2>
+                <button id="btnMostrarFormulario" style="background: #e50914; color: #fff; border: none; border-radius: 6px; padding: 12px 28px; font-size: 1rem; font-weight: 600; cursor: pointer;">Crear Producto</button>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 24px; margin-bottom: 24px;">
+                <form id="formCategoria" style="display: flex; gap: 8px; margin: 0;">
+                    <input type="text" id="nombreCategoria" placeholder="Nombre de la categoría" required style="padding: 8px;">
+                    <button type="submit" style="padding: 8px 16px;">Crear categoría</button>
+                </form>
+                <p id="mensajeCategoria" style="margin: 0; align-self: center;"></p>
+            </div>
+            <div class="form-container" id="formularioProducto" style="display: none; margin-bottom: 32px; background: #f5f5f5; padding: 24px; border-radius: 8px; max-width: 800px;">
+                <h2 style="font-size: 2rem; font-weight: bold; margin: 0 0 24px 0;">Agregar / Actualizar Producto</h2>
+                <form id="ProductosForm">
+                    <input type="hidden" id="productoId" />
+                    <div style="display: flex; gap: 24px;">
+                        <!-- Columna Izquierda -->
+                        <div style="flex: 1;">
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; margin-bottom: 4px; font-weight: 600;">Nombre</label>
+                                <input type="text" id="productoName" placeholder="Nombre del Producto" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; margin-bottom: 4px; font-weight: 600;">Precio</label>
+                                <input type="number" id="productoPrice" placeholder="Precio" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; margin-bottom: 4px; font-weight: 600;">Stock</label>
+                                <input type="number" id="productoStock" placeholder="Stock" min="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                        </div>
+                        <!-- Columna Derecha -->
+                        <div style="flex: 1;">
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; margin-bottom: 4px; font-weight: 600;">Categoría</label>
+                                <select id="productoCategorias" multiple style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></select>
+                                <input id="nuevaCategoriaInput" style="display:none; width: 100%; margin-top: 8px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" placeholder="Nueva categoría" />
+                                <button id="crearCategoriaBtn" style="display:none; margin-top: 8px;">Crear</button>
+                            </div>
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; margin-bottom: 4px; font-weight: 600;">Estado</label>
+                                <select id="productoState" name="estado" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="">-- Selecciona un estado --</option>
+                                    <option value="activo">activo</option>
+                                    <option value="inactivo">inactivo</option>
+                                    <option value="mantenimiento">mantenimiento</option>
+                                </select>
+                            </div>
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; margin-bottom: 4px; font-weight: 600;">Descuento (%)</label>
+                                <input type="number" id="productoDescuento" placeholder="Descuento (%)" min="0" max="100" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                        </div>
+                        <!-- Área de Imagen -->
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <label style="display: block; margin-bottom: 4px; font-weight: 600;">Imagen</label>
+                            <div style="width: 150px; height: 150px; border: 2px dashed #ddd; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fafafa; cursor: pointer;" onclick="document.getElementById('productoImagen').click()">
+                                <div style="font-size: 2em; color: #666;">📄</div>
+                                <div style="font-size: 0.8em; color: #666; text-align: center; margin-top: 8px;">Haz clic para subir imagen</div>
+                            </div>
+                            <input type="text" id="productoImagen" placeholder="URL de la imagen" style="width: 100%; margin-top: 8px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 24px;">
+                        <button type="submit" class="btn" id="submitBtn" style="background: #e50914; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; font-weight: 600; cursor: pointer;">Crear Producto</button>
+                        <button type="button" id="btnCancelar" style="background: #888; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; font-weight: 600; cursor: pointer;">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+            <div class="table-container">
+                <table id="ProductosTable" style="width: 100%; border-collapse: collapse; font-size: 1rem;">
+                    <thead style="background: #222; color: #fff;">
+                        <tr>
+                            <th style="padding: 10px;">ID</th>
+                            <th style="padding: 10px;">Nombre</th>
+                            <th style="padding: 10px;">Categorías</th>
+                            <th style="padding: 10px;">Estado</th>
+                            <th style="padding: 10px;">Precio</th>
+                            <th style="padding: 10px;">Descuento</th>
+                            <th style="padding: 10px;">Stock</th>
+                            <th style="padding: 10px;">Imagen</th>
+                            <th style="padding: 10px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ProductosList"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
     <script>
         function toggleCarrito() {
             const carrito = document.getElementById('CarroContainer');
             carrito.classList.toggle('oculto');
         }
-
         document.addEventListener('click', function (event) {
             const carrito = document.getElementById('CarroContainer');
             const icono = document.querySelector('.carrito-icono');
             const contenedor = document.querySelector('.carrito-container');
-
             if (!contenedor.contains(event.target)) {
                 carrito.classList.add('oculto');
             }
         });
-
         document.getElementById('btnMostrarFormulario').addEventListener('click', function() {
             document.getElementById('formularioProducto').style.display = 'block';
             document.getElementById('ProductosForm').reset();
             document.getElementById('productoId').value = '';
             document.getElementById('submitBtn').innerText = 'Agregar Producto';
         });
-
         document.getElementById('btnCancelar').addEventListener('click', function() {
             document.getElementById('formularioProducto').style.display = 'none';
             document.getElementById('ProductosForm').reset();
