@@ -38,7 +38,7 @@
         </div>
     </header>
     <main style="background: #fff; min-height: 100vh; padding: 0;">
-        <div style="max-width: 1200px; margin: 0 auto; padding: 40px 32px;">
+        <div style="max-width: 100%; margin: 0 auto; padding: 40px 32px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                 <h2 style="font-size: 2rem; font-weight: bold; margin: 0;">Lista de Productos</h2>
                 <button id="btnMostrarFormulario" style="background: #e50914; color: #fff; border: none; border-radius: 6px; padding: 12px 28px; font-size: 1rem; font-weight: 600; cursor: pointer;">Crear Producto</button>
@@ -105,22 +105,23 @@
                     </div>
                 </form>
             </div>
-            <div class="table-container">
-                <table id="ProductosTable" style="width: 100%; border-collapse: collapse; font-size: 1rem;">
+            <div class="table-container" style="width: 100%; overflow-x: auto;">
+                <table id="ProductosTable" style="width: 100%; border-collapse: collapse; font-size: 1rem; min-width: 100%;">
                     <thead style="background: #222; color: #fff;">
                         <tr>
-                            <th style="padding: 10px;">ID</th>
-                            <th style="padding: 10px;">Nombre</th>
-                            <th style="padding: 10px;">Categorías</th>
-                            <th style="padding: 10px;">Estado</th>
-                            <th style="padding: 10px;">Precio</th>
-                            <th style="padding: 10px;">Descuento</th>
-                            <th style="padding: 10px;">Stock</th>
-                            <th style="padding: 10px;">Imagen</th>
-                            <th style="padding: 10px;">Acciones</th>
+                            <th style="padding: 10px; text-align: left;">ID</th>
+                            <th style="padding: 10px; text-align: left;">Nombre</th>
+                            <th style="padding: 10px; text-align: left;">Categorías</th>
+                            <th style="padding: 10px; text-align: left;">Estado</th>
+                            <th style="padding: 10px; text-align: left;">Precio</th>
+                            <th style="padding: 10px; text-align: left;">Descuento</th>
+                            <th style="padding: 10px; text-align: left;">Stock</th>
+                            <th style="padding: 10px; text-align: left;">Imagen</th>
+                            <th style="padding: 10px; text-align: center;">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="ProductosList"></tbody>
+                    <tbody id="ProductosList" style="background: #fff;">
+                    </tbody>
                 </table>
             </div>
         </div>
