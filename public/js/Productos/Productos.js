@@ -9,14 +9,29 @@ function fetchProductos() {
     .then(data => {
       const tableBody = document.getElementById('ProductosList');
       if (!tableBody) return;
-
-      tableBody.innerHTML = ''; // Limpiar tabla
-      data.forEach(P => {
+      tableBody.innerHTML = '';
+      
+      // Procesar cada producto de forma asíncrona
+      data.forEach(async P => {
         const row = document.createElement('tr');
+        let CategoriasNombres = 'Sin categorías';
+        try {
+          if (P.id) {
+            CategoriasNombres = []
+            categorias = await getCategories(P.id);
+            categorias.forEach(async c => {
+               CategoriasNombres.push(c.nombre);
+            })
+          }
+        } catch (error) {
+          console.error(`Error al obtener categorías para producto ${P.id}:`, error);
+          CategoriasNombres = 'Error al cargar';
+        }
+        
         row.innerHTML = `
           <td>${P.id}</td>
           <td>${P.nombre}</td>
-          <td>${P.categorias}</td>
+          <td>${CategoriasNombres}</td>
           <td>${P.estado}</td>
           <td>$${P.precio}</td>
           <td>${P.descuento}%</td>
@@ -133,7 +148,24 @@ function editProducto(id) {
       console.error('❌ Error al editar producto:', error.message);
     });
 }
-
+function getCategories(id_Producto){
+    const CategoriaURL = "http://localhost:3000/api/Productos/" + id_Producto + "/categorias";
+    
+    return fetch(CategoriaURL)
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Error en la petición: ' + res.status);
+            }
+            return res.json();
+        })
+        .then(data => {
+            return data;
+        })
+        .catch(error => {
+            console.error('Error al obtener categorías:', error);
+            throw error;
+        });
+}
 
 function deleteProducto(id) {
   if (confirm('¿Eliminar este producto?')) {
@@ -145,6 +177,7 @@ function deleteProducto(id) {
       })
       .catch(error => console.error('❌ Error al eliminar producto:', error));
   }
+
 }
 
 function logout() {
