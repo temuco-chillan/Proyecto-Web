@@ -1,26 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>revision de productos user </title>
+    <title>Super Tienda - Ofertas de la Semana</title>
     <link rel="stylesheet" href="../css/user.css">
+    <!-- Font Awesome para iconos (opcional) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Visualizacion usuario<br> de los productos</h1>
-    <section>
-        <table id="tabla">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>nombre</th>
-                    <th>cantidad</th>
-                    <th>proveedor</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </section>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <!-- Logo -->
+            <div class="logo">Super Tienda</div>
+
+            <!-- Navigation -->
+            <nav class="navigation">
+                <a href="#" class="nav-link active">Inicio</a>
+                <a href="#" class="nav-link">Productos</a>
+                <a href="#" class="nav-link">Nosotros</a>
+            </nav>
+
+            <!-- User Actions -->
+            <div class="user-actions">
+                <button class="icon-button" id="user-btn">
+                    <i class="fas fa-user"></i>
+                </button>
+                <button class="icon-button" id="cart-btn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <!-- JS: Aquí puedes agregar un contador de items -->
+                    <span class="cart-count" id="cart-count" style="display: none;">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Section Title -->
+        <h1 class="section-title">¡Nuestros Productos!</h1>
+
+        <!-- Categories Container -->
+        <div id="categories-container">
+            <!-- Las categorías se cargarán aquí dinámicamente -->
+        </div>
+
+        <!-- Loading indicator -->
+        <div class="loading" id="loading" style="display: none;">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Cargando productos...</p>
+        </div>
+
+        <!-- Error message -->
+        <div class="error-message" id="error-message" style="display: none;">
+            <p>Error al cargar los productos. <button onclick="loadProductsAndCategories()">Reintentar</button></p>
+        </div>
+    </main>
+    <script src="../js/index_user.js"></script>
 </body>
-<script src="../js/user.js"></script>
 </html>
