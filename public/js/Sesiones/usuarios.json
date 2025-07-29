@@ -22,5 +22,14 @@
     "estado": "activo",
     "rol_id": 2,
     "creado_en": "2025-07-15T15:32:06.754Z"
+  },
+  {
+    "id": 4,
+    "username": "igado",
+    "email": "hidalgoraul349@gmail.com",
+    "password": "123",
+    "estado": "activo",
+    "rol_id": 2,
+    "creado_en": "2025-07-29T17:16:04.572Z"
   }
 ]

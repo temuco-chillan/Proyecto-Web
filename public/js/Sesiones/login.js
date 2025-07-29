@@ -18,8 +18,8 @@ document.getElementById('loginForm').addEventListener('submit', async function (
             message.style.color = 'green';
             message.textContent = result.message || 'Login exitoso';
 
-            // Guardar usuario logueado en localStorage
-            localStorage.setItem('loggedUser', JSON.stringify(result.user));
+            // Cambiar 'loggedUser' por 'currentUser'
+            localStorage.setItem('currentUser', JSON.stringify(result.user));
 
             // Redirigir a página principal
             window.location.href = 'index.html';

@@ -3,172 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administrador</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/carrito.css">
-    <meta http-equiv="refresh" href="login.html">
+    <title>Super Tienda - Ofertas de la Semana</title>
+    <!-- You would link your CSS file here, e.g., <link rel="stylesheet" href="style.css"> -->
+    <link rel="stylesheet" href="../css/user.css">
+    <!-- For Font Awesome icons, ensure you include this CDN link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header style="background: #333; color: #fff; padding: 32px 0 24px 0; text-align: center;">
-        <h1 style="margin: 0; font-size: 2.8rem; font-weight: 700; letter-spacing: 1px;">PANEL DE ADMINISTRADOR</h1>
-        <button onclick="logout()" class="btn" style="position: absolute; top: 32px; left: 32px;">Cerrar sesión</button>
-        <div style="position: absolute; top: 32px; right: 32px;">
-            <div class="carrito-container">
-                <div class="carrito-icono" onclick="toggleCarrito()" style="font-size: 2em; cursor: pointer; color: #e50914;">🛒</div>
-                <div id="CarroContainer" class="carrito-dropdown oculto" style="position: absolute; top: 100%; right: 0; background: #fff; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1000; width: 400px; max-width: 90vw;">
-                    <table id="carritoTabla" style="width: 100%; border-collapse: collapse;">
-                        <thead>
-                            <tr>
-                                <th>Cantidad</th>
-                                <th>Nombre Producto</th>
-                                <th>Total</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="carritoList"></tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="4" id="totalCarrito" style="text-align: left; font-weight: bold; display: flex; position: relative;"></td>
-                                <td><button onclick="pagarCarrito()" class="btn btn-pago">Mercado Pago</button></td>
-                            </tr>
-                        </tfoot>
-                    </table>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <!-- Logo -->
+            <div class="logo">Super Tienda</div>
+            <!-- Navigation -->
+            <nav class="navigation">
+                <a href="index.html" class="nav-link active">Inicio</a>
+                <a href="#" class="nav-link">Productos</a>
+                <a href="#" class="nav-link">Nosotros</a>
+            </nav>
+            <!-- User Actions -->
+            <div class="user-actions">
+                <button class="icon-button" id="user-btn">
+                    <i class="fas fa-user"></i>
+                </button>
+                <button class="icon-button" id="cart-btn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cart-count">0</span>
+                </button>
+
+                <!-- User Dropdown -->
+                <div class="user-dropdown" id="user-dropdown">
+                    <!-- Cuando NO hay sesión activa -->
+                    <div class="dropdown-content" id="dropdown-guest">
+                        <div class="dropdown-header">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Mi Cuenta</span>
+                        </div>
+                        <div class="dropdown-actions">
+                            <button class="dropdown-button primary" id="login-btn">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Iniciar Sesión
+                            </button>
+                            <button class="dropdown-button secondary" id="register-btn">
+                                <i class="fas fa-user-plus"></i>
+                                Registrarse
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cuando SÍ hay sesión activa -->
+                    <div class="dropdown-content hidden" id="dropdown-user">
+                        <div class="dropdown-header">
+                            <i class="fas fa-user-circle"></i>
+                            <div class="user-info">
+                                <span class="user-name" id="dropdown-user-name">Juan Pérez</span>
+                                <span class="user-email" id="dropdown-user-email">juan@email.com</span>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-actions">
+                            <button class="dropdown-button" id="profile-btn">
+                                <i class="fas fa-user-cog"></i>
+                                Mi Perfil
+                            </button>
+                            <button class="dropdown-button" id="orders-btn">
+                                <i class="fas fa-shopping-bag"></i>
+                                Mis Pedidos
+                            </button>
+                            <button class="dropdown-button" id="wishlist-btn">
+                                <i class="fas fa-heart"></i>
+                                Lista de Deseos
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-button logout" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Cerrar Sesión
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
-    <main style="background: #fff; min-height: 100vh; padding: 0;">
-        <div style="max-width: 100%; margin: 0 auto; padding: 40px 32px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                <h2 style="font-size: 2rem; font-weight: bold; margin: 0;">Lista de Productos</h2>
-                <button id="btnMostrarFormulario" style="background: #e50914; color: #fff; border: none; border-radius: 6px; padding: 12px 28px; font-size: 1rem; font-weight: 600; cursor: pointer;">Crear Producto</button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Section Title -->
+        <h1 class="section-title">¡Nuestros Productos!</h1>
+
+        <!-- Categories Container -->
+        <div class="category-section">
+            <div class="category-header">
+                <h2 class="category-title">Nuevos Productos</h2>
+                <div class="carousel-controls">
+                    <button class="carousel-button" id="prev-btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="carousel-button" id="next-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
             </div>
-            <div style="display: flex; align-items: flex-start; gap: 24px; margin-bottom: 24px;">
-                <form id="formCategoria" style="display: flex; gap: 8px; margin: 0;">
-                    <input type="text" id="nombreCategoria" placeholder="Nombre de la categoría" required style="padding: 8px;">
-                    <button type="submit" style="padding: 8px 16px;">Crear categoría</button>
-                </form>
-                <p id="mensajeCategoria" style="margin: 0; align-self: center;"></p>
-            </div>
-            <div class="form-container" id="formularioProducto" style="display: none; margin-bottom: 32px; background: #f5f5f5; padding: 24px; border-radius: 8px; width: 100%;">
-                <h2 style="font-size: 2rem; font-weight: bold; margin: 0 0 24px 0;">Agregar / Actualizar Producto</h2>
-                <form id="ProductosForm">
-                    <input type="hidden" id="productoId" />
-                    <div style="display: flex; gap: 32px; align-items: flex-start;">
-                        <div style="flex: 2; min-width: 0;">
-                            <div style="margin-bottom: 16px;">
-                                <label style="display: block; margin-bottom: 4px; font-weight: 600;">Nombre</label>
-                                <input type="text" id="productoName" placeholder="Nombre del Producto" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                            </div>
-                            <div style="margin-bottom: 16px;">
-                                <label style="display: block; margin-bottom: 4px; font-weight: 600;">Precio</label>
-                                <input type="number" id="productoPrice" placeholder="Precio" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                            </div>
-                            <div style="margin-bottom: 16px;">
-                                <label style="display: block; margin-bottom: 4px; font-weight: 600;">Stock</label>
-                                <input type="number" id="productoStock" placeholder="Stock" min="0" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                            </div>
-                        </div>
-                        <div style="flex: 2; min-width: 0;">
-                            <div style="margin-bottom: 16px;">
-                                <label style="display: block; margin-bottom: 4px; font-weight: 600;">Categoría</label>
-                                <select id="productoCategorias" multiple style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></select>
-                                <input id="nuevaCategoriaInput" style="display:none; width: 100%; margin-top: 8px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" placeholder="Nueva categoría" />
-                                <button id="crearCategoriaBtn" style="display:none; margin-top: 8px;">Crear</button>
-                            </div>
-                            <div style="margin-bottom: 16px;">
-                                <label style="display: block; margin-bottom: 4px; font-weight: 600;">Estado</label>
-                                <select id="productoState" name="estado" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                                    <option value="">-- Selecciona un estado --</option>
-                                    <option value="activo">activo</option>
-                                    <option value="inactivo">inactivo</option>
-                                    <option value="mantenimiento">mantenimiento</option>
-                                </select>
-                            </div>
-                            <div style="margin-bottom: 16px;">
-                                <label style="display: block; margin-bottom: 4px; font-weight: 600;">Descuento (%)</label>
-                                <input type="number" id="productoDescuento" placeholder="Descuento (%)" min="0" max="100" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                            </div>
-                        </div>
-                        <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; align-items: center;">
-                            <label style="display: block; margin-bottom: 4px; font-weight: 600;">Imagen</label>
-                            <div style="width: 120px; height: 120px; border: 2px dashed #ddd; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fafafa; cursor: pointer;" onclick="document.getElementById('productoImagen').click()">
-                                <div style="font-size: 1.5em; color: #666;">📄</div>
-                                <div style="font-size: 0.7em; color: #666; text-align: center; margin-top: 4px;">Haz clic para subir imagen</div>
-                            </div>
-                            <input type="text" id="productoImagen" placeholder="URL de la imagen" style="width: 100%; margin-top: 8px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                        </div>
+
+            <div class="products-grid" id="products-grid">
+                <!-- Example Product Cards (these would typically be loaded dynamically with JS) -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="/placeholder.svg?height=200&width=150" alt="Wireless Bluetooth Headphones">
                     </div>
-                    <div style="display: flex; gap: 12px; margin-top: 24px;">
-                        <button type="submit" class="btn" id="submitBtn" style="background: #e50914; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; font-weight: 600; cursor: pointer;">Crear Producto</button>
-                        <button type="button" id="btnCancelar" style="background: #888; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1rem; font-weight: 600; cursor: pointer;">Cancelar</button>
+                    <h3 class="product-name">Wireless Bluetooth Headphones</h3>
+                    <div class="product-pricing">
+                        <span class="current-price">$59.99</span>
+                        <span class="original-price">$79.99</span>
                     </div>
-                </form>
-            </div>
-            <div class="table-container" style="width: 100%; overflow-x: auto;">
-                <table id="ProductosTable" style="width: 100%; border-collapse: collapse; font-size: 1rem; min-width: 100%;">
-                    <thead style="background: #222; color: #fff;">
-                        <tr>
-                            <th style="padding: 10px; text-align: left;">ID</th>
-                            <th style="padding: 10px; text-align: left;">Nombre</th>
-                            <th style="padding: 10px; text-align: left;">Categorías</th>
-                            <th style="padding: 10px; text-align: left;">Estado</th>
-                            <th style="padding: 10px; text-align: left;">Precio</th>
-                            <th style="padding: 10px; text-align: left;">Descuento</th>
-                            <th style="padding: 10px; text-align: left;">Stock</th>
-                            <th style="padding: 10px; text-align: left;">Imagen</th>
-                            <th style="padding: 10px; text-align: center;">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ProductosList" style="background: #fff;">
-                    </tbody>
-                </table>
+                    <button class="add-button">Add to Cart</button>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="/placeholder.svg?height=200&width=150" alt="Smartwatch with Heart Rate Monitor">
+                    </div>
+                    <h3 class="product-name">Smartwatch with Heart Rate Monitor</h3>
+                    <div class="product-pricing">
+                        <span class="current-price">$129.99</span>
+                    </div>
+                    <button class="add-button">Add to Cart</button>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="/placeholder.svg?height=200&width=150" alt="Portable Bluetooth Speaker">
+                    </div>
+                    <h3 class="product-name">Portable Bluetooth Speaker</h3>
+                    <div class="product-pricing">
+                        <span class="current-price">$34.50</span>
+                        <span class="original-price">$45.00</span>
+                    </div>
+                    <button class="add-button">Add to Cart</button>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="/placeholder.svg?height=200&width=150" alt="4K Ultra HD Smart TV">
+                    </div>
+                    <h3 class="product-name">4K Ultra HD Smart TV</h3>
+                    <div class="product-pricing">
+                        <span class="current-price">$499.00</span>
+                        <span class="original-price">$600.00</span>
+                    </div>
+                    <button class="add-button">Add to Cart</button>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="/placeholder.svg?height=200&width=150" alt="Ergonomic Office Chair">
+                    </div>
+                    <h3 class="product-name">Ergonomic Office Chair</h3>
+                    <div class="product-pricing">
+                        <span class="current-price">$189.99</span>
+                    </div>
+                    <button class="add-button">Add to Cart</button>
+                </div>
             </div>
         </div>
     </main>
-    <script>
-        function toggleCarrito() {
-            const carrito = document.getElementById('CarroContainer');
-            carrito.classList.toggle('oculto');
-        }
-        document.addEventListener('click', function (event) {
-            const carrito = document.getElementById('CarroContainer');
-            const icono = document.querySelector('.carrito-icono');
-            const contenedor = document.querySelector('.carrito-container');
-            if (!contenedor.contains(event.target)) {
-                carrito.classList.add('oculto');
-            }
-        });
-        document.getElementById('btnMostrarFormulario').addEventListener('click', function() {
-            document.getElementById('formularioProducto').style.display = 'block';
-            document.getElementById('ProductosForm').reset();
-            document.getElementById('productoId').value = '';
-            document.getElementById('submitBtn').innerText = 'Agregar Producto';
-        });
 
-        document.getElementById('btnCancelar').addEventListener('click', function() {
-            document.getElementById('formularioProducto').style.display = 'none';
-            document.getElementById('ProductosForm').reset();
-            document.getElementById('productoId').value = '';
-            document.getElementById('submitBtn').innerText = 'Agregar Producto';
-        });
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Carrito de Compras</h3>
+            <button class="close-cart" id="close-cart">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-content" id="cart-content">
+            <div class="empty-cart" id="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Tu carrito está vacío</p>
+            </div>
+            <!-- Cart items would be dynamically added here -->
+            <!-- Example Cart Item (hidden by default) -->
+            <!--
+            <div class="cart-item hidden">
+                <img src="/placeholder.svg?height=60&width=60" alt="Product Name" class="cart-item-image">
+                <div class="cart-item-details">
+                    <h4 class="cart-item-name">Example Product</h4>
+                    <p class="cart-item-price">$19.99</p>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn">-</button>
+                        <span class="quantity">1</span>
+                        <button class="quantity-btn">+</button>
+                        <button class="remove-item">Remove</button>
+                    </div>
+                </div>
+            </div>
+            -->
+        </div>
+        <div class="cart-footer" id="cart-footer" style="display: none;">
+            <div class="cart-total">
+                <strong>Total: $<span id="cart-total">0</span></strong>
+            </div>
+            <button class="checkout-button">Proceder al Pago</button>
+        </div>
+    </div>
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('ProductosForm');
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    setTimeout(() => {
-                        document.getElementById('formularioProducto').style.display = 'none';
-                        document.getElementById('ProductosForm').reset();
-                        document.getElementById('productoId').value = '';
-                        document.getElementById('submitBtn').innerText = 'Agregar Producto';
-                    }, 1000);
-                });
-            }
-        });
-    </script>
-    <script src="../js/Categorias/Categorias.js"></script>
-    <script src="../js/Productos/Productos.js"></script>
-    <script src="../js/Carrito/carrito.js"></script>
+    <!-- Dropdown Overlay -->
+    <div class="dropdown-overlay" id="dropdown-overlay"></div>
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <span id="notification-message"></span>
+    </div>
+
+    <script src="../js/index_user.js"></script> 
 </body>
 </html>
