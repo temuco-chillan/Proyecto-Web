@@ -12,7 +12,7 @@ const { Categoria } = require('../public/js/Models');
 const historial = require('../public/js/Historial/service');
 
 const { title } = require('process');
-
+const nTunel="548200159a34";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -289,9 +289,8 @@ app.delete('/api/Productos/:id/categorias/:categoriaId', async (req, res) => {
 // configuramos el access token
 mercadopago.configure({
     //configuracion de usuario vendedor en mercado libre de prueba.
-    access_token: "APP_USR-5491912017954458-071117-bb82d2bc034b99dfd56644e4caf03e1a-2549815434" 
+    access_token: "APP_USR-5491912017954458-071117-bb82d2bc034b99dfd56644e4caf03e1a-2549815434"
 });
-//metodo post para la creacion del pago
 app.post('/api/pago', async (req, res) => {
     const { usuario_id } = req.body;
     //validara el id del usuario
@@ -313,13 +312,17 @@ app.post('/api/pago', async (req, res) => {
                 unit_price: parseFloat(item.precio),
                 currency_id: "CLP"
             })),
+            // --- ¡IMPORTANTE! Aquí se actualizan las URLs para usar ngrok ---
             back_urls: {
-                success: "http://localhost:3000/api/pago-exitoso",
-                failure: "http://localhost:3000/api/pago-fallido",
-                pending: "http://localhost:3000/api/pago-pendiente"
+                success: "https://548200159a34.ngrok-free.app/api/pago-exitoso",
+                failure: "https://df7b8b359ee8.ngrok-free.app/api/pago-fallido",
+                pending: "https://df7b8b359ee8.ngrok-free.app/api/pago-pendiente"
             },
-            //auto_return: "approved"
+            external_reference: String(usuario_id),
+            auto_return: "approved" // <- debe ir acompañado de un success definido
         };
+
+
         const response = await mercadopago.preferences.create(preference);
         res.json({ init_point: response.body.init_point });
 
@@ -328,8 +331,41 @@ app.post('/api/pago', async (req, res) => {
         res.status(500).json({ error: 'Error al crear la preferencia de pago' });
     }
 });
-app.get('/api/pago-exitoso', (req,res) => res.send("pago hecho"));
+app.get('/api/pago-exitoso', async (req, res) => {
+    const usuario_id = req.query.external_reference;
+    const payment_id = req.query.payment_id;
 
+    if (!usuario_id) {
+        return res.status(400).send("No se pudo identificar al usuario.");
+    }
+
+    try {
+        const user = await sesiones.getUserById(usuario_id);
+        const items = await carrito.getCarrito(usuario_id);
+
+        if (!user || !items || items.length === 0) {
+            return res.status(404).send("Datos no encontrados.");
+        }
+
+        // Opcional: guardar venta en historial aquí si quieres automatizarlo
+
+        // Muestra en JSON o crea una vista si prefieres HTML
+        res.json({
+            mensaje: "¡Pago exitoso!",
+            usuario: user.username,
+            productos: items.map(item => ({
+                nombre: item.nombre,
+                cantidad: item.cantidad
+            })),
+            payment_id
+        });
+
+        // Vaciar carrito y guardar en historial podría ir aquí también si lo deseas
+    } catch (error) {
+        console.error("Error en pago-exitoso:", error);
+        res.status(500).send("Error al procesar el pago exitoso.");
+    }
+});
 ////////////////////////
 // INICIAR SERVIDOR
 ////////////////////////
