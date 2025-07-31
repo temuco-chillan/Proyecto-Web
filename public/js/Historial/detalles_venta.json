@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "venta_id": 1,
+    "producto_id": 4,
+    "cantidad": 2,
+    "descuento_aplicado": 0
+  },
+  {
+    "id": 2,
+    "venta_id": 2,
+    "producto_id": 4,
+    "cantidad": 2,
+    "descuento_aplicado": 0
+  }
+]

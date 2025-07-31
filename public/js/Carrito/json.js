@@ -118,8 +118,18 @@ function eliminarDelCarrito(usuario_id, producto_id) {
 }
 
 function vaciarCarrito(usuario_id) {
-  const data = readCarrito().filter(p => p.usuario_id !== usuario_id);
+  // Convertimos el usuario_id a número para asegurar la comparación correcta.
+  const idNumerico = Number(usuario_id);
+
+  // Filtramos todos los carritos y creamos una nueva lista
+  // que CONTIENE SOLAMENTE los carritos de los demás usuarios.
+  // Es decir, estamos eliminando todos los que coinciden con idNumerico.
+  const data = readCarrito().filter(p => p.usuario_id !== idNumerico);
+  
+  // Guardamos la nueva lista (sin los productos del usuario actual) en el archivo.
   writeCarrito(data);
+  
+  // Devolvemos una promesa resuelta para que el flujo asíncrono continúe.
   return Promise.resolve();
 }
 

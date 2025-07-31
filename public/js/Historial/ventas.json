@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "usuario_id": "2",
+    "fecha_venta": {},
+    "total": null,
+    "estado": "completada"
+  },
+  {
+    "id": 2,
+    "usuario_id": "2",
+    "fecha_venta": {},
+    "total": null,
+    "estado": "completada"
+  }
+]

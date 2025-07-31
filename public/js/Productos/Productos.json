@@ -1,22 +1,5 @@
 [
   {
-    "nombre": "elpepe",
-    "estado": "activo",
-    "precio": 800,
-    "descuento": 0,
-    "stock": 0,
-    "imagen_url": "https://cdnx.jumpseller.com/oym-agencia/image/50842405/618610425_-_SECADORA_VENTILACION_UT_G8K-15P_5.jpg?1721313080",
-    "categorias": [
-      1,
-      2,
-      3,
-      4,
-      5
-    ],
-    "id": 1,
-    "fecha_add": "2025-07-05T17:23:39.831Z"
-  },
-  {
     "nombre": "laptop",
     "estado": "inactivo",
     "precio": 8000,
@@ -60,5 +43,16 @@
     "imagen_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZUenKaElT7zaQqYRLvAdEWssgfscwqjM4BA&s",
     "estado": "activo",
     "fecha_add": "2025-07-15T16:11:46.491Z"
+  },
+  {
+    "id": 5,
+    "nombre": "testaron",
+    "descripcion": null,
+    "precio": 5000,
+    "descuento": 0,
+    "stock": 3,
+    "imagen_url": "https://concepto.de/wp-content/uploads/2019/03/hongo-comun-e1553277024490.jpg",
+    "estado": "activo",
+    "fecha_add": "2025-07-31T00:26:15.429Z"
   }
 ]
