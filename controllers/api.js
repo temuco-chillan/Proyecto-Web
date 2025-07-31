@@ -12,7 +12,7 @@ const { Categoria } = require('../public/js/Models');
 const historial = require('../public/js/Historial/service');
 
 const { title } = require('process');
-const nTunel="548200159a34";
+const nTunel = "548200159a34";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -314,7 +314,7 @@ app.post('/api/pago', async (req, res) => {
             })),
             // --- ¡IMPORTANTE! Aquí se actualizan las URLs para usar ngrok ---
             back_urls: {
-                success: "https://548200159a34.ngrok-free.app/api/pago-exitoso",
+                success: "https://b5a15da1e304.ngrok-free.app/api/pago-exitoso",
                 failure: "https://df7b8b359ee8.ngrok-free.app/api/pago-fallido",
                 pending: "https://df7b8b359ee8.ngrok-free.app/api/pago-pendiente"
             },
@@ -346,10 +346,9 @@ app.get('/api/pago-exitoso', async (req, res) => {
         if (!user || !items || items.length === 0) {
             return res.status(404).send("Datos no encontrados.");
         }
-
-        // Opcional: guardar venta en historial aquí si quieres automatizarlo
-
-        // Muestra en JSON o crea una vista si prefieres HTML
+        // 🧹 Vaciar el carrito (esto llama al fallback si no hay BD)
+        await carrito.vaciarCarrito(usuario_id);
+        // Respuesta JSON de éxito
         res.json({
             mensaje: "¡Pago exitoso!",
             usuario: user.username,
@@ -360,12 +359,13 @@ app.get('/api/pago-exitoso', async (req, res) => {
             payment_id
         });
 
-        // Vaciar carrito y guardar en historial podría ir aquí también si lo deseas
     } catch (error) {
         console.error("Error en pago-exitoso:", error);
         res.status(500).send("Error al procesar el pago exitoso.");
     }
 });
+
+
 ////////////////////////
 // INICIAR SERVIDOR
 ////////////////////////
