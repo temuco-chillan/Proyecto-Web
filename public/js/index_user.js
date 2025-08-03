@@ -422,11 +422,16 @@ function setupEventListeners() {
         });
     }
     
+    // ...
+    // Botón de pedidos
     const ordersBtn = document.getElementById('orders-btn');
     if (ordersBtn) {
-        ordersBtn.addEventListener('click', () => {
-            showNotification('Función Mis Pedidos en desarrollo', 'info');
-            closeUserDropdown();
+        ordersBtn.addEventListener('click', function() {
+            if (currentUser) {
+                window.location.href = 'historial.html';
+            } else {
+                showNotification('Debes iniciar sesión para ver tu historial', 'warning');
+            }
         });
     }
     
