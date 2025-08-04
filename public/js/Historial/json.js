@@ -123,16 +123,18 @@ async function getHistorial(usuario_id) {
   }));
 }
 
-async function crearVenta(usuario_id, detalles) {
+async function crearVenta(usuario_id, detalles, payment_id = null) {
   const ventas = readVentas();
   const detallesVenta = readDetalles();
 
   const total = detalles.reduce((sum, d) => 
-    sum + (d.cantidad * d.precio_unitario * (1 - d.descuento_aplicado/100)), 0);
+    sum + (d.cantidad * d.precio_unitario * (1 - (d.descuento_aplicado || 0)/100)), 0);
 
   const nuevaVenta = generateDefaultVentaData({
-    usuario_id,
+    usuario_id: parseInt(usuario_id),
+    fecha_venta: new Date().toISOString(),
     total,
+    payment_id: payment_id || 'manual',
     estado: 'completada'
   });
 

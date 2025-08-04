@@ -33,6 +33,7 @@ async function getHistorial(usuario_id) {
     id: venta.id,
     fecha: venta.fecha_venta,
     total: venta.total,
+    payment_id: venta.payment_id,
     estado: venta.estado,
     detalles: venta.DetalleVentas.map(detalle => ({
       producto: detalle.Producto.nombre,
@@ -45,22 +46,31 @@ async function getHistorial(usuario_id) {
 }
 
 // Crear nueva venta
-async function crearVenta(usuario_id, detalles) {
-  if (useFallback) return jsonFallback.crearVenta(usuario_id, detalles);
+async function crearVenta(usuario_id, detalles, payment_id = null) {
+  if (useFallback) return jsonFallback.crearVenta(parseInt(usuario_id), detalles, payment_id);
 
   const total = detalles.reduce((sum, d) => 
-    sum + (d.cantidad * d.precio_unitario * (1 - d.descuento_aplicado/100)), 0);
+    sum + (d.cantidad * d.precio_unitario * (1 - (d.descuento_aplicado || 0)/100)), 0);
 
   const venta = await Venta.create({
-    usuario_id,
+    usuario_id: parseInt(usuario_id),
+    fecha_venta: new Date(),
     total,
+    payment_id: payment_id || 'manual',
     estado: 'completada'
   });
 
-  await DetalleVenta.bulkCreate(detalles.map(d => ({
+  // Asegurar que todos los detalles tengan los campos necesarios
+  const detallesCompletos = detalles.map(d => ({
     venta_id: venta.id,
-    ...d
-  })));
+    producto_id: d.producto_id,
+    cantidad: d.cantidad,
+    precio_unitario: d.precio_unitario,
+    descuento_aplicado: d.descuento_aplicado || 0,
+    subtotal: d.subtotal || (d.cantidad * d.precio_unitario * (1 - (d.descuento_aplicado || 0)/100))
+  }));
+
+  await DetalleVenta.bulkCreate(detallesCompletos);
 
   return venta.id;
 }

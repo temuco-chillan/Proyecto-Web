@@ -1,14 +1,14 @@
 [
   {
     "id": 1,
-    "usuario_id": 2,
+    "usuario_id": "2",
     "fecha_venta": "2024-01-15T10:30:00.000Z",
     "total": 25990,
     "estado": "completada"
   },
   {
     "id": 2,
-    "usuario_id": 2,
+    "usuario_id": "2",
     "fecha_venta": "2024-01-20T14:45:00.000Z",
     "total": 35990,
     "estado": "completada"

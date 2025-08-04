@@ -8,6 +8,7 @@ class Venta extends Model {
       usuario_id: this.usuario_id,
       fecha_venta: this.fecha_venta,
       total: this.total,
+      payment_id: this.payment_id,
       estado: this.estado
     };
   }
@@ -16,6 +17,7 @@ class Venta extends Model {
     return Venta.build({
       usuario_id: json.usuario_id,
       total: json.total,
+      payment_id: json.payment_id,
       estado: json.estado || 'completada'
     });
   }
@@ -36,6 +38,10 @@ Venta.init({
   },
   total: {
     type: DataTypes.DECIMAL(10, 2),
+    allowNull: false
+  },
+  payment_id: {
+    type: DataTypes.STRING,
     allowNull: false
   },
   estado: {

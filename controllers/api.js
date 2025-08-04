@@ -332,11 +332,15 @@ app.post('/api/pago', async (req, res) => {
     }
 });
 app.get('/api/pago-exitoso', async (req, res) => {
-    const usuario_id = req.query.external_reference;
+    const usuario_id = parseInt(req.query.external_reference); // Convertir a entero
     const payment_id = req.query.payment_id;
 
-    if (!usuario_id) {
-        return res.status(400).send("No se pudo identificar al usuario.");
+    if (!usuario_id || isNaN(usuario_id)) {
+        return res.status(400).send("No se pudo identificar al usuario o ID inválido.");
+    }
+
+    if (!payment_id) {
+        return res.status(400).send("No se pudo identificar el payment_id.");
     }
 
     try {
@@ -353,24 +357,29 @@ app.get('/api/pago-exitoso', async (req, res) => {
             nombre: item.nombre,
             cantidad: parseInt(item.cantidad),
             precio_unitario: parseFloat(item.precio),
-            subtotal: parseFloat(item.precio) * parseInt(item.cantidad)
+            descuento_aplicado: item.descuento || 0,
+            subtotal: parseFloat(item.precio) * parseInt(item.cantidad) * (1 - (item.descuento || 0)/100)
         }));
 
-        const ventaId = await historial.crearVenta(usuario_id, detallesVenta);
+        // Pasar el payment_id al crear la venta
+        const ventaId = await historial.crearVenta(usuario_id, detallesVenta, payment_id);
         
         // 🧹 Vaciar el carrito después de registrar la venta
         await carrito.vaciarCarrito(usuario_id);
         
-        // Respuesta JSON de éxito
         res.json({
             mensaje: "¡Pago exitoso!",
             usuario: user.username,
+            usuario_id: usuario_id,
+            payment_id: payment_id,
+            venta_id: ventaId,
+            total: detallesVenta.reduce((sum, item) => sum + item.subtotal, 0),
             productos: items.map(item => ({
                 nombre: item.nombre,
-                cantidad: item.cantidad
-            })),
-            payment_id,
-            venta_id: ventaId // Incluir el ID de la venta registrada
+                cantidad: item.cantidad,
+                precio_unitario: item.precio,
+                subtotal: parseFloat(item.precio) * parseInt(item.cantidad)
+            }))
         });
 
     } catch (error) {
