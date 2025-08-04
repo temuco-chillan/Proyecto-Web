@@ -346,8 +346,21 @@ app.get('/api/pago-exitoso', async (req, res) => {
         if (!user || !items || items.length === 0) {
             return res.status(404).send("Datos no encontrados.");
         }
-        // 🧹 Vaciar el carrito (esto llama al fallback si no hay BD)
+
+        // 📝 Registrar la venta en el historial ANTES de vaciar el carrito
+        const detallesVenta = items.map(item => ({
+            producto_id: item.producto_id,
+            nombre: item.nombre,
+            cantidad: parseInt(item.cantidad),
+            precio_unitario: parseFloat(item.precio),
+            subtotal: parseFloat(item.precio) * parseInt(item.cantidad)
+        }));
+
+        const ventaId = await historial.crearVenta(usuario_id, detallesVenta);
+        
+        // 🧹 Vaciar el carrito después de registrar la venta
         await carrito.vaciarCarrito(usuario_id);
+        
         // Respuesta JSON de éxito
         res.json({
             mensaje: "¡Pago exitoso!",
@@ -356,7 +369,8 @@ app.get('/api/pago-exitoso', async (req, res) => {
                 nombre: item.nombre,
                 cantidad: item.cantidad
             })),
-            payment_id
+            payment_id,
+            venta_id: ventaId // Incluir el ID de la venta registrada
         });
 
     } catch (error) {
