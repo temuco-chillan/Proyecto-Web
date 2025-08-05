@@ -1,11 +1,5 @@
 [
   {
-    "id": 1,
-    "username": "admin",
-    "password": "123",
-    "id_rol": 1
-  },
-  {
     "id": 2,
     "username": "Admin5",
     "email": "admin3@gmail.com",
@@ -29,7 +23,7 @@
     "email": "hidalgoraul349@gmail.com",
     "password": "123",
     "estado": "activo",
-    "rol_id": 2,
+    "rol_id": 1,
     "creado_en": "2025-07-29T17:16:04.572Z"
   }
 ]

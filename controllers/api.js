@@ -314,7 +314,7 @@ app.post('/api/pago', async (req, res) => {
             })),
             // --- ¡IMPORTANTE! Aquí se actualizan las URLs para usar ngrok ---
             back_urls: {
-                success: "https://b5a15da1e304.ngrok-free.app/api/pago-exitoso",
+                success: "https://2340daac61ca.ngrok-free.app/api/pago-exitoso",
                 failure: "https://df7b8b359ee8.ngrok-free.app/api/pago-fallido",
                 pending: "https://df7b8b359ee8.ngrok-free.app/api/pago-pendiente"
             },

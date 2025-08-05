@@ -21,8 +21,14 @@ document.getElementById('loginForm').addEventListener('submit', async function (
             // Cambiar 'loggedUser' por 'currentUser'
             localStorage.setItem('currentUser', JSON.stringify(result.user));
 
-            // Redirigir a página principal
-            window.location.href = 'index.html';
+            // Redirigir según el rol del usuario
+            if (result.user.rol_id === 1) {
+                // Si el usuario es administrador, redirigimos a 'admin.html'
+                window.location.href = 'panel_admin.html'; 
+            } else {
+                // Para cualquier otro rol (usuario común), redirigimos a 'index.html'
+                window.location.href = 'index.html';
+            } 
         } else {
             message.style.color = 'red';
             message.textContent = result.message || 'Usuario o contraseña incorrectos';
