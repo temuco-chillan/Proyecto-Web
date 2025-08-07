@@ -438,3 +438,13 @@ app.put('/api/historial/:venta_id/estado', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+//ruta admin
+app.get('/api/historial', async (req, res) => {
+    try {
+        const data = await historial.getAllHistorial();
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});

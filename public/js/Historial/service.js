@@ -45,6 +45,38 @@ async function getHistorial(usuario_id) {
   }));
 }
 
+// Obtener historial de todas las ventas (para administrador)
+async function getAllHistorial() {
+  if (useFallback) return jsonFallback.getAllHistorial();
+
+  const ventas = await Venta.findAll({
+    include: [{
+      model: DetalleVenta,
+      include: [{
+        model: Producto,
+        attributes: ['nombre']
+      }]
+    }],
+    order: [['fecha_venta', 'DESC']]
+  });
+
+  return ventas.map(venta => ({
+    id: venta.id,
+    fecha: venta.fecha_venta,
+    total: venta.total,
+    payment_id: venta.payment_id,
+    estado: venta.estado,
+    usuario_id: venta.usuario_id,
+    detalles: venta.DetalleVentas.map(detalle => ({
+      producto: detalle.Producto.nombre,
+      cantidad: detalle.cantidad,
+      precio_unitario: detalle.precio_unitario,
+      descuento: detalle.descuento_aplicado,
+      subtotal: detalle.subtotal
+    }))
+  }));
+}
+
 // Crear nueva venta
 async function crearVenta(usuario_id, detalles, payment_id = null) {
   if (useFallback) return jsonFallback.crearVenta(parseInt(usuario_id), detalles, payment_id);
@@ -93,6 +125,7 @@ async function actualizarEstadoVenta(venta_id, estado) {
 
 module.exports = {
   getHistorial,
+  getAllHistorial,
   crearVenta,
   actualizarEstadoVenta
 };

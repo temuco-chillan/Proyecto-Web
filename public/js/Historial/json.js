@@ -167,8 +167,40 @@ function actualizarEstadoVenta(venta_id, estado) {
   return Promise.resolve();
 }
 
+// Agregar esta función después de getHistorial
+async function getAllHistorial() {
+  const ventas = readVentas();
+  const detalles = readDetalles();
+  const productos = await productosBackend.getProducto();
+
+  const todasLasVentas = ventas
+    .sort((a, b) => new Date(b.fecha_venta) - new Date(a.fecha_venta));
+
+  return todasLasVentas.map(venta => ({
+    id: venta.id,
+    fecha: venta.fecha_venta,
+    total: venta.total,
+    estado: venta.estado,
+    usuario_id: venta.usuario_id,
+    payment_id: venta.payment_id,
+    detalles: detalles
+      .filter(d => d.venta_id === venta.id)
+      .map(detalle => {
+        const producto = productos.find(p => p.id === detalle.producto_id);
+        return {
+          producto: producto?.nombre || 'Desconocido',
+          cantidad: detalle.cantidad,
+          precio_unitario: detalle.precio_unitario,
+          descuento: detalle.descuento_aplicado,
+          subtotal: detalle.subtotal
+        };
+      })
+  }));
+}
+
 module.exports = {
   getHistorial,
+  getAllHistorial,  // Agregar esta línea
   crearVenta,
   actualizarEstadoVenta
 };
