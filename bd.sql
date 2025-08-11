@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS ventas (
     usuario_id INT NOT NULL,
     fecha_venta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     total DECIMAL(10,2) NOT NULL,
-    payment_id INT NOT NULL,
+    payment_id VARCHAR(255) NOT NULL,
     estado ENUM('completada', 'cancelada', 'pendiente') DEFAULT 'completada',
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );

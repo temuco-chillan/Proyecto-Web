@@ -1,5 +1,6 @@
-const { Venta, DetalleVenta, Producto } = require('../Models');
+const { Venta, DetalleVenta, Producto, Usuario } = require('../Models');
 const jsonFallback = require('./json');
+const productosService = require('../Productos/service');
 
 let useFallback = false;
 
@@ -23,7 +24,7 @@ async function getHistorial(usuario_id) {
       model: DetalleVenta,
       include: [{
         model: Producto,
-        attributes: ['nombre']
+        attributes: ['id', 'nombre', 'imagen_url']  // Incluir id e imagen_url
       }]
     }],
     order: [['fecha_venta', 'DESC']]
@@ -36,7 +37,9 @@ async function getHistorial(usuario_id) {
     payment_id: venta.payment_id,
     estado: venta.estado,
     detalles: venta.DetalleVentas.map(detalle => ({
+      producto_id: detalle.Producto.id,
       producto: detalle.Producto.nombre,
+      imagen_url: detalle.Producto.imagen_url,
       cantidad: detalle.cantidad,
       precio_unitario: detalle.precio_unitario,
       descuento: detalle.descuento_aplicado,
@@ -50,13 +53,19 @@ async function getAllHistorial() {
   if (useFallback) return jsonFallback.getAllHistorial();
 
   const ventas = await Venta.findAll({
-    include: [{
-      model: DetalleVenta,
-      include: [{
-        model: Producto,
-        attributes: ['nombre']
-      }]
-    }],
+    include: [
+      {
+        model: DetalleVenta,
+        include: [{
+          model: Producto,
+          attributes: ['id', 'nombre', 'imagen_url']
+        }]
+      },
+      {
+        model: Usuario,
+        attributes: ['id', 'username']
+      }
+    ],
     order: [['fecha_venta', 'DESC']]
   });
 
@@ -67,8 +76,11 @@ async function getAllHistorial() {
     payment_id: venta.payment_id,
     estado: venta.estado,
     usuario_id: venta.usuario_id,
+    usuario_nombre: venta.Usuario ? venta.Usuario.username : `Usuario #${venta.usuario_id}`,
     detalles: venta.DetalleVentas.map(detalle => ({
+      producto_id: detalle.Producto.id,         
       producto: detalle.Producto.nombre,
+      imagen_url: detalle.Producto.imagen_url,
       cantidad: detalle.cantidad,
       precio_unitario: detalle.precio_unitario,
       descuento: detalle.descuento_aplicado,
@@ -83,6 +95,15 @@ async function crearVenta(usuario_id, detalles, payment_id = null) {
 
   const total = detalles.reduce((sum, d) => 
     sum + (d.cantidad * d.precio_unitario * (1 - (d.descuento_aplicado || 0)/100)), 0);
+
+  // Verificar y reducir stock antes de crear la venta
+  try {
+    for (const detalle of detalles) {
+      await productosService.reducirStock(detalle.producto_id, detalle.cantidad);
+    }
+  } catch (error) {
+    throw new Error(`Error al procesar stock: ${error.message}`);
+  }
 
   const venta = await Venta.create({
     usuario_id: parseInt(usuario_id),

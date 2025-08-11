@@ -101,6 +101,28 @@ async function quitarCategoriaAProducto(productoId, categoriaId) {
   return true;
 }
 
+// Nueva función para reducir stock
+async function reducirStock(producto_id, cantidad) {
+  if (useFallback) {
+    // Para el fallback JSON, necesitarías implementar la lógica en json.js
+    return jsonFallback.reducirStock(producto_id, cantidad);
+  }
+
+  const producto = await Producto.findByPk(producto_id);
+  if (!producto) {
+    throw new Error(`Producto con ID ${producto_id} no encontrado`);
+  }
+
+  if (producto.stock < cantidad) {
+    throw new Error(`Stock insuficiente para el producto ${producto.nombre}. Stock actual: ${producto.stock}, cantidad solicitada: ${cantidad}`);
+  }
+
+  const nuevoStock = producto.stock - cantidad;
+  await producto.update({ stock: nuevoStock });
+  
+  return nuevoStock;
+}
+
 // === Inicializa fallback automáticamente ===
 (async () => {
   useFallback = !(await isConnected());
@@ -118,5 +140,6 @@ module.exports = {
   getCategoriasDeProducto,
   asignarCategoriasAProducto,
   agregarCategoriaAProducto,
-  quitarCategoriaAProducto
+  quitarCategoriaAProducto,
+  reducirStock  // Agregar la nueva función
 };

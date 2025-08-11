@@ -182,13 +182,16 @@ async function getAllHistorial() {
     total: venta.total,
     estado: venta.estado,
     usuario_id: venta.usuario_id,
+    usuario_nombre: `Usuario #${venta.usuario_id}`,
     payment_id: venta.payment_id,
     detalles: detalles
       .filter(d => d.venta_id === venta.id)
       .map(detalle => {
         const producto = productos.find(p => p.id === detalle.producto_id);
         return {
+          producto_id: detalle.producto_id,
           producto: producto?.nombre || 'Desconocido',
+          imagen_url: producto?.imagen_url,
           cantidad: detalle.cantidad,
           precio_unitario: detalle.precio_unitario,
           descuento: detalle.descuento_aplicado,
