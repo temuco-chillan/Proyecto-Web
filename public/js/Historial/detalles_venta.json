@@ -16,5 +16,95 @@
     "precio_unitario": 17995,
     "descuento_aplicado": 0,
     "subtotal": 35990
+  },
+  {
+    "id": 3,
+    "venta_id": 3,
+    "producto_id": 2,
+    "cantidad": 2,
+    "precio_unitario": 1,
+    "descuento_aplicado": 0,
+    "subtotal": 2
+  },
+  {
+    "id": 4,
+    "venta_id": 4,
+    "producto_id": 2,
+    "cantidad": 1,
+    "precio_unitario": 1,
+    "descuento_aplicado": 0,
+    "subtotal": 1
+  },
+  {
+    "id": 5,
+    "venta_id": 5,
+    "producto_id": 2,
+    "cantidad": 1,
+    "precio_unitario": 1,
+    "descuento_aplicado": 0,
+    "subtotal": 1
+  },
+  {
+    "id": 6,
+    "venta_id": 6,
+    "producto_id": 2,
+    "cantidad": 1,
+    "precio_unitario": 1,
+    "descuento_aplicado": 0,
+    "subtotal": 1
+  },
+  {
+    "id": 7,
+    "venta_id": 7,
+    "producto_id": 2,
+    "cantidad": 1,
+    "precio_unitario": 1,
+    "descuento_aplicado": 0,
+    "subtotal": 1
+  },
+  {
+    "id": 8,
+    "venta_id": 8,
+    "producto_id": 2,
+    "cantidad": 1,
+    "precio_unitario": 1,
+    "descuento_aplicado": 0,
+    "subtotal": 1
+  },
+  {
+    "id": 9,
+    "venta_id": 9,
+    "producto_id": 2,
+    "cantidad": 1,
+    "precio_unitario": 1,
+    "descuento_aplicado": 0,
+    "subtotal": 1
+  },
+  {
+    "id": 10,
+    "venta_id": 10,
+    "producto_id": 3,
+    "cantidad": 1,
+    "precio_unitario": 322222,
+    "descuento_aplicado": 0,
+    "subtotal": 322222
+  },
+  {
+    "id": 11,
+    "venta_id": 11,
+    "producto_id": 2,
+    "cantidad": 2,
+    "precio_unitario": 1,
+    "descuento_aplicado": 0,
+    "subtotal": 2
+  },
+  {
+    "id": 12,
+    "venta_id": 12,
+    "producto_id": 2,
+    "cantidad": 1,
+    "precio_unitario": 1,
+    "descuento_aplicado": 0,
+    "subtotal": 1
   }
 ]

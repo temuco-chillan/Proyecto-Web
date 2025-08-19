@@ -4,7 +4,7 @@ const carritoApiUrl = window.location.hostname.includes('localhost')
 
 // Obtener cuenta activa desde localStorage
 function getAccount() {
-    const stored = localStorage.getItem('loggedUser');
+    const stored = localStorage.getItem('currentUser');
     if (!stored) {
         console.warn('No hay usuario en sesión.');
         return null;
@@ -13,7 +13,7 @@ function getAccount() {
 }
 
 // === Obtener y mostrar carrito ===
-function fetchCarrito() {
+function fetchCarritoPage() {  // ✅ RENOMBRADO
     const user = getAccount();
     if (!user) return;
 
@@ -31,8 +31,8 @@ function fetchCarrito() {
                     <td>${item.nombre || 'Desconocido'}</td>
                     <td>${item.precio ? `$${total.toFixed(2)}` : '-'}</td>
                     <td>
-                        <input type="number" min="1" value="${item.cantidad}" onchange="updateCantidad(${item.producto_id}, this.value)">
-                        <button class="btn" onclick="removeFromCarrito(${item.producto_id})">Eliminar</button>
+                        <input type="number" min="1" value="${item.cantidad}" onchange="updateCantidadPage(${item.producto_id}, this.value)">
+                        <button class="btn" onclick="removeFromCarritoPage(${item.producto_id})">Eliminar</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
@@ -45,7 +45,7 @@ function fetchCarrito() {
 }
 
 // === Agregar producto al carrito ===
-function addToCarrito(producto_id, cantidad = 1) {
+function addToCarritoPage(producto_id, cantidad = 1) {  // ✅ RENOMBRADO
     const user = getAccount();
     if (!user) return;
 
@@ -57,13 +57,13 @@ function addToCarrito(producto_id, cantidad = 1) {
         .then(res => res.json())
         .then(data => {
             alert('🛒 Producto agregado al carrito');
-            fetchCarrito();
+            fetchCarritoPage();  // ✅ ACTUALIZADO
         })
         .catch(error => console.error('❌ Error al agregar producto al carrito:', error));
 }
 
 // === Actualizar cantidad ===
-function updateCantidad(producto_id, cantidad) {
+function updateCantidadPage(producto_id, cantidad) {  // ✅ RENOMBRADO
     const user = getAccount();
     if (!user) return;
 
@@ -75,13 +75,13 @@ function updateCantidad(producto_id, cantidad) {
         .then(res => res.json())
         .then(() => {
             console.log('✅ Cantidad actualizada');
-            fetchCarrito();
+            fetchCarritoPage();  // ✅ ACTUALIZADO
         })
         .catch(error => console.error('❌ Error al actualizar cantidad:', error));
 }
 
 // === Eliminar producto del carrito ===
-function removeFromCarrito(producto_id) {
+function removeFromCarritoPage(producto_id) {  // ✅ RENOMBRADO
     const user = getAccount();
     if (!user) return;
 
@@ -95,13 +95,13 @@ function removeFromCarrito(producto_id) {
         .then(res => res.json())
         .then(() => {
             alert('🗑️ Producto eliminado del carrito');
-            fetchCarrito();
+            fetchCarritoPage();  // ✅ ACTUALIZADO
         })
         .catch(error => console.error('❌ Error al eliminar producto:', error));
 }
 
 // === Vaciar carrito completo ===
-function vaciarCarrito() {
+function vaciarCarritoPage() {  // ✅ RENOMBRADO
     const user = getAccount();
     if (!user) return;
 
@@ -113,10 +113,11 @@ function vaciarCarrito() {
         .then(res => res.json())
         .then(() => {
             alert('🧹 Carrito vaciado');
-            fetchCarrito();
+            fetchCarritoPage();  // ✅ ACTUALIZADO
         })
         .catch(error => console.error('❌ Error al vaciar carrito:', error));
 }
+
 // === Enviar carrito a backend y redirigir a Mercado Pago ===
 function pagarCarrito() {
     const user = getAccount();
@@ -139,6 +140,4 @@ function pagarCarrito() {
 }
 
 // === Cargar carrito al iniciar ===
-//matias comentario => para el que quiera obtener el carrito todo el rato sin tener que recargar la pagina no intenten
-//un while true sino se van a pitear la ram y tendran que reiniciar la pc, me paso ya ljsadnjlkdsandsalñ 
-fetchCarrito();
+fetchCarritoPage();  // ✅ ACTUALIZADO

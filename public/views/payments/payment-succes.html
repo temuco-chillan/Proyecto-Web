@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Exitoso - Super Tienda</title>
+    <link rel="stylesheet" href="../../css/payment.css">
+
+</head>
+<body>
+    <div class="min-h-screen flex-center p-4 bg-green-50">
+        <div class="result-container">
+            <div class="result-card">
+                <!-- Header con icono y título -->
+                <div class="result-header">
+                    <div class="icon-container">
+                        <div class="status-icon success-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 12l2 2 4-4"/>
+                                <circle cx="12" cy="12" r="10"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h2 class="status-title text-green-800">¡Pago Exitoso!</h2>
+                    <p class="status-subtitle text-green-600">Tu compra ha sido procesada correctamente</p>
+                </div>
+
+                <!-- Contenido -->
+                <div class="result-content">
+                    <!-- Información básica del pedido -->
+                    <div class="order-info">
+                        <div class="info-header">
+                            <div class="package-icon">📦</div>
+                            <span class="info-label">Número de Orden</span>
+                        </div>
+                        <p class="order-number">#ORD-2024-001234</p>
+                    </div>
+
+                    <!-- Detalles de la compra -->
+                    <div class="purchase-details">
+                        <h3 class="details-title">Detalles de tu compra</h3>
+                        
+                        <div class="item-list">
+                            <div class="item">
+                                <div class="item-info">
+                                    <span class="item-name">Laptop Gaming Pro</span>
+                                    <span class="item-quantity">Cantidad: 1</span>
+                                </div>
+                                <span class="item-price">$8,000.00</span>
+                            </div>
+                            <div class="item">
+                                <div class="item-info">
+                                    <span class="item-name">Secadora Industrial</span>
+                                    <span class="item-quantity">Cantidad: 1</span>
+                                </div>
+                                <span class="item-price">$322,222.00</span>
+                            </div>
+                        </div>
+
+                        <div class="total-section">
+                            <div class="total-row">
+                                <span>Subtotal:</span>
+                                <span>$330,222.00</span>
+                            </div>
+                            <div class="total-row">
+                                <span>Envío:</span>
+                                <span>$500.00</span>
+                            </div>
+                            <div class="total-row">
+                                <span>Impuestos:</span>
+                                <span>$52,835.52</span>
+                            </div>
+                            <div class="total-row total-final">
+                                <span>Total:</span>
+                                <span>$383,557.52</span>
+                            </div>
+                        </div>
+
+                        <div class="delivery-info">
+                            <h4 class="delivery-title">Información de entrega</h4>
+                            <p class="delivery-address">
+                                <strong>Dirección:</strong><br>
+                                Av. Principal 123, Col. Centro<br>
+                                Ciudad de México, CP 01000
+                            </p>
+                            <p class="delivery-date">
+                                <strong>Fecha estimada de entrega:</strong> 3-5 días hábiles
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="separator"></div>
+                    <div class="action-buttons">
+                        <a href="../index.html" class="btn btn-outline">
+                            ← Volver al inicio
+                        </a>
+                        <button class="btn btn-success flex-1" onclick="window.print()">
+                            📄 Imprimir recibo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../js/Carrito/payment-dynamic.js"></script>
+</html>

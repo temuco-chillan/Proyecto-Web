@@ -314,9 +314,9 @@ app.post('/api/pago', async (req, res) => {
             })),
             // --- ¡IMPORTANTE! Aquí se actualizan las URLs para usar ngrok ---
             back_urls: {
-                success: "https://2340daac61ca.ngrok-free.app/api/pago-exitoso",
-                failure: "https://df7b8b359ee8.ngrok-free.app/api/pago-fallido",
-                pending: "https://df7b8b359ee8.ngrok-free.app/api/pago-pendiente"
+                success: "https://d8b38ddaf62d.ngrok-free.app/api/pago-exitoso",
+                failure: "https://d8b38ddaf62d.ngrok-free.app/api/pago-fallido",
+                pending: "https://d8b38ddaf62d.ngrok-free.app/api/pago-pendiente"
             },
             external_reference: String(usuario_id),
             auto_return: "approved" // <- debe ir acompañado de un success definido
@@ -332,15 +332,15 @@ app.post('/api/pago', async (req, res) => {
     }
 });
 app.get('/api/pago-exitoso', async (req, res) => {
-    const usuario_id = parseInt(req.query.external_reference); // Convertir a entero
+    const usuario_id = parseInt(req.query.external_reference);
     const payment_id = req.query.payment_id;
 
     if (!usuario_id || isNaN(usuario_id)) {
-        return res.status(400).send("No se pudo identificar al usuario o ID inválido.");
+        return res.redirect('/payments/payment-failed.html?reason=Usuario no identificado');
     }
 
     if (!payment_id) {
-        return res.status(400).send("No se pudo identificar el payment_id.");
+        return res.redirect('/payments/payment-failed.html?reason=ID de pago no encontrado');
     }
 
     try {
@@ -348,10 +348,15 @@ app.get('/api/pago-exitoso', async (req, res) => {
         const items = await carrito.getCarrito(usuario_id);
 
         if (!user || !items || items.length === 0) {
-            return res.status(404).send("Datos no encontrados.");
+            return res.redirect('/payments/payment-failed.html?reason=Datos de compra no encontrados');
         }
 
-        // 📝 Registrar la venta en el historial ANTES de vaciar el carrito
+        // ✅ SOLO CALCULAR SUBTOTAL
+        const subtotal = items.reduce((sum, item) => sum + (parseFloat(item.precio) * parseInt(item.cantidad)), 0);
+        
+        console.log('Subtotal calculado:', subtotal);
+
+        // 📝 Registrar la venta en el historial
         const detallesVenta = items.map(item => ({
             producto_id: item.producto_id,
             nombre: item.nombre,
@@ -361,30 +366,86 @@ app.get('/api/pago-exitoso', async (req, res) => {
             subtotal: parseFloat(item.precio) * parseInt(item.cantidad) * (1 - (item.descuento || 0)/100)
         }));
 
-        // Pasar el payment_id al crear la venta
         const ventaId = await historial.crearVenta(usuario_id, detallesVenta, payment_id);
         
         // 🧹 Vaciar el carrito después de registrar la venta
         await carrito.vaciarCarrito(usuario_id);
         
-        res.json({
-            mensaje: "¡Pago exitoso!",
-            usuario: user.username,
-            usuario_id: usuario_id,
+        // ✅ PASAR SOLO LOS DATOS NECESARIOS
+        const params = new URLSearchParams({
+            order_id: payment_id,
+            user_id: usuario_id,
             payment_id: payment_id,
-            venta_id: ventaId,
-            total: detallesVenta.reduce((sum, item) => sum + item.subtotal, 0),
-            productos: items.map(item => ({
+            subtotal: subtotal.toFixed(2),
+            items: JSON.stringify(items.map(item => ({
                 nombre: item.nombre,
                 cantidad: item.cantidad,
-                precio_unitario: item.precio,
-                subtotal: parseFloat(item.precio) * parseInt(item.cantidad)
-            }))
+                precio: parseFloat(item.precio).toFixed(2)
+            })))
         });
+        
+        console.log('Parámetros enviados:', params.toString());
+        
+        // Redirigir a la página de éxito
+        res.redirect(`/payments/payment-succes.html?${params.toString()}`);
 
     } catch (error) {
         console.error("Error en pago-exitoso:", error);
-        res.status(500).send("Error al procesar el pago exitoso.");
+        res.redirect('/payments/payment-failed.html?reason=Error interno del servidor');
+    }
+});
+
+
+// Después de la ruta /api/pago-exitoso existente, agrega:
+
+// Buscar y reemplazar la ruta /api/pago-fallido
+app.get('/api/pago-fallido', async (req, res) => {
+    const usuario_id = req.query.external_reference;
+    const payment_id = req.query.payment_id;
+    const collection_id = req.query.collection_id;
+    
+    console.log('Pago fallido recibido:', { usuario_id, payment_id, collection_id });
+    
+    const params = new URLSearchParams({
+        order_id: payment_id || `ORD-FAIL-${Date.now()}`,
+        reason: 'Pago rechazado por la entidad financiera'
+    });
+    
+    // ✅ CORREGIR: payment-failed.html (no payments-failed.html)
+    res.redirect(`/payments/payment-failed.html?${params.toString()}`);
+});
+
+app.get('/api/pago-pendiente', async (req, res) => {
+    const usuario_id = req.query.external_reference;
+    const payment_id = req.query.payment_id;
+    const collection_id = req.query.collection_id;
+    
+    console.log('Pago pendiente:', { usuario_id, payment_id, collection_id });
+    
+    try {
+        // Obtener información del carrito si el usuario existe
+        let total = 0;
+        if (usuario_id && !isNaN(parseInt(usuario_id))) {
+            const items = await carrito.getCarrito(parseInt(usuario_id));
+            total = items.reduce((sum, item) => sum + (parseFloat(item.precio) * parseInt(item.cantidad)), 0);
+        }
+        
+        const params = new URLSearchParams({
+            status: 'pending',
+            order_id: `ORD-${Date.now()}`,
+            amount: total,
+            payment_id: payment_id || 'N/A'
+        });
+        
+        res.redirect(`/payments/payments-pending.html?${params.toString()}`);
+    } catch (error) {
+        console.error('Error en pago pendiente:', error);
+        const params = new URLSearchParams({
+            status: 'pending',
+            order_id: `ORD-${Date.now()}`,
+            reason: 'Pago en proceso de verificación'
+        });
+        res.redirect(`/payments.html?${params.toString()}`);
     }
 });
 

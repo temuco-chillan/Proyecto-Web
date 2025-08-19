@@ -12,5 +12,85 @@
     "fecha_venta": "2024-01-20T14:45:00.000Z",
     "total": 35990,
     "estado": "completada"
+  },
+  {
+    "id": 3,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-19T21:26:53.370Z",
+    "total": 2,
+    "payment_id": "122418922743",
+    "estado": "completada"
+  },
+  {
+    "id": 4,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-19T21:41:00.475Z",
+    "total": 1,
+    "payment_id": "122420691337",
+    "estado": "completada"
+  },
+  {
+    "id": 5,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-19T21:45:08.837Z",
+    "total": 1,
+    "payment_id": "122953912344",
+    "estado": "completada"
+  },
+  {
+    "id": 6,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-19T21:49:22.044Z",
+    "total": 1,
+    "payment_id": "122421710737",
+    "estado": "completada"
+  },
+  {
+    "id": 7,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-19T21:52:29.105Z",
+    "total": 1,
+    "payment_id": "122422019639",
+    "estado": "completada"
+  },
+  {
+    "id": 8,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-19T21:53:09.867Z",
+    "total": 1,
+    "payment_id": "122422186267",
+    "estado": "completada"
+  },
+  {
+    "id": 9,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-19T21:56:02.329Z",
+    "total": 1,
+    "payment_id": "122955275324",
+    "estado": "completada"
+  },
+  {
+    "id": 10,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-19T22:12:24.429Z",
+    "total": 322222,
+    "payment_id": "122424363699",
+    "estado": "completada"
+  },
+  {
+    "id": 11,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-19T22:16:42.661Z",
+    "total": 2,
+    "payment_id": "122425103295",
+    "estado": "completada"
+  },
+  {
+    "id": 12,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-19T22:19:10.362Z",
+    "total": 1,
+    "payment_id": "122958351532",
+    "estado": "completada"
   }
 ]
