@@ -22,9 +22,10 @@ async function getHistorial(usuario_id) {
     where: { usuario_id },
     include: [{
       model: DetalleVenta,
+      as: 'detalles',
       include: [{
         model: Producto,
-        attributes: ['id', 'nombre', 'imagen_url']  // Incluir id e imagen_url
+        attributes: ['id', 'nombre', 'imagen_url']
       }]
     }],
     order: [['fecha_venta', 'DESC']]
@@ -36,7 +37,7 @@ async function getHistorial(usuario_id) {
     total: venta.total,
     payment_id: venta.payment_id,
     estado: venta.estado,
-    detalles: venta.DetalleVentas.map(detalle => ({
+    detalles: venta.detalles.map(detalle => ({  // Cambiar de DetalleVentas a detalles
       producto_id: detalle.Producto.id,
       producto: detalle.Producto.nombre,
       imagen_url: detalle.Producto.imagen_url,
@@ -56,6 +57,7 @@ async function getAllHistorial() {
     include: [
       {
         model: DetalleVenta,
+        as: 'detalles',  // Usar el alias
         include: [{
           model: Producto,
           attributes: ['id', 'nombre', 'imagen_url']
@@ -77,7 +79,7 @@ async function getAllHistorial() {
     estado: venta.estado,
     usuario_id: venta.usuario_id,
     usuario_nombre: venta.Usuario ? venta.Usuario.username : `Usuario #${venta.usuario_id}`,
-    detalles: venta.DetalleVentas.map(detalle => ({
+    detalles: venta.detalles.map(detalle => ({  // Cambiar de DetalleVentas a detalles
       producto_id: detalle.Producto.id,         
       producto: detalle.Producto.nombre,
       imagen_url: detalle.Producto.imagen_url,

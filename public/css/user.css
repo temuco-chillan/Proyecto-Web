@@ -910,3 +910,29 @@ body {
     font-size: 0.85rem;
   }
 }
+
+.price-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.9em;
+}
+
+.discounted-price {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.discount-badge {
+    background: #dc3545;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    align-self: flex-start;
+}

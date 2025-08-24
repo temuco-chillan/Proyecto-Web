@@ -13,7 +13,8 @@ function getAccount() {
 }
 
 // === Obtener y mostrar carrito ===
-function fetchCarritoPage() {  // ✅ RENOMBRADO
+// Reemplazar la función fetchCarritoPage (líneas 15-42)
+function fetchCarritoPage() {
     const user = getAccount();
     if (!user) return;
 
@@ -21,6 +22,13 @@ function fetchCarritoPage() {  // ✅ RENOMBRADO
         .then(response => response.json())
         .then(data => {
             const tableBody = document.getElementById('carritoList');
+            
+            // ✅ VERIFICAR QUE EL ELEMENTO EXISTE
+            if (!tableBody) {
+                console.error('Elemento carritoList no encontrado');
+                return;
+            }
+            
             tableBody.innerHTML = '';
 
             data.forEach(item => {
@@ -38,8 +46,12 @@ function fetchCarritoPage() {  // ✅ RENOMBRADO
                 tableBody.appendChild(row);
             });
 
-            const totalGeneral = data.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
-            document.getElementById('totalCarrito').innerText = `Total General: $${totalGeneral.toFixed(2)}`;
+            // ✅ VERIFICAR QUE EL ELEMENTO TOTAL EXISTS
+            const totalElement = document.getElementById('totalCarrito');
+            if (totalElement) {
+                const totalGeneral = data.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+                totalElement.innerText = `Total General: $${totalGeneral.toFixed(2)}`;
+            }
         })
         .catch(error => console.error('❌ Error al obtener carrito:', error));
 }

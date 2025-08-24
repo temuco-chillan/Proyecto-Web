@@ -2,24 +2,63 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     event.preventDefault();
 
     const username = document.getElementById('username').value.trim();
-    const email = document.getElementById('email').value.trim(); // <- Agregado
+    const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
+    const rut = document.getElementById('rut').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+    const direccion = document.getElementById('direccion').value.trim();
+    const ciudad = document.getElementById('ciudad').value.trim();
+    const region = document.getElementById('region').value.trim();
+    const codigo_postal = document.getElementById('codigo_postal').value.trim();
     const message = document.getElementById('message');
 
     const rol_id = 2; // Usuario común
 
-    // Validación simple (opcional pero útil)
-    if (!username || !email || !password) {
+    // Validación de campos obligatorios
+    if (!username || !email || !password || !rut || !telefono || !direccion || !ciudad || !region) {
         message.style.color = 'red';
-        message.textContent = 'Todos los campos son obligatorios';
+        message.textContent = 'Todos los campos marcados son obligatorios';
+        return;
+    }
+
+    // Validación básica de RUT (formato chileno)
+    const rutPattern = /^[0-9]+-[0-9kK]{1}$/;
+    if (!rutPattern.test(rut)) {
+        message.style.color = 'red';
+        message.textContent = 'El RUT debe tener el formato: 12345678-9';
+        return;
+    }
+
+    // Validación básica de teléfono
+    const telefonoPattern = /^[0-9]{8,15}$/;
+    if (!telefonoPattern.test(telefono)) {
+        message.style.color = 'red';
+        message.textContent = 'El teléfono debe contener solo números (8-15 dígitos)';
         return;
     }
 
     try {
+        const userData = {
+            username,
+            email,
+            password,
+            rut,
+            telefono,
+            direccion,
+            ciudad,
+            region,
+            rol_id
+        };
+
+        // Agregar código postal solo si no está vacío
+        if (codigo_postal) {
+            userData.codigo_postal = codigo_postal;
+        }
+
         const response = await fetch('/api/users', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password, rol_id }) // <- Agregado email
+            body: JSON.stringify(userData)
         });
 
         const result = await response.json();

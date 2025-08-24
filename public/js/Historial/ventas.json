@@ -92,5 +92,21 @@
     "total": 1,
     "payment_id": "122958351532",
     "estado": "completada"
+  },
+  {
+    "id": 13,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-24T09:56:42.995Z",
+    "total": 686332.86,
+    "payment_id": "122958750747",
+    "estado": "completada"
+  },
+  {
+    "id": 14,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-24T10:02:03.928Z",
+    "total": 5000,
+    "payment_id": "123495214590",
+    "estado": "completada"
   }
 ]

@@ -4,6 +4,7 @@ const { Carrito } = require('../Models');
 const productosBackend = require('../Productos/json');
 
 const CARRITO_FILE = path.join(__dirname, 'carrito.json');
+const DESCUENTOS_FILE = path.join(__dirname, '../Descuentos/descuentos.json');
 
 // === Lectura y Escritura ===
 
@@ -17,6 +18,32 @@ function readCarrito() {
 
 function writeCarrito(data) {
   fs.writeFileSync(CARRITO_FILE, JSON.stringify(data, null, 2));
+}
+
+// === Funciones de descuentos ===
+
+function readDescuentos() {
+  if (!fs.existsSync(DESCUENTOS_FILE)) {
+    const defaultDescuentos = [
+      { id: 1, producto_id: 1, cantidad_minima: 3, porcentaje_descuento: 5.00, activo: true },
+      { id: 2, producto_id: 1, cantidad_minima: 5, porcentaje_descuento: 10.00, activo: true },
+      { id: 3, producto_id: 1, cantidad_minima: 10, porcentaje_descuento: 15.00, activo: true }
+    ];
+    fs.writeFileSync(DESCUENTOS_FILE, JSON.stringify(defaultDescuentos, null, 2));
+  }
+  const data = fs.readFileSync(DESCUENTOS_FILE, 'utf8');
+  return JSON.parse(data);
+}
+
+function calcularDescuentoPorCantidad(producto_id, cantidad) {
+  const descuentos = readDescuentos();
+  
+  const descuentosProducto = descuentos
+    .filter(d => d.producto_id === Number(producto_id) && d.activo)
+    .filter(d => d.cantidad_minima <= cantidad)
+    .sort((a, b) => b.cantidad_minima - a.cantidad_minima);
+  
+  return descuentosProducto.length > 0 ? descuentosProducto[0].porcentaje_descuento : 0;
 }
 
 // === Generador dinámico basado en el modelo Sequelize ===
@@ -52,7 +79,7 @@ function generateDefaultCartData(data = {}) {
   return item;
 }
 
-// === Funciones principales ===
+// === Funciones principales actualizadas ===
 
 async function getCarrito(usuario_id) {
   const data = readCarrito();
@@ -62,11 +89,41 @@ async function getCarrito(usuario_id) {
 
   const enriquecido = itemsUsuario.map(item => {
     const prod = productos.find(p => p.id === item.producto_id);
+    
+    const precio_original = parseFloat(prod?.precio || 0);
+    let precio_final = precio_original;
+    let descuento_total = 0;
+    
+    // 1. Aplicar descuento individual del producto
+    const descuento_individual = parseFloat(prod?.descuento || 0);
+    if (descuento_individual > 0) {
+      precio_final = precio_final * (1 - descuento_individual / 100);
+      descuento_total += descuento_individual;
+    }
+    
+    // 2. Aplicar descuento por cantidad SOBRE EL PRECIO YA DESCONTADO
+    const descuento_cantidad = calcularDescuentoPorCantidad(item.producto_id, item.cantidad);
+    if (descuento_cantidad > 0) {
+    // Aplicar descuento por cantidad sobre el precio ya descontado
+    precio_final = precio_final * (1 - descuento_cantidad / 100);
+    // ✅ CORRECCIÓN: Calcular el descuento total efectivo correctamente
+    descuento_total = ((precio_original - precio_final) / precio_original) * 100;
+    }
+    
     return {
       producto_id: item.producto_id,
       cantidad: item.cantidad,
       nombre: prod?.nombre || 'Desconocido',
-      precio: prod?.precio || null
+      precio: precio_final,
+      precio_original: precio_original,
+      precio_con_descuento: precio_final,
+      descuento_aplicado: descuento_total,
+      descuento_individual: descuento_individual,
+      descuento_cantidad: descuento_cantidad,
+      subtotal: precio_final * item.cantidad,
+      imagen_url: prod?.imagen_url || null,
+      video_url: prod?.video_url || null,
+      stock: prod?.stock || 0
     };
   });
 
@@ -118,18 +175,9 @@ function eliminarDelCarrito(usuario_id, producto_id) {
 }
 
 function vaciarCarrito(usuario_id) {
-  // Convertimos el usuario_id a número para asegurar la comparación correcta.
   const idNumerico = Number(usuario_id);
-
-  // Filtramos todos los carritos y creamos una nueva lista
-  // que CONTIENE SOLAMENTE los carritos de los demás usuarios.
-  // Es decir, estamos eliminando todos los que coinciden con idNumerico.
   const data = readCarrito().filter(p => p.usuario_id !== idNumerico);
-  
-  // Guardamos la nueva lista (sin los productos del usuario actual) en el archivo.
   writeCarrito(data);
-  
-  // Devolvemos una promesa resuelta para que el flujo asíncrono continúe.
   return Promise.resolve();
 }
 
@@ -138,5 +186,6 @@ module.exports = {
   agregarAlCarrito,
   actualizarCantidadCarrito,
   eliminarDelCarrito,
-  vaciarCarrito
+  vaciarCarrito,
+  calcularDescuentoPorCantidad
 };

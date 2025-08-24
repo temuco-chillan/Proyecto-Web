@@ -10,7 +10,8 @@ class Producto extends Model {
       precio: this.precio,
       descuento: this.descuento,
       stock: this.stock,
-      imagen_url: this.imagen_url
+      imagen_url: this.imagen_url,
+      video_url: this.video_url
     };
   }
 
@@ -21,7 +22,8 @@ class Producto extends Model {
       precio: json.precio,
       descuento: json.descuento || 0,
       stock: json.stock || 0,
-      imagen_url: json.imagen_url
+      imagen_url: json.imagen_url,
+      video_url: json.video_url
     });
   }
 }
@@ -33,6 +35,17 @@ Producto.init({
   descuento: { type: DataTypes.INTEGER, defaultValue: 0 },
   stock: { type: DataTypes.INTEGER, defaultValue: 0 },
   imagen_url: DataTypes.STRING,
+  // Nuevo campo para videos tutoriales
+  video_url: {
+    type: DataTypes.STRING(500),
+    allowNull: true,
+    validate: {
+      isUrl: {
+        msg: 'Debe ser una URL válida'
+      }
+    },
+    comment: 'URL del video tutorial (YouTube, Vimeo, etc.)'
+  },
   estado: {
     type: DataTypes.ENUM('activo', 'inactivo', 'mantenimiento'),
     defaultValue: 'activo'

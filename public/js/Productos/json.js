@@ -34,9 +34,8 @@ function getCategorias() {
 }
 
 function getRelaciones() {
-  return readJSON(RELACION_FILE); // ← este archivo debe estar definido arriba
+  return readJSON(RELACION_FILE);
 }
-
 
 function addRelaciones(productoId, categoriaIds = []) {
   const relaciones = getRelaciones();
@@ -49,8 +48,8 @@ function addRelaciones(productoId, categoriaIds = []) {
 }
 
 function getCategoriasDeProducto(productoId) {
-  const relaciones = getRelaciones();        // ProductoCategorias.json
-  const categorias = getCategorias();        // Categorias.json
+  const relaciones = getRelaciones();
+  const categorias = getCategorias();
 
   const ids = relaciones
     .filter(r => r.producto_id === Number(productoId))
@@ -59,9 +58,7 @@ function getCategoriasDeProducto(productoId) {
   return categorias.filter(c => ids.includes(c.id));
 }
 
-
-
-// === Generador de producto desde modelo Sequelize ===
+// === Generador de producto desde modelo Sequelize actualizado ===
 function generateDefaultProductData(data = {}) {
   const fields = Producto.rawAttributes;
   const productos = readData();
@@ -86,14 +83,20 @@ function generateDefaultProductData(data = {}) {
     }
   }
 
+  // Campos específicos con valores por defecto
   if (!item.fecha_add) {
     item.fecha_add = new Date().toISOString();
+  }
+  
+  // Asegurar que video_url esté incluido
+  if (item.video_url === undefined) {
+    item.video_url = null;
   }
 
   return item;
 }
 
-// === CRUD básico ===
+// === CRUD básico actualizado ===
 
 function getProducto() {
   const productos = readData();
@@ -102,73 +105,73 @@ function getProducto() {
 
 function getProductoById(id) {
   const productos = readData();
-  const producto = productos.find(p => p.id === Number(id));
+  const producto = productos.find(p => p.id === parseInt(id, 10));
   return Promise.resolve(producto || null);
 }
 
-// Producto + categorías
 function getProductoCompletoById(id) {
-  const producto = readData().find(p => p.id === Number(id));
-  if (!producto) return Promise.resolve(null);
-  const categorias = getCategoriasDeProducto(producto.id);
+  const producto = getProductoById(id);
+  const categorias = getCategoriasDeProducto(id);
   return Promise.resolve({ ...producto, categorias });
 }
 
 function insertProducto(productoData) {
-  if (!ESTADOS_VALIDOS.includes(productoData.estado)) {
-    return Promise.reject(new Error('Estado inválido'));
-  }
-
   const productos = readData();
-  const nuevo = generateDefaultProductData(productoData);
-  productos.push(nuevo);
+  
+  // Incluir video_url en los datos del producto
+  const newProduct = generateDefaultProductData({
+    ...productoData,
+    video_url: productoData.video_url || null
+  });
+  
+  productos.push(newProduct);
   writeData(productos);
-
+  
   if (productoData.categorias && Array.isArray(productoData.categorias)) {
-    addRelaciones(nuevo.id, productoData.categorias);
+    addRelaciones(newProduct.id, productoData.categorias);
   }
-
-  return Promise.resolve(nuevo.id);
+  
+  return Promise.resolve(newProduct.id);
 }
 
 function updateProducto(id, productoData) {
   const productos = readData();
-  const index = productos.findIndex(p => p.id === Number(id));
-  if (index === -1) return Promise.reject(new Error('No encontrado'));
-
-  if (!ESTADOS_VALIDOS.includes(productoData.estado)) {
-    return Promise.reject(new Error('Estado inválido'));
+  const index = productos.findIndex(p => p.id === parseInt(id, 10));
+  
+  if (index === -1) {
+    return Promise.reject(new Error('No encontrado'));
   }
-
-  productoData.id = Number(id);
-  productoData.fecha_add = productos[index].fecha_add || new Date().toISOString();
-
-  productos[index] = productoData;
+  
+  // Actualizar incluyendo video_url
+  const updatedProduct = {
+    ...productos[index],
+    ...productoData,
+    video_url: productoData.video_url !== undefined ? productoData.video_url : productos[index].video_url
+  };
+  
+  productos[index] = updatedProduct;
   writeData(productos);
-
+  
   if (productoData.categorias && Array.isArray(productoData.categorias)) {
-    addRelaciones(productoData.id, productoData.categorias);
+    addRelaciones(parseInt(id, 10), productoData.categorias);
   }
-
+  
   return Promise.resolve();
 }
 
 function deleteProducto(id) {
   const productos = readData();
-  const index = productos.findIndex(p => p.id === Number(id));
-  if (index === -1) return Promise.reject(new Error('No encontrado'));
-
+  const index = productos.findIndex(p => p.id === parseInt(id, 10));
+  
+  if (index === -1) {
+    return Promise.reject(new Error('No encontrado'));
+  }
+  
   productos.splice(index, 1);
   writeData(productos);
-
-  // Eliminar también relaciones
-  const relaciones = getRelaciones().filter(r => r.producto_id !== Number(id));
-  writeJSON(RELACION_FILE, relaciones);
-
   return Promise.resolve();
 }
 
-// === Exportar todo ===
 module.exports = {
   getProducto,
   getProductoById,

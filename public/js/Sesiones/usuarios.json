@@ -3,7 +3,7 @@
     "id": 2,
     "username": "Admin5",
     "email": "admin3@gmail.com",
-    "password": "123",
+    "password": "$2b$12$iI7kRJx4iznshtTtq4vV6.nCK01qVqsqNtNFOCmvViHQKva/Ns9Sa",
     "estado": "activo",
     "rol_id": 2,
     "creado_en": "2025-07-09T17:49:25.669Z"
@@ -12,7 +12,7 @@
     "id": 3,
     "username": "Admin",
     "email": "micorreo@gmail.com",
-    "password": "123",
+    "password": "$2b$12$iI7kRJx4iznshtTtq4vV6.nCK01qVqsqNtNFOCmvViHQKva/Ns9Sa",
     "estado": "activo",
     "rol_id": 2,
     "creado_en": "2025-07-15T15:32:06.754Z"
@@ -21,9 +21,54 @@
     "id": 4,
     "username": "igado",
     "email": "hidalgoraul349@gmail.com",
-    "password": "123",
+    "password": "$2b$12$iI7kRJx4iznshtTtq4vV6.nCK01qVqsqNtNFOCmvViHQKva/Ns9Sa",
     "estado": "activo",
     "rol_id": 1,
     "creado_en": "2025-07-29T17:16:04.572Z"
+  },
+  {
+    "id": 5,
+    "username": "eligado",
+    "email": "hidalgoraul3495@gmail.com",
+    "password": "$2b$12$9FZ6hLzBstpArcitB4KphOI2QFRrFzLurXO2cSjnV.KgOHl6FNJSG",
+    "rut": null,
+    "codigo_postal": null,
+    "estado": "activo",
+    "rol_id": 2,
+    "creado_en": "2025-08-24T08:30:28.320Z",
+    "telefono": null,
+    "direccion": null,
+    "ciudad": null,
+    "region": null
+  },
+  {
+    "id": 6,
+    "username": "user2",
+    "email": "www@gmail.com",
+    "password": "$2b$12$iI7kRJx4iznshtTtq4vV6.nCK01qVqsqNtNFOCmvViHQKva/Ns9Sa",
+    "rut": null,
+    "codigo_postal": null,
+    "estado": "activo",
+    "rol_id": 2,
+    "creado_en": "2025-08-24T08:42:54.907Z",
+    "telefono": null,
+    "direccion": null,
+    "ciudad": null,
+    "region": null
+  },
+  {
+    "id": 7,
+    "username": "user3",
+    "email": "admin@tienda.com",
+    "password": "$2b$12$Oalc7lwKG6HJvX4lbXgvE.swUcUMDmgeGVh0lovXnbvAS0zMRuGNO",
+    "rut": null,
+    "codigo_postal": null,
+    "estado": "activo",
+    "rol_id": 1,
+    "creado_en": "2025-08-24T08:51:17.172Z",
+    "telefono": null,
+    "direccion": null,
+    "ciudad": null,
+    "region": null
   }
 ]

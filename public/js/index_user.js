@@ -141,25 +141,48 @@ async function renderProducts() {
         return;
     }
     
-    productsGrid.innerHTML = products.map(product => `
-        <div class="product-card" data-product-id="${product.id}">
-            <div class="product-image">
-                <img src="${product.imagen_url || 'https://via.placeholder.com/200x250/4a90e2/ffffff?text=' + encodeURIComponent(product.nombre)}" 
-                     alt="${product.nombre}" 
-                     loading="lazy"
-                     onerror="this.src='https://via.placeholder.com/200x250/cccccc/666666?text=Sin+Imagen'">
+    productsGrid.innerHTML = products.map(product => {
+        const hasDiscount = product.descuento && product.descuento > 0;
+        const originalPrice = parseFloat(product.precio);
+        const discountedPrice = hasDiscount ? originalPrice * (1 - product.descuento / 100) : originalPrice;
+        
+        let pricingHTML;
+        if (hasDiscount) {
+            pricingHTML = `
+                <div class="product-pricing">
+                    <div class="price-container">
+                        <span class="original-price">$${originalPrice.toFixed(2)}</span>
+                        <span class="discounted-price">$${discountedPrice.toFixed(2)}</span>
+                        <span class="discount-badge">${product.descuento}% OFF</span>
+                    </div>
+                </div>
+            `;
+        } else {
+            pricingHTML = `
+                <div class="product-pricing">
+                    <span class="current-price">$${originalPrice.toFixed(2)}</span>
+                </div>
+            `;
+        }
+        
+        return `
+            <div class="product-card" data-product-id="${product.id}">
+                <div class="product-image">
+                    <img src="${product.imagen_url || 'https://via.placeholder.com/200x250/4a90e2/ffffff?text=' + encodeURIComponent(product.nombre)}" 
+                         alt="${product.nombre}" 
+                         loading="lazy"
+                         onerror="this.src='https://via.placeholder.com/200x250/cccccc/666666?text=Sin+Imagen'">
+                </div>
+                <h3 class="product-name">${product.nombre}</h3>
+                <p class="product-description">${product.descripcion || ''}</p>
+                ${pricingHTML}
+                <button class="add-button" onclick="addToCart(${product.id})">
+                    <i class="fas fa-shopping-cart"></i>
+                    Agregar al Carrito
+                </button>
             </div>
-            <h3 class="product-name">${product.nombre}</h3>
-            <p class="product-description">${product.descripcion || ''}</p>
-            <div class="product-pricing">
-                <span class="current-price">$${parseFloat(product.precio).toFixed(2)}</span>
-            </div>
-            <button class="add-button" onclick="addToCart(${product.id})">
-                <i class="fas fa-shopping-cart"></i>
-                Agregar al Carrito
-            </button>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // ========================
@@ -264,58 +287,8 @@ function updateCartUI() {
         }
     }
     
-    // ✅ ACTUALIZAR CONTENIDO DEL CARRITO
-    const cartContent = document.getElementById('cart-content');
-    const cartFooter = document.getElementById('cart-footer');
-    const emptyCart = document.getElementById('empty-cart');
-    const cartTotal = document.getElementById('cart-total');
-    
-    if (cartContent && cartFooter && emptyCart && cartTotal) {
-        if (cartItems.length === 0) {
-            emptyCart.style.display = 'block';
-            cartFooter.style.display = 'none';
-            cartContent.innerHTML = '';
-        } else {
-            emptyCart.style.display = 'none';
-            cartFooter.style.display = 'block';
-            
-            // Calcular total
-            const total = cartItems.reduce((sum, item) => sum + (parseFloat(item.precio) * parseInt(item.cantidad)), 0);
-            cartTotal.textContent = total.toFixed(2);
-            
-            // Renderizar items
-            cartContent.innerHTML = cartItems.map(item => {
-                const product = products.find(p => p.id === item.producto_id);
-                const imageUrl = product?.imagen_url || `https://via.placeholder.com/60x60/cccccc/666666?text=${encodeURIComponent(item.nombre.substring(0, 3))}`;
-                
-                return `
-                    <div class="cart-item" data-product-id="${item.producto_id}">
-                        <div class="cart-item-image">
-                            <img src="${imageUrl}" 
-                                 alt="${item.nombre}" 
-                                 onerror="this.src='https://via.placeholder.com/60x60/cccccc/666666?text=Sin+Imagen'">
-                        </div>
-                        <div class="cart-item-info">
-                            <h4>${item.nombre}</h4>
-                            <p class="cart-item-price">$${parseFloat(item.precio).toFixed(2)}</p>
-                        </div>
-                        <div class="cart-item-controls">
-                            <button class="quantity-btn" onclick="updateCartQuantity(${item.producto_id}, ${item.cantidad - 1})">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <span class="quantity">${item.cantidad}</span>
-                            <button class="quantity-btn" onclick="updateCartQuantity(${item.producto_id}, ${item.cantidad + 1})">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <button class="remove-btn" onclick="removeFromCart(${item.producto_id})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-    }
+    // ✅ USAR LA FUNCIÓN updateCartSidebar QUE TIENE LA LÓGICA CORRECTA
+    updateCartSidebar(cartItems);
 }
 
 // Reemplazar la función updateCartQuantity existente
@@ -670,8 +643,11 @@ function updateCartSidebar(items) {
         if (emptyCart) emptyCart.style.display = 'none';
         if (cartFooter) cartFooter.style.display = 'block';
         
-        // ✅ CALCULAR TOTAL
-        const total = items.reduce((sum, item) => sum + (parseFloat(item.precio) * parseInt(item.cantidad)), 0);
+        // ✅ CALCULAR TOTAL CON DESCUENTOS APLICADOS
+        const total = items.reduce((sum, item) => {
+            const finalPrice = item.precio_con_descuento || item.precio;
+            return sum + (parseFloat(finalPrice) * parseInt(item.cantidad));
+        }, 0);
         if (cartTotal) cartTotal.textContent = total.toFixed(2);
         
         // ✅ RENDERIZAR ITEMS UNO POR UNO
@@ -687,6 +663,25 @@ function updateCartSidebar(items) {
             const product = products.find(p => p.id === item.producto_id);
             const imageUrl = product?.imagen_url || `https://via.placeholder.com/60x60/cccccc/666666?text=${encodeURIComponent(item.nombre.substring(0, 3))}`;
             
+            // Verificar si hay descuento aplicado
+            const hasDiscount = item.descuento_aplicado > 0;
+            const discountPercent = item.descuento_aplicado || 0;
+            const originalPrice = item.precio_original || item.precio;
+            const finalPrice = item.precio_con_descuento || item.precio;
+            
+            let priceHTML;
+            if (hasDiscount) {
+                priceHTML = `
+                    <div class="price-container">
+                        <span class="original-price">$${parseFloat(originalPrice).toFixed(2)}</span>
+                        <span class="discounted-price">$${parseFloat(finalPrice).toFixed(2)}</span>
+                        <span class="discount-badge">${discountPercent.toFixed(1)}% OFF</span>
+                    </div>
+                `;
+            } else {
+                priceHTML = `<p class="cart-item-price">$${parseFloat(finalPrice).toFixed(2)}</p>`;
+            }
+            
             cartItemDiv.innerHTML = `
                 <div class="cart-item-image">
                     <img src="${imageUrl}" 
@@ -695,7 +690,7 @@ function updateCartSidebar(items) {
                 </div>
                 <div class="cart-item-info">
                     <h4>${item.nombre}</h4>
-                    <p class="cart-item-price">$${parseFloat(item.precio).toFixed(2)}</p>
+                    ${priceHTML}
                 </div>
                 <div class="cart-item-controls">
                     <button class="quantity-btn" onclick="updateCartQuantity(${item.producto_id}, ${item.cantidad - 1})">
@@ -715,5 +710,37 @@ function updateCartSidebar(items) {
         });
         
         console.log('Items renderizados en el sidebar');
+    }
+}
+
+// Agregar esta función después de la línea 624
+async function refreshCartFromAPI() {
+    console.log('=== REFRESCANDO CARRITO DESDE API ===');
+    
+    if (!currentUser) {
+        console.log('No hay usuario logueado');
+        cartItems = [];
+        updateCartUI();
+        return;
+    }
+    
+    try {
+        console.log('Consultando API del carrito para usuario:', currentUser.id);
+        const response = await fetch(`/api/carrito/${currentUser.id}`);
+        const items = await response.json();
+        
+        console.log('Items recibidos:', items);
+        
+        // Actualizar variable global
+        cartItems = items;
+        
+        // ✅ USAR updateCartUI QUE AHORA LLAMA A updateCartSidebar
+        updateCartUI();
+        
+        console.log('✅ Carrito refrescado exitosamente');
+    } catch (error) {
+        console.error('❌ Error al refrescar carrito:', error);
+        cartItems = [];
+        updateCartUI();
     }
 }

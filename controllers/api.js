@@ -53,14 +53,42 @@ app.get('/api/users/:id', async (req, res) => {
 });
 
 app.post('/api/users', async (req, res) => {
-    const { username, email, password, rol_id = 2 } = req.body;
+    const { 
+        username, 
+        email, 
+        password, 
+        rut, 
+        telefono, 
+        direccion, 
+        ciudad, 
+        region, 
+        codigo_postal,
+        rol_id = 2 
+    } = req.body;
 
-    if (!username || !email || !password) {
-        return res.status(400).json({ message: 'Todos los campos son requeridos' });
+    if (!username || !email || !password || !rut || !telefono || !direccion || !ciudad || !region) {
+        return res.status(400).json({ message: 'Todos los campos obligatorios son requeridos' });
     }
 
     try {
-        const user = await sesiones.createUser({ username, email, password, rol_id });
+        const userData = {
+            username, 
+            email, 
+            password, 
+            rut, 
+            telefono, 
+            direccion, 
+            ciudad, 
+            region, 
+            rol_id
+        };
+        
+        // Agregar código postal solo si está presente
+        if (codigo_postal) {
+            userData.codigo_postal = codigo_postal;
+        }
+        
+        const user = await sesiones.createUser(userData);
         res.status(201).json({ message: 'Usuario creado', user });
     } catch (err) {
         if (err.message === 'USERNAME_EXISTS') {
@@ -178,7 +206,7 @@ app.put('/api/carrito', async (req, res) => {
     }
 
     try {
-        await carrito.actualizarCantidadCarrito(usuario_id, producto_id, cantidad);
+        await carrito.actualizarCantidad(usuario_id, producto_id, cantidad);
         res.json({ mensaje: 'Cantidad actualizada' });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -300,23 +328,28 @@ app.post('/api/pago', async (req, res) => {
 
     try {
         const items = await carrito.getCarrito(usuario_id);
-
+        const ngrok = process.env.NGROK_URL || "https://82240a225160.ngrok-free.app";
         if (!items || items.length === 0) {
             return res.status(400).json({ error: 'Carrito vacío' });
         }
         //tomara las preferencias del carrito 
         const preference = {
-            items: items.map(item => ({
-                title: item.nombre,
-                quantity: parseInt(item.cantidad),
-                unit_price: parseFloat(item.precio),
-                currency_id: "CLP"
-            })),
+            items: items.map(item => {
+                const precio = parseFloat(item.precio);
+                console.log('Precio original:', item.precio, 'Precio parseado:', precio, 'Precio redondeado:', Math.round(precio));
+                
+                return {
+                    title: item.nombre,
+                    quantity: parseInt(item.cantidad),
+                    unit_price: Math.round(precio), // Asegurar que sea entero
+                    currency_id: "CLP"
+                };
+            }),
             // --- ¡IMPORTANTE! Aquí se actualizan las URLs para usar ngrok ---
             back_urls: {
-                success: "https://d8b38ddaf62d.ngrok-free.app/api/pago-exitoso",
-                failure: "https://d8b38ddaf62d.ngrok-free.app/api/pago-fallido",
-                pending: "https://d8b38ddaf62d.ngrok-free.app/api/pago-pendiente"
+                success: ngrok+"/api/pago-exitoso",
+                failure: ngrok+"/api/pago-fallido",
+                pending: ngrok+"/api/pago-pendiente"
             },
             external_reference: String(usuario_id),
             auto_return: "approved" // <- debe ir acompañado de un success definido
@@ -351,7 +384,7 @@ app.get('/api/pago-exitoso', async (req, res) => {
             return res.redirect('/payments/payment-failed.html?reason=Datos de compra no encontrados');
         }
 
-        // ✅ SOLO CALCULAR SUBTOTAL
+        // ✅ CALCULAR SUBTOTAL CON PRECIOS YA DESCONTADOS
         const subtotal = items.reduce((sum, item) => sum + (parseFloat(item.precio) * parseInt(item.cantidad)), 0);
         
         console.log('Subtotal calculado:', subtotal);
@@ -361,9 +394,9 @@ app.get('/api/pago-exitoso', async (req, res) => {
             producto_id: item.producto_id,
             nombre: item.nombre,
             cantidad: parseInt(item.cantidad),
-            precio_unitario: parseFloat(item.precio),
-            descuento_aplicado: item.descuento || 0,
-            subtotal: parseFloat(item.precio) * parseInt(item.cantidad) * (1 - (item.descuento || 0)/100)
+            precio_unitario: parseFloat(item.precio), // Ya incluye descuentos
+            descuento_aplicado: item.descuento_aplicado || 0, // Usar descuento_aplicado en lugar de descuento
+            subtotal: parseFloat(item.precio) * parseInt(item.cantidad) // Sin aplicar descuentos adicionales
         }));
 
         const ventaId = await historial.crearVenta(usuario_id, detallesVenta, payment_id);

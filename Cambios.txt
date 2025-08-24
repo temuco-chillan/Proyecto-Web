@@ -1,0 +1,72 @@
+# REGISTRO DE CAMBIOS - El Despertar
+
+## Versión 2.0
+
+### MODELO DE DATOS
+
+#### Ampliación del Modelo Usuario
+- Agregado campo RUT con validación
+- Agregado campo teléfono
+- Agregado campo dirección de envío
+- Implementada encriptación de contraseñas con bcrypt
+- Implementada encriptación de RUT para protección de datos
+
+#### Ampliación del Modelo Producto
+- Agregado campo video_url para links de tutoriales
+- Actualizada base de datos SQL con nuevos campos
+
+### SISTEMA DE DESCUENTOS
+
+#### Descuentos Automáticos por Cantidad
+- Implementada lógica de descuentos automáticos en el carrito
+- La logica se configura desde base de datos
+
+#### Correcciones en Descuentos
+- Corregida visualización de descuentos en el frontend del carrito
+- Corregida visualización de descuentos en la grilla principal de productos
+- Aplicados descuentos individuales de productos en el carrito
+- Corregido bug donde los descuentos se perdían al cambiar cantidad
+- Corregida lógica de descuentos acumulativos
+- Corregida visualización del porcentaje de descuento en el badge rojo
+- Investigado y corregido uso de fallback JSON
+
+### SEGURIDAD
+- Implementada encriptación de contraseñas con bcrypt
+- Implementada protección de datos RUT con encriptación
+- Validaciones mejoradas en formularios
+
+### SERVICIOS Y APIs
+- Actualizados todos los servicios para manejar nuevos campos
+- Actualizadas APIs para soportar campos de usuario expandidos
+- Mejorada estructura de respuestas JSON
+- Optimizada comunicación frontend-backend
+
+### CORRECCIONES DE BUGS
+- Corregido error de pérdida de descuentos en updateCartUI
+- Corregido cálculo erróneo de descuentos acumulativos
+- Corregida visualización inconsistente de precios
+- Corregidos problemas de precisión numérica
+- Corregida sincronización entre carrito y Mercado Pago
+- Ahora el enlace de ngrok es una variable, cambio disponible en env o js
+
+### BASE DE DATOS
+- Actualizado esquema SQL con nuevos campos
+- Mantenida compatibilidad con datos existentes
+- Optimizadas consultas de descuentos
+- Mejorada estructura de tablas
+
+---
+
+## ESTADO DEL PROYECTO
+
+**COMPLETADO**: Todas las funcionalidades principales implementadas
+**PROBADO**: Sistema de descuentos funcionando correctamente
+**INTEGRADO**: Mercado Pago operativo sin errores
+**SEGURO**: Datos de usuarios protegidos con encriptación
+
+---
+
+## PRÓXIMOS PASOS SUGERIDOS
+
+1. Panel de administración para gestión de descuentos
+2. Implementar vista para cada producto con el fin de mostrar los videos de youtube
