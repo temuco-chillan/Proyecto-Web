@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Tienda - Ofertas de la Semana</title>
+    <title>Tienda El Despertar</title>
     <!-- You would link your CSS file here, e.g., <link rel="stylesheet" href="style.css"> -->
     <link rel="stylesheet" href="../css/user.css">
     <!-- For Font Awesome icons, ensure you include this CDN link -->
@@ -14,7 +14,7 @@
     <header class="header">
         <div class="header-container">
             <!-- Logo -->
-            <div class="logo">Super Tienda</div>
+            <div class="logo">El Despertar</div>
             <!-- Navigation -->
             <nav class="navigation">
                 <a href="index.html" class="nav-link active">Inicio</a>
@@ -109,7 +109,7 @@
                 <!-- Example Product Cards (these would typically be loaded dynamically with JS) -->
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="/placeholder.svg?height=200&width=150" alt="Wireless Bluetooth Headphones">
+                        <img src="#" alt="Wireless Bluetooth Headphones">
                     </div>
                     <h3 class="product-name">Wireless Bluetooth Headphones</h3>
                     <div class="product-pricing">
@@ -120,7 +120,7 @@
                 </div>
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="/placeholder.svg?height=200&width=150" alt="Smartwatch with Heart Rate Monitor">
+                        <img src="#" alt="Smartwatch with Heart Rate Monitor">
                     </div>
                     <h3 class="product-name">Smartwatch with Heart Rate Monitor</h3>
                     <div class="product-pricing">
@@ -130,7 +130,7 @@
                 </div>
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="/placeholder.svg?height=200&width=150" alt="Portable Bluetooth Speaker">
+                        <img src="#" alt="Portable Bluetooth Speaker">
                     </div>
                     <h3 class="product-name">Portable Bluetooth Speaker</h3>
                     <div class="product-pricing">
@@ -141,7 +141,7 @@
                 </div>
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="/placeholder.svg?height=200&width=150" alt="4K Ultra HD Smart TV">
+                        <img src="#" alt="4K Ultra HD Smart TV">
                     </div>
                     <h3 class="product-name">4K Ultra HD Smart TV</h3>
                     <div class="product-pricing">
@@ -152,7 +152,7 @@
                 </div>
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="/placeholder.svg?height=200&width=150" alt="Ergonomic Office Chair">
+                        <img src="#" alt="Ergonomic Office Chair">
                     </div>
                     <h3 class="product-name">Ergonomic Office Chair</h3>
                     <div class="product-pricing">
@@ -208,12 +208,14 @@
     <!-- Cart Overlay -->
     <div class="cart-overlay" id="cart-overlay"></div>
 
-    <!-- Notification -->
-    <div class="notification" id="notification">
+    <!-- Elemento de notificación (agregar antes del cierre del body) -->
+    <div id="notification" class="notification">
         <span id="notification-message"></span>
     </div>
 
-    <script src="../js/index_user.js"></script> 
+    <!-- Scripts modulares -->
+    <script src="../js/header.js"></script>
+    <script src="../js/products.js"></script>
     <script src="../js/Carrito/carrito.js"></script>
 </body>
 </html>

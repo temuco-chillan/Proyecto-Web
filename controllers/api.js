@@ -332,6 +332,23 @@ app.post('/api/pago', async (req, res) => {
         if (!items || items.length === 0) {
             return res.status(400).json({ error: 'Carrito vacío' });
         }
+
+        // ✅ NUEVA VALIDACIÓN: Verificar stock antes de proceder al pago
+        for (const item of items) {
+            const producto = await productos.getProductoById(item.producto_id);
+            if (!producto) {
+                return res.status(400).json({ 
+                    error: `Producto ${item.nombre} no encontrado` 
+                });
+            }
+            
+            if (producto.stock < item.cantidad) {
+                return res.status(400).json({ 
+                    error: `Stock insuficiente para ${item.nombre}. Stock disponible: ${producto.stock}, cantidad solicitada: ${item.cantidad}` 
+                });
+            }
+        }
+
         //tomara las preferencias del carrito 
         const preference = {
             items: items.map(item => {

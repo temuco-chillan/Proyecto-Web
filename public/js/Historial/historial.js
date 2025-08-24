@@ -1,5 +1,3 @@
-// Estado global
-let currentUser = null;
 let historialData = [];
 
 // Inicialización
@@ -8,16 +6,16 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
 });
 
-async function initializeHistorial() {
+function initializeHistorial() {
     try {
-        // Verificar sesión activa
+        // Verificar sesión activa usando la variable global
         if (!checkUserSession()) {
             redirectToLogin();
             return;
         }
         
         // Cargar historial del usuario
-        await loadHistorial();
+        loadHistorial();
         
     } catch (error) {
         console.error('Error al inicializar historial:', error);
@@ -26,9 +24,17 @@ async function initializeHistorial() {
 }
 
 function checkUserSession() {
+    // Usar currentUser de index_user.js si existe
+    if (window.currentUser) {
+        // No redeclarar, usar la variable global
+        updateUserInterface();
+        return true;
+    }
+    
     const userData = localStorage.getItem('currentUser');
     if (userData) {
-        currentUser = JSON.parse(userData);
+        // Asignar a la variable global en lugar de crear una local
+        window.currentUser = JSON.parse(userData);
         updateUserInterface();
         return true;
     }
@@ -37,8 +43,8 @@ function checkUserSession() {
 
 function updateUserInterface() {
     const userNameElement = document.getElementById('user-name');
-    if (currentUser && userNameElement) {
-        userNameElement.textContent = `Hola, ${currentUser.username}`;
+    if (window.currentUser && userNameElement) {
+        userNameElement.textContent = `Hola, ${window.currentUser.username}`;
     }
 }
 
@@ -60,8 +66,8 @@ async function loadHistorial() {
         emptyState.classList.add('hidden');
         historialCard.classList.add('hidden');
         
-        // Hacer petición al API
-        const response = await fetch(`/api/historial/${currentUser.id}`);
+        // Hacer petición al API usando la variable global
+        const response = await fetch(`/api/historial/${window.currentUser.id}`);
         
         if (!response.ok) {
             throw new Error('Error al cargar el historial');
@@ -73,10 +79,8 @@ async function loadHistorial() {
         loading.classList.add('hidden');
         
         if (historialData.length === 0) {
-            // Mostrar estado vacío
             emptyState.classList.remove('hidden');
         } else {
-            // Mostrar tabla con datos
             historialCard.classList.remove('hidden');
             renderHistorial();
         }

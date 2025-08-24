@@ -44,6 +44,8 @@ body {
   font-size: 1.75rem;
   font-weight: bold;
   letter-spacing: -0.025em;
+  margin-right: 2rem;
+  padding-right: 0.2rem;
 }
 
 /* Navigation Styles */
@@ -607,15 +609,17 @@ body {
   visibility: hidden;
   transition: all 0.3s ease;
   pointer-events: none;
+  background: transparent;
 }
 
 .dropdown-overlay.active {
   opacity: 1;
   visibility: visible;
-  pointer-events: auto;
+  /* SOLUCIÓN: Remover pointer-events auto para que no capture clics */
+  pointer-events: none;
+  background: transparent;
 }
 
-/* SOLUCIÓN: Asegurar que el dropdown tenga mayor z-index y pointer-events */
 .user-dropdown {
   position: absolute;
   top: calc(100% + 10px);
@@ -624,20 +628,21 @@ body {
   background: white;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
-  z-index: 250; /* Mayor que el overlay */
+  z-index: 250;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
   transition: all 0.3s ease;
   border: 1px solid #e5e7eb;
-  pointer-events: auto; /* Asegurar que capture eventos */
+  pointer-events: auto;
 }
 
 .user-dropdown.active {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
-  pointer-events: auto; /* Mantener eventos activos */
+  pointer-events: auto;
+  z-index: 300;
 }
 
 /* Asegurar que user-actions tenga position relative */
