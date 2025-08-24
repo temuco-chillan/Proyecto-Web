@@ -1,6 +1,5 @@
 /* ===================================
-   SUPER TIENDA - STYLESHEET
-   Archivo CSS completo con carrito y cuentas
+   SUPER TIENDA - MOBILE FIRST STYLESHEET
    =================================== */
 
 /* Reset y configuración base */
@@ -11,8 +10,7 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue",
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   background-color: #f3f4f6;
   color: #374151;
   line-height: 1.6;
@@ -20,12 +18,12 @@ body {
 }
 
 /* ===================================
-   HEADER STYLES
+   HEADER STYLES - MOBILE FIRST
    =================================== */
 .header {
   background-color: #0f766e;
   color: white;
-  padding: 1rem 1.5rem;
+  padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
@@ -33,25 +31,28 @@ body {
 }
 
 .header-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
 .logo {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: bold;
   letter-spacing: -0.025em;
-  margin-right: 2rem;
+  margin-bottom: 0.5rem;
   padding-right: 0.2rem;
 }
 
-/* Navigation Styles */
 .navigation {
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  padding-top: 1rem;
 }
 
 .nav-link {
@@ -61,6 +62,11 @@ body {
   transition: all 0.3s ease;
   position: relative;
   font-weight: 500;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-link:last-child {
+  border-bottom: none;
 }
 
 .nav-link:hover {
@@ -77,7 +83,9 @@ body {
   display: flex;
   gap: 0.75rem;
   align-items: center;
-  position: relative; /* Importante para el posicionamiento del dropdown */
+  width: 100%;
+  justify-content: flex-end;
+  position: relative;
 }
 
 .icon-button {
@@ -131,17 +139,16 @@ body {
    MAIN CONTENT STYLES
    =================================== */
 .main-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
+  width: 100%;
+  padding: 1.5rem 1rem;
 }
 
 .section-title {
-  font-size: 2.25rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #0f766e;
-  margin-bottom: 2.5rem;
-  text-align: left;
+  margin-bottom: 2rem;
+  text-align: center;
   letter-spacing: -0.025em;
 }
 
@@ -155,13 +162,14 @@ body {
 
 .category-header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 1rem;
   align-items: center;
   margin-bottom: 1.5rem;
 }
 
 .category-title {
-  font-size: 1.75rem;
+  font-size: 1.25rem;
   font-weight: bold;
   color: #0f766e;
 }
@@ -203,7 +211,7 @@ body {
   overflow-x: auto;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  gap: 1.5rem;
+  gap: 1rem;
   padding: 1rem 0;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -216,10 +224,10 @@ body {
 /* Product Card */
 .product-card {
   flex: 0 0 auto;
-  width: 280px;
+  width: 180px;
   background: white;
   border-radius: 12px;
-  padding: 2rem 1.5rem;
+  padding: 1rem 0.75rem;
   text-align: center;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
@@ -252,16 +260,16 @@ body {
 
 /* Product Image */
 .product-image {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 200px;
+  height: 160px;
 }
 
 .product-image img {
-  width: 150px;
-  height: 200px;
+  width: 120px;
+  height: 160px;
   object-fit: contain;
   border-radius: 8px;
   transition: transform 0.3s ease;
@@ -275,9 +283,9 @@ body {
 .product-name {
   color: #0f766e;
   font-weight: 600;
-  font-size: 1rem;
-  margin-bottom: 1.25rem;
-  min-height: 2.5rem;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  min-height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -296,13 +304,13 @@ body {
 .current-price {
   color: #0f766e;
   font-weight: bold;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
 }
 
 .original-price {
   color: #9ca3af;
   text-decoration: line-through;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 /* Add Button */
@@ -311,10 +319,10 @@ body {
   background-color: #0f766e;
   color: white;
   border: none;
-  padding: 0.875rem 1.5rem;
+  padding: 0.75rem 1rem;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
@@ -359,7 +367,7 @@ body {
   position: fixed;
   top: 0;
   right: 0;
-  width: 400px;
+  width: 100%;
   height: 100%;
   background: white;
   z-index: 201;
@@ -427,59 +435,6 @@ body {
 }
 
 /* Estilos para imágenes en el carrito */
-.cart-item {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    gap: 12px;
-}
-
-.cart-item-image {
-    flex-shrink: 0;
-    width: 60px;
-    height: 60px;
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: #f5f5f5;
-}
-
-.cart-item-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.cart-item-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.cart-item-info h4 {
-    margin: 0 0 4px 0;
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.cart-item-price {
-    margin: 0;
-    font-size: 13px;
-    color: #666;
-    font-weight: 500;
-}
-
-.cart-item-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-}
-
 .cart-item {
   display: flex;
   gap: 1rem;
@@ -615,7 +570,6 @@ body {
 .dropdown-overlay.active {
   opacity: 1;
   visibility: visible;
-  /* SOLUCIÓN: Remover pointer-events auto para que no capture clics */
   pointer-events: none;
   background: transparent;
 }
@@ -624,7 +578,8 @@ body {
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  width: 280px;
+  width: 90vw;
+  max-width: 280px;
   background: white;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -645,10 +600,8 @@ body {
   z-index: 300;
 }
 
-/* Asegurar que user-actions tenga position relative */
 .user-actions {
-    position: relative;
-    position: relative !important;
+  position: relative !important;
 }
 
 .user-dropdown::before {
@@ -749,7 +702,6 @@ body {
   color: #0f766e;
 }
 
-/* Botones primarios para guest */
 .dropdown-button.primary {
   background-color: #0f766e;
   color: white;
@@ -783,7 +735,6 @@ body {
   color: white;
 }
 
-/* Botón de logout */
 .dropdown-button.logout {
   color: #dc2626;
   border-top: 1px solid #e5e7eb;
@@ -839,105 +790,114 @@ body {
 }
 
 /* ===================================
-   RESPONSIVE DESIGN
+   DESKTOP STYLES (MEDIA QUERY)
    =================================== */
-@media (max-width: 768px) {
+@media (min-width: 769px) {
   .header {
-    padding: 1rem;
+    padding: 1rem 1.5rem;
   }
   .header-container {
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  .navigation {
-    order: 3;
-    width: 100%;
-    justify-content: center;
-    gap: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-  }
-  .user-actions {
-    order: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
   }
   .logo {
-    order: 1;
-    font-size: 1.5rem;
+    font-size: 1.75rem;
+    margin-bottom: 0;
+    margin-right: 2rem;
+  }
+  .navigation {
+    flex-direction: row;
+    width: auto;
+    gap: 2rem;
+    border-top: none;
+    padding-top: 0;
+  }
+  .nav-link {
+    border-bottom: none;
+    padding: 0.5rem 0;
+  }
+  .user-actions {
+    width: auto;
+    justify-content: flex-end;
   }
   .main-content {
-    padding: 1.5rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
   }
   .section-title {
-    font-size: 1.75rem;
-    margin-bottom: 2rem;
-    text-align: center;
+    font-size: 2.25rem;
+    margin-bottom: 2.5rem;
+    text-align: left;
   }
   .category-header {
-    flex-direction: column;
-    gap: 1rem;
+    flex-direction: row;
+    gap: 0;
     align-items: center;
+    margin-bottom: 1.5rem;
   }
-  .cart-sidebar {
-    width: 100%;
+  .category-title {
+    font-size: 1.75rem;
   }
-  .modal-content {
-    width: 95%;
-    margin: 1rem;
+  .products-grid {
+    gap: 1.5rem;
   }
-  .products-grid .product-card {
-    width: 220px;
-  }
-}
-
-@media (max-width: 480px) {
-  .products-grid .product-card {
-    width: 180px;
-    padding: 1rem 0.75rem;
+  .product-card {
+    width: 280px;
+    padding: 2rem 1.5rem;
   }
   .product-image {
-    height: 160px;
-    margin-bottom: 1rem;
+    height: 200px;
+    margin-bottom: 1.5rem;
   }
   .product-image img {
-    width: 120px;
-    height: 160px;
+    width: 150px;
+    height: 200px;
   }
   .product-name {
-    font-size: 0.85rem;
-    min-height: 2rem;
-    margin-bottom: 1rem;
+    font-size: 1rem;
+    min-height: 2.5rem;
+    margin-bottom: 1.25rem;
   }
   .current-price {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
   }
   .add-button {
-    padding: 0.75rem 1rem;
-    font-size: 0.85rem;
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
+  }
+  .cart-sidebar {
+    width: 400px;
   }
 }
 
+/* Extra utility for price */
 .price-container {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .original-price {
-    text-decoration: line-through;
-    color: #999;
-    font-size: 0.9em;
+  text-decoration: line-through;
+  color: #999;
+  font-size: 0.9em;
 }
 
 .discounted-price {
-    color: #28a745;
-    font-weight: bold;
+  color: #28a745;
+  font-weight: bold;
 }
 
 .discount-badge {
-    background: #dc3545;
-    color: white;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.8em;
-    align-self: flex-start;
+  background: #dc3545;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  align-self: flex-start;
 }
