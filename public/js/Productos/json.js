@@ -172,6 +172,28 @@ function deleteProducto(id) {
   return Promise.resolve();
 }
 
+// Nueva función para reducir stock
+function reducirStock(producto_id, cantidad) {
+  const productos = readData();
+  const index = productos.findIndex(p => p.id === parseInt(producto_id, 10));
+  
+  if (index === -1) {
+    return Promise.reject(new Error(`Producto con ID ${producto_id} no encontrado`));
+  }
+  
+  const producto = productos[index];
+  
+  if (producto.stock < cantidad) {
+    return Promise.reject(new Error(`Stock insuficiente para el producto ${producto.nombre}. Stock actual: ${producto.stock}, cantidad solicitada: ${cantidad}`));
+  }
+  
+  const nuevoStock = producto.stock - cantidad;
+  productos[index].stock = nuevoStock;
+  writeData(productos);
+  
+  return Promise.resolve(nuevoStock);
+}
+
 module.exports = {
   getProducto,
   getProductoById,
@@ -181,5 +203,6 @@ module.exports = {
   deleteProducto,
   getCategorias,
   getCategoriasDeProducto,
-  getRelaciones
+  getRelaciones,
+  reducirStock  // ← Agregar esta función al export
 };

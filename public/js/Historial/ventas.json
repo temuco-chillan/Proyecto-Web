@@ -108,5 +108,29 @@
     "total": 5000,
     "payment_id": "123495214590",
     "estado": "completada"
+  },
+  {
+    "id": 15,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-24T12:06:28.253Z",
+    "total": 5000,
+    "payment_id": "123498633160",
+    "estado": "completada"
+  },
+  {
+    "id": 16,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-24T12:08:23.067Z",
+    "total": 5000,
+    "payment_id": "123498653998",
+    "estado": "completada"
+  },
+  {
+    "id": 17,
+    "usuario_id": 3,
+    "fecha_venta": "2025-08-24T12:10:28.517Z",
+    "total": 5000,
+    "payment_id": "123498866622",
+    "estado": "completada"
   }
 ]

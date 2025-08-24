@@ -130,6 +130,14 @@ async function crearVenta(usuario_id, detalles, payment_id = null) {
   const total = detalles.reduce((sum, d) => 
     sum + (d.cantidad * d.precio_unitario * (1 - (d.descuento_aplicado || 0)/100)), 0);
 
+  try {
+    for (const detalle of detalles) {
+      await productosBackend.reducirStock(detalle.producto_id, detalle.cantidad);
+    }
+  } catch (error) {
+    throw new Error(`Error al procesar stock: ${error.message}`);
+  }
+
   const nuevaVenta = generateDefaultVentaData({
     usuario_id: parseInt(usuario_id),
     fecha_venta: new Date().toISOString(),
