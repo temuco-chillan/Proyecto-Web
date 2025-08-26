@@ -532,11 +532,39 @@ async function initializeProducts() {
 }
 
 // Inicializar cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
-    setupProductsEventListeners();
-    initializeProducts();
-});
+//carrucel
+document.addEventListener('DOMContentLoaded', function () {
+    const grid = document.getElementById('products-grid');
+    const cards = Array.from(grid.getElementsByClassName('product-card'));
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const visibleCount = 3; // Número de productos visibles a la vez
+    let start = 0;
 
+    function updateCarousel() {
+        cards.forEach((card, i) => {
+            card.style.display = (i >= start && i < start + visibleCount) ? 'block' : 'none';
+        });
+        prevBtn.disabled = start === 0;
+        nextBtn.disabled = start + visibleCount >= cards.length;
+    }
+
+    prevBtn.addEventListener('click', () => {
+        if (start > 0) {
+            start--;
+            updateCarousel();
+        }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (start + visibleCount < cards.length) {
+            start++;
+            updateCarousel();
+        }
+    });
+
+    updateCarousel();
+});
 // Exponer funciones globalmente
 window.addToCart = addToCart;
 window.updateCartQuantity = updateCartQuantity;
