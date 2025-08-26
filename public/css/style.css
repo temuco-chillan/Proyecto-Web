@@ -1,0 +1,397 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Mantenemos el fondo base más claro */
+}
+
+/* Estilos para el encabezado */
+header {
+    background: #333;
+    color: #fff;
+    padding: 32px 0 24px 0; /* Ajuste para un padding más cómodo */
+    text-align: center;
+    position: relative; /* Necesario para posicionar elementos internos */
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* Estilos de botones generales */
+.btn {
+    background-color: #e50914; /* Color rojo de Netflix, más vibrante */
+    color: #fff;
+    border: none;
+    border-radius: 6px; /* Bordes más suaves */
+    padding: 12px 28px; /* Padding más generoso */
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Transición suave al hover */
+}
+
+.btn:hover {
+    background-color: #c40812; /* Rojo más oscuro al pasar el mouse */
+}
+
+/* Botón de cerrar sesión en el encabezado */
+.logout-btn {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+}
+
+/* Contenedor del carrito en el encabezado */
+.header-carrito-wrapper {
+    position: absolute;
+    top: 32px;
+    right: 32px;
+    display: inline-block; /* Para que el dropdown se posicione correctamente */
+}
+
+.carrito-icono {
+    font-size: 2em; /* Hace el ícono más grande */
+    cursor: pointer;
+    color: #e50914; /* Color rojo para el ícono */
+}
+
+.carrito-dropdown {
+    position: absolute;
+    top: 100%; /* Justo debajo del icono */
+    right: 0; /* Alineado a la derecha del ícono */
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    width: 400px; /* Ancho fijo para el dropdown */
+    max-width: 90vw; /* Ajuste para pantallas pequeñas */
+    padding: 10px; /* Espaciado interno */
+    color: #333; /* Color de texto predeterminado para el carrito */
+}
+
+.carrito-dropdown.oculto {
+    display: none;
+}
+
+.carrito-dropdown table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.carrito-dropdown th,
+.carrito-dropdown td {
+    font-size: 0.9em; /* Fuente ligeramente más pequeña */
+    color: #333;
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #eee; /* Líneas de división más suaves */
+}
+
+.carrito-dropdown thead th {
+    background-color: #f0f0f0; /* Fondo para el encabezado de la tabla del carrito */
+    font-weight: bold;
+}
+
+.carrito-dropdown tfoot td {
+    text-align: left;
+    font-weight: bold;
+    display: flex; /* Para el total y el botón de pago */
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.carrito-dropdown .btn-pago {
+    background-color: #007bff; /* Azul para el botón de Mercado Pago */
+    padding: 8px 16px;
+    font-size: 0.9em;
+    margin: 0; /* Eliminar margen extra */
+}
+
+.carrito-dropdown .btn-pago:hover {
+    background-color: #0056b3;
+}
+
+
+/* Estilos principales del contenido */
+main {
+    background: #fff;
+    min-height: 100vh;
+    padding: 0;
+}
+
+.main-content-wrapper {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 40px 32px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.section-header h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Formulario de categoría */
+.category-form-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+#formCategoria {
+    display: flex;
+    gap: 8px;
+    margin: 0;
+}
+
+#nombreCategoria {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#formCategoria button {
+    padding: 8px 16px;
+    background-color: #007bff; /* Azul para crear categoría */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#formCategoria button:hover {
+    background-color: #0056b3;
+}
+
+#mensajeCategoria {
+    margin: 0;
+    align-self: center;
+    font-weight: bold;
+    color: #28a745; /* Color para mensajes de éxito */
+}
+
+/* Contenedor del formulario de producto (Agregar/Actualizar) */
+.product-form-container {
+    display: none; /* Por defecto oculto */
+    margin-bottom: 32px;
+    background: #f5f5f5;
+    padding: 24px;
+    border-radius: 8px;
+    width: 100%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sutil sombra */
+}
+
+.product-form-container h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 0 24px 0;
+    color: #333;
+}
+
+#ProductosForm {
+    display: flex;
+    flex-direction: column; /* Organizar los grupos de campos verticalmente */
+}
+
+.form-fields-wrapper {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+    flex-wrap: wrap; /* Permitir que los contenedores se envuelvan en pantallas pequeñas */
+}
+
+.form-column {
+    flex: 2; /* Cada columna ocupa 2 unidades */
+    min-width: 280px; /* Ancho mínimo para cada columna */
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+    color: #555;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select {
+    width: 100%;
+    padding: 10px; /* Padding un poco más grande para los inputs */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Incluir padding y borde en el ancho */
+}
+
+/* Estilos específicos para la sección de imagen */
+.image-upload-area {
+    flex: 1; /* Ocupa 1 unidad, es más pequeño */
+    min-width: 180px; /* Ancho mínimo */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px dashed #ccc; /* Borde punteado más claro */
+    border-radius: 8px;
+    padding: 20px;
+    background: #fafafa;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.3s ease;
+}
+
+.image-upload-area:hover {
+    border-color: #a0a0a0;
+}
+
+.image-upload-area .icon {
+    font-size: 2.5em; /* Icono más grande */
+    color: #888;
+}
+
+.image-upload-area .text {
+    font-size: 0.85em;
+    color: #777;
+    margin-top: 8px;
+}
+
+#productoImagen {
+    margin-top: 8px;
+}
+
+/* Botones de acción del formulario de producto */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: flex-end; /* Alinear los botones a la derecha */
+}
+
+.form-actions .btn-cancel {
+    background: #888;
+    color: #fff;
+}
+
+.form-actions .btn-cancel:hover {
+    background: #666;
+}
+
+/* Tabla de Productos */
+.table-container {
+    width: 100%;
+    overflow-x: auto; /* Permite scroll horizontal si la tabla es muy ancha */
+}
+
+#ProductosTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem; /* Fuente ligeramente más pequeña para la tabla */
+    min-width: 800px; /* Ancho mínimo para la tabla si es responsive */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#ProductosTable thead {
+    background: #222;
+    color: #fff;
+}
+
+#ProductosTable th,
+#ProductosTable td {
+    padding: 12px 10px; /* Más padding para celdas */
+    text-align: left;
+    border-bottom: 1px solid #eee; /* Líneas divisorias más sutiles */
+}
+
+#ProductosTable tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Rayas para mejor legibilidad */
+}
+
+#ProductosTable tbody tr:hover {
+    background-color: #f0f0f0; /* Resaltar fila al pasar el mouse */
+}
+
+#ProductosTable td.actions-cell {
+    text-align: center;
+    white-space: nowrap; /* Evita que los botones se rompan en varias líneas */
+}
+
+#ProductosTable td.actions-cell .btn {
+    padding: 6px 12px; /* Botones más pequeños dentro de la tabla */
+    font-size: 0.85rem;
+    margin: 0 4px;
+}
+
+/* Estilos para el select de categorías y el input de nueva categoría */
+#productoCategorias {
+    height: 100px; /* Altura fija para el multiselect */
+}
+
+#nuevaCategoriaInput {
+    margin-top: 8px;
+}
+
+#crearCategoriaBtn {
+    margin-top: 8px;
+    background-color: #28a745; /* Verde para el botón crear categoría */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+#crearCategoriaBtn:hover {
+    background-color: #218838;
+}
+
+/* Clases de utilidad */
+.oculto {
+    display: none !important; /* !important para asegurar que se oculte */
+}
+
+/* Agregar estas reglas CSS para las animaciones */
+#cart-count {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.add-button {
+    transition: background-color 0.3s ease;
+}
+
+.add-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.cart-item {
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

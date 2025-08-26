@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Pedidos - El Despertar</title>
+    <link rel="stylesheet" href="../css/user.css">
+    <link rel="stylesheet" href="../css/historial.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <!-- Logo -->
+            <div class="logo">El Despertar</div>
+            <!-- Navigation -->
+            <nav class="navigation">
+                <a href="index.html" class="nav-link">Inicio</a>
+                <a href="index.html#productos" class="nav-link">Productos</a>
+                <a href="#" class="nav-link">Nosotros</a>
+                <a href="historial.html" class="nav-link active">Mis Pedidos</a>
+            </nav>
+            <!-- User Actions -->
+            <div class="user-actions">
+                <button class="icon-button" id="user-btn">
+                    <i class="fas fa-user"></i>
+                </button>
+                <!-- Cambiar cart-counter por cart-count para consistencia -->
+                <button class="icon-button" id="cart-btn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cart-count" style="display: none;">0</span>
+                </button>
+
+                <!-- User Dropdown -->
+                <div class="user-dropdown" id="user-dropdown">
+                    <!-- Cuando NO hay sesión activa -->
+                    <div class="dropdown-content" id="dropdown-guest">
+                        <div class="dropdown-header">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Mi Cuenta</span>
+                        </div>
+                        <div class="dropdown-actions">
+                            <button class="dropdown-button primary" id="login-btn">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Iniciar Sesión
+                            </button>
+                            <button class="dropdown-button secondary" id="register-btn">
+                                <i class="fas fa-user-plus"></i>
+                                Registrarse
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cuando SÍ hay sesión activa -->
+                    <div class="dropdown-content hidden" id="dropdown-user">
+                        <div class="dropdown-header">
+                            <i class="fas fa-user-circle"></i>
+                            <div class="user-info">
+                                <span class="user-name" id="dropdown-user-name">Juan Pérez</span>
+                                <span class="user-email" id="dropdown-user-email">juan@email.com</span>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-actions">
+                            <button class="dropdown-button" id="profile-btn">
+                                <i class="fas fa-user-cog"></i>
+                                Mi Perfil
+                            </button>
+                            <button class="dropdown-button" id="orders-btn">
+                                <i class="fas fa-shopping-bag"></i>
+                                Mis Pedidos
+                            </button>
+                            <button class="dropdown-button" id="wishlist-btn">
+                                <i class="fas fa-heart"></i>
+                                Lista de Deseos
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-button logout" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Cerrar Sesión
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="max-w-6xl">
+            <h1 class="section-title">Mi Historial de Pedidos</h1>
+
+            <!-- Loading State -->
+            <div class="loading" id="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Cargando historial...</span>
+            </div>
+
+            <!-- Error State -->
+            <div class="error hidden" id="error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="error-message">Error al cargar el historial</span>
+                <button class="retry-btn" id="retry-btn">Reintentar</button>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state hidden" id="empty-state">
+                <i class="fas fa-shopping-bag"></i>
+                <h3>No tienes pedidos aún</h3>
+                <p>Cuando realices tu primera compra, aparecerá aquí.</p>
+                <a href="index.html" class="btn-primary">Ir a Comprar</a>
+            </div>
+
+            <!-- Historial Table -->
+            <div class="card hidden" id="historial-card">
+                <div class="card-header">
+                    <h2 class="card-title">Tus Pedidos Recientes</h2>
+                    <div class="filter-controls">
+                        <select id="estado-filter">
+                            <option value="">Todos los estados</option>
+                            <option value="completada">Completada</option>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="cancelada">Cancelada</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <table class="table">
+                        <thead class="table-header">
+                            <tr>
+                                <th>ID de Venta</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th class="text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-body" id="historial-tbody">
+                            <!-- Contenido dinámico -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal de Detalles -->
+            <div class="modal hidden" id="details-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Detalles del Pedido</h3>
+                        <button class="modal-close" id="modal-close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modal-body">
+                        <!-- Contenido dinámico -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Carrito de Compras</h3>
+            <button class="close-cart" id="close-cart">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <!-- Eliminar el span duplicado cart-count -->
+        <!-- Eliminar el div cart-content duplicado -->
+        <div class="cart-content" id="cart-content">
+            <div class="empty-cart" id="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Tu carrito está vacío</p>
+            </div>
+        </div>
+        <div class="cart-footer" id="cart-footer" style="display: none;">
+            <div class="cart-total">
+                <strong>Total: $<span id="cart-total">0</span></strong>
+            </div>
+            <button class="checkout-button" onclick="pagarCarrito()">Proceder al Pago</button>
+        </div>
+    </div>
+
+    <!-- Dropdown Overlay -->
+    <div class="dropdown-overlay" id="dropdown-overlay"></div>
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+
+    <!-- Elemento de notificación -->
+    <div id="notification" class="notification">
+        <span id="notification-message"></span>
+    </div>
+
+    <!-- Scripts modulares -->
+    <script src="../js/header.js"></script>
+    <script src="../js/products.js"></script>
+    <script src="../js/historial-page.js"></script>
+    <script src="../js/Carrito/carrito.js"></script>
+</body>
+</html>

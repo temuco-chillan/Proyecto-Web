@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "cantidad": 1,
+    "usuario_id": 1,
+    "producto_id": 3,
+    "fecha_add": "2025-07-29T17:11:45.869Z"
+  },
+  {
+    "id": 3,
+    "cantidad": 3,
+    "usuario_id": 2,
+    "producto_id": 4,
+    "fecha_add": "2025-08-05T21:32:36.572Z"
+  },
+  {
+    "id": 4,
+    "cantidad": 1,
+    "usuario_id": 2,
+    "producto_id": 2,
+    "fecha_add": "2025-08-05T21:35:55.056Z"
+  },
+  {
+    "id": 5,
+    "cantidad": 1,
+    "usuario_id": 3,
+    "producto_id": 5,
+    "fecha_add": "2025-08-24T12:13:43.905Z"
+  }
+]

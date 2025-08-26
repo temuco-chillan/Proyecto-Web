@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda El Despertar</title>
+    <!-- You would link your CSS file here, e.g., <link rel="stylesheet" href="style.css"> -->
+    <link rel="stylesheet" href="../css/user.css">
+    <!-- For Font Awesome icons, ensure you include this CDN link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <!-- Logo -->
+            <div class="logo">El Despertar</div>
+            <!-- Navigation -->
+            <nav class="navigation">
+                <a href="index.html" class="nav-link active">Inicio</a>
+                <a href="#" class="nav-link">Productos</a>
+                <a href="#" class="nav-link">Nosotros</a>
+            </nav>
+            <!-- User Actions -->
+            <div class="user-actions">
+                <button class="icon-button" id="user-btn">
+                    <i class="fas fa-user"></i>
+                </button>
+                <button class="icon-button" id="cart-btn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cart-count">0</span>
+                </button>
+
+                <!-- User Dropdown -->
+                <div class="user-dropdown" id="user-dropdown">
+                    <!-- Cuando NO hay sesión activa -->
+                    <div class="dropdown-content" id="dropdown-guest">
+                        <div class="dropdown-header">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Mi Cuenta</span>
+                        </div>
+                        <div class="dropdown-actions">
+                            <button class="dropdown-button primary" id="login-btn">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Iniciar Sesión
+                            </button>
+                            <button class="dropdown-button secondary" id="register-btn">
+                                <i class="fas fa-user-plus"></i>
+                                Registrarse
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cuando SÍ hay sesión activa -->
+                    <div class="dropdown-content hidden" id="dropdown-user">
+                        <div class="dropdown-header">
+                            <i class="fas fa-user-circle"></i>
+                            <div class="user-info">
+                                <span class="user-name" id="dropdown-user-name">Juan Pérez</span>
+                                <span class="user-email" id="dropdown-user-email">juan@email.com</span>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-actions">
+                            <button class="dropdown-button" id="profile-btn">
+                                <i class="fas fa-user-cog"></i>
+                                Mi Perfil
+                            </button>
+                            <button class="dropdown-button" id="orders-btn">
+                                <i class="fas fa-shopping-bag"></i>
+                                Mis Pedidos
+                            </button>
+                            <button class="dropdown-button" id="wishlist-btn">
+                                <i class="fas fa-heart"></i>
+                                Lista de Deseos
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-button logout" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Cerrar Sesión
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Section Title -->
+        <h1 class="section-title">¡Nuestros Productos!</h1>
+
+        <!-- Categories Container -->
+        <div class="category-section">
+            <div class="category-header">
+                <h2 class="category-title">Nuevos Productos</h2>
+                <div class="carousel-controls">
+                    <button class="carousel-button" id="prev-btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="carousel-button" id="next-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="products-grid" id="products-grid">
+                <!-- Example Product Cards (these would typically be loaded dynamically with JS) -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="#" alt="Wireless Bluetooth Headphones">
+                    </div>
+                    <h3 class="product-name">Wireless Bluetooth Headphones</h3>
+                    <div class="product-pricing">
+                        <span class="current-price">$59.99</span>
+                        <span class="original-price">$79.99</span>
+                    </div>
+                    <button class="add-button">Add to Cart</button>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="#" alt="Smartwatch with Heart Rate Monitor">
+                    </div>
+                    <h3 class="product-name">Smartwatch with Heart Rate Monitor</h3>
+                    <div class="product-pricing">
+                        <span class="current-price">$129.99</span>
+                    </div>
+                    <button class="add-button">Add to Cart</button>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="#" alt="Portable Bluetooth Speaker">
+                    </div>
+                    <h3 class="product-name">Portable Bluetooth Speaker</h3>
+                    <div class="product-pricing">
+                        <span class="current-price">$34.50</span>
+                        <span class="original-price">$45.00</span>
+                    </div>
+                    <button class="add-button">Add to Cart</button>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="#" alt="4K Ultra HD Smart TV">
+                    </div>
+                    <h3 class="product-name">4K Ultra HD Smart TV</h3>
+                    <div class="product-pricing">
+                        <span class="current-price">$499.00</span>
+                        <span class="original-price">$600.00</span>
+                    </div>
+                    <button class="add-button">Add to Cart</button>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="#" alt="Ergonomic Office Chair">
+                    </div>
+                    <h3 class="product-name">Ergonomic Office Chair</h3>
+                    <div class="product-pricing">
+                        <span class="current-price">$189.99</span>
+                    </div>
+                    <button class="add-button">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Carrito de Compras</h3>
+            <button class="close-cart" id="close-cart">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-content" id="cart-content">
+            <div class="empty-cart" id="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Tu carrito está vacío</p>
+            </div>
+            <!-- Cart items would be dynamically added here -->
+            <!-- Example Cart Item (hidden by default) -->
+            <!--
+            <div class="cart-item hidden">
+                <img src="/placeholder.svg?height=60&width=60" alt="Product Name" class="cart-item-image">
+                <div class="cart-item-details">
+                    <h4 class="cart-item-name">Example Product</h4>
+                    <p class="cart-item-price">$19.99</p>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn">-</button>
+                        <span class="quantity">1</span>
+                        <button class="quantity-btn">+</button>
+                        <button class="remove-item">Remove</button>
+                    </div>
+                </div>
+            </div>
+            -->
+        </div>
+        <div class="cart-footer" id="cart-footer" style="display: none;">
+            <div class="cart-total">
+                <strong>Total: $<span id="cart-total">0</span></strong>
+            </div>
+            <button class="checkout-button" onclick="pagarCarrito()">Proceder al Pago</button>
+        </div>
+    </div>
+
+    <!-- Dropdown Overlay -->
+    <div class="dropdown-overlay" id="dropdown-overlay"></div>
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+
+    <!-- Elemento de notificación (agregar antes del cierre del body) -->
+    <div id="notification" class="notification">
+        <span id="notification-message"></span>
+    </div>
+
+    <!-- Scripts modulares -->
+    <script src="../js/header.js"></script>
+    <script src="../js/products.js"></script>
+    <script src="../js/Carrito/carrito.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Pendiente - Super Tienda</title>
+    <link rel="stylesheet" href="../../css/payment.css">
+</head>
+<body>
+    <div class="min-h-screen flex-center p-4 bg-yellow-50">
+        <div class="result-container">
+            <div class="result-card">
+                <!-- Header con icono y título -->
+                <div class="result-header">
+                    <div class="icon-container">
+                        <div class="status-icon pending-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12,6 12,12 16,14"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h2 class="status-title text-yellow-800">Pago Pendiente</h2>
+                    <p class="status-subtitle text-yellow-600">Tu pedido está registrado, esperando confirmación de pago</p>
+                </div>
+
+                <!-- Contenido -->
+                <div class="result-content">
+                    <!-- Información básica del pedido -->
+                    <div class="order-info">
+                        <div class="info-header">
+                            <div class="package-icon">📦</div>
+                            <span class="info-label">Número de Orden</span>
+                        </div>
+                        <p class="order-number">#ORD-2024-001236</p>
+                    </div>
+
+                    <!-- Estado del pago -->
+                    <div class="pending-details">
+                        <h3 class="details-title text-yellow-700">Estado del proceso</h3>
+                        
+                        <div class="status-timeline">
+                            <div class="timeline-item completed">
+                                <div class="timeline-icon">✅</div>
+                                <div class="timeline-content">
+                                    <p class="timeline-title">Pedido registrado</p>
+                                    <p class="timeline-time">Hace 5 minutos</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item pending">
+                                <div class="timeline-icon">⏳</div>
+                                <div class="timeline-content">
+                                    <p class="timeline-title">Procesando pago</p>
+                                    <p class="timeline-time">En proceso...</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item waiting">
+                                <div class="timeline-icon">⏸️</div>
+                                <div class="timeline-content">
+                                    <p class="timeline-title">Confirmación de pago</p>
+                                    <p class="timeline-time">Pendiente</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pending-info">
+                            <div class="info-box">
+                                <h4 class="info-title">¿Qué está pasando?</h4>
+                                <p class="info-text">
+                                    Tu pedido ha sido registrado exitosamente en nuestro sistema. 
+                                    Estamos procesando el pago con tu banco, lo cual puede tomar 
+                                    entre 5 a 15 minutos.
+                                </p>
+                            </div>
+
+                            <div class="info-box">
+                                <h4 class="info-title">Próximos pasos</h4>
+                                <ul class="info-list">
+                                    <li>Recibirás un email de confirmación una vez que se complete el pago</li>
+                                    <li>Puedes verificar el estado en cualquier momento</li>
+                                    <li>Si no recibes confirmación en 30 minutos, contacta soporte</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="separator"></div>
+                    <div class="action-buttons">
+                        <a href="../index.html" class="btn btn-outline">
+                            ← Volver al inicio
+                        </a>
+                        <button class="btn btn-pending flex-1" onclick="location.reload()">
+                            🔄 Verificar estado
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../js/Carrito/payment-dynamic.js"></script>
+</html>
