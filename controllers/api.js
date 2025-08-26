@@ -317,7 +317,7 @@ app.delete('/api/Productos/:id/categorias/:categoriaId', async (req, res) => {
 // configuramos el access token
 mercadopago.configure({
     //configuracion de usuario vendedor en mercado libre de prueba.
-    access_token: "APP_USR-5491912017954458-071117-bb82d2bc034b99dfd56644e4caf03e1a-2549815434"
+    access_token: process.env.Access_token
 });
 app.post('/api/pago', async (req, res) => {
     const { usuario_id } = req.body;
@@ -328,7 +328,7 @@ app.post('/api/pago', async (req, res) => {
 
     try {
         const items = await carrito.getCarrito(usuario_id);
-        const ngrok = process.env.NGROK_URL || "https://82240a225160.ngrok-free.app";
+        const ngrok = process.env.Dominio_H;
         if (!items || items.length === 0) {
             return res.status(400).json({ error: 'Carrito vacío' });
         }
