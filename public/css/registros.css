@@ -10,15 +10,9 @@ body {
   align-items: center;
   justify-content: center;
 }
-<<<<<<< HEAD
 .formularioRegistro {
   background: #181818;
   border-radius: 16px;
-=======
-.register-container {
-  background: rgba(24, 24, 24, 0.85);
-  border-radius: 20px;
->>>>>>> ed3efd46fa6604804d175eb8a261d77633ae9c1b
   box-shadow: 0 8px 32px rgba(0,0,0,0.45);
   padding: 2.5rem 2rem 2rem 2rem;
   width: 100%;
@@ -113,5 +107,5 @@ button[type="submit"]:hover {
 #message {
   margin-top: 1rem;
   color: #ef4444;
-  font-size: 0.95rem;
+  font-size: 0.95rem;
 }
