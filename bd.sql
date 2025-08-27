@@ -17,12 +17,11 @@ CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(150) NOT NULL UNIQUE,
-    rut VARCHAR(12) UNIQUE,
+    rut VARCHAR(255) UNIQUE,
     telefono VARCHAR(15) NOT NULL,
     direccion TEXT NOT NULL,
     ciudad VARCHAR(100) NOT NULL,
     region VARCHAR(100) NOT NULL,
-    codigo_postal VARCHAR(10),
     password VARCHAR(255) NOT NULL,
     rol_id INT DEFAULT 2,
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -88,7 +87,7 @@ CREATE TABLE IF NOT EXISTS ventas (
     fecha_venta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     total DECIMAL(10,2) NOT NULL,
     payment_id VARCHAR(255) NOT NULL,
-    estado ENUM('completada', 'cancelada', 'pendiente') DEFAULT 'completada',
+    estado ENUM('completada', 'cancelada', 'pendiente') DEFAULT 'pendiente',
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
@@ -130,17 +129,17 @@ INSERT IGNORE INTO roles (nombre) VALUES ('admin'), ('usuario');
 
 -- Usuarios
 -- Usuarios con RUT y password hasheados
-INSERT INTO usuarios (username, email, rut, telefono, direccion, ciudad, region, codigo_postal, password, rol_id)
+INSERT INTO usuarios (username, email, rut, telefono, direccion, ciudad, region, password, rol_id)
 VALUES
 ('admin1', 'admin@tienda.com', 
  '$2b$10$aiJYbzpQvLzDyJQfPt94e.7eXoL8pA8OlL8o1KXrIV8pDe9HcW7iK', -- rut 12345678-9
- '987654321', 'Calle Admin 123', 'Santiago', 'RM', '8320000',
+ '987654321', 'Calle Admin 123', 'Santiago', 'RM',
  '$2b$10$EDVvByq26pNqMQyTzN9nIezGL9s80M/a9drqG1D9mYHkFvBkM36rC', -- password adminpass
  1),
 
 ('user1', 'user1@tienda.com',
  '$2b$10$s4h06OeRvjpsRBym42moOOG3Z2Yr7eV3d.vPc1uH9NGc7qXbK9iuu', -- rut 98765432-1
- '912345678', 'Calle Falsa 123', 'Santiago', 'RM', '8320000',
+ '912345678', 'Calle Falsa 123', 'Santiago', 'RM',
  '$2b$10$wXc3uZxN9A/mtUhNjz3cUeT13.4j83DJwH6Zq8qebvSKGnPGeAO8K', -- password userpass
  2);
 

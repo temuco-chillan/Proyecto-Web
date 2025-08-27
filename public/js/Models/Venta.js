@@ -18,7 +18,7 @@ class Venta extends Model {
       usuario_id: json.usuario_id,
       total: json.total,
       payment_id: json.payment_id,
-      estado: json.estado || 'completada'
+      estado: json.estado || 'pendiente'
     });
   }
 }
@@ -46,7 +46,7 @@ Venta.init({
   },
   estado: {
     type: DataTypes.ENUM('completada', 'cancelada', 'pendiente'),
-    defaultValue: 'completada'
+    defaultValue: 'pendiente'
   }
 }, {
   sequelize,

@@ -65,8 +65,7 @@ function generateDefaultUserData(data = {}) {
   if (user.direccion === undefined) user.direccion = null;
   if (user.ciudad === undefined) user.ciudad = null;
   if (user.region === undefined) user.region = null;
-  if (user.codigo_postal === undefined) user.codigo_postal = null;
-
+  
   return user;
 }
 
@@ -91,7 +90,7 @@ async function getUserById(id) {
   return userWithoutSensitiveData;
 }
 
-async function createUser({ username, email, password, rol_id, rut, telefono, direccion, ciudad, region, codigo_postal }) {
+async function createUser({ username, email, password, rol_id, rut, telefono, direccion, ciudad, region }) {
   const users = loadUsers();
 
   if (users.find(u => u.username === username)) {
@@ -129,8 +128,7 @@ async function createUser({ username, email, password, rol_id, rut, telefono, di
     telefono,
     direccion,
     ciudad,
-    region,
-    codigo_postal
+    region
   });
   
   users.push(newUser);

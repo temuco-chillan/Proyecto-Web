@@ -10,6 +10,7 @@ const carrito = require('../public/js/Carrito/service');
 const categorias = require('../public/js/Categorias/service');
 const { Categoria } = require('../public/js/Models');
 const historial = require('../public/js/Historial/service');
+const ganancias = require('../public/js/Ganancias/service');
 
 const { title } = require('process');
 const nTunel = "548200159a34";
@@ -61,8 +62,70 @@ app.post('/api/users', async (req, res) => {
         telefono, 
         direccion, 
         ciudad, 
-        region, 
-        codigo_postal,
+        region,
+        rol_id = 2 
+    } = req.body;
+
+    if (!username || !email || !password || !rut || !telefono || !direccion || !ciudad || !region) {
+        return res.status(400).json({ message: 'Todos los campos obligatorios deben ser completados' });
+    }
+
+    try {
+        const userData = {
+            username, 
+            email, 
+            password, 
+            rut, 
+            telefono, 
+            direccion, 
+            ciudad, 
+            region, 
+            rol_id
+        };
+        
+        const user = await sesiones.createUser(userData);
+        res.status(201).json({ message: 'Cuenta creada exitosamente', user });
+    } catch (err) {
+        if (err.message === 'USERNAME_EXISTS') {
+            res.status(409).json({ message: 'Este nombre de usuario ya está registrado' });
+        } else if (err.message === 'EMAIL_EXISTS') {
+            res.status(409).json({ message: 'Este correo electrónico ya está en uso' });
+        } else {
+            console.error('Error en registro:', err);
+            res.status(500).json({ message: 'Error interno del servidor. Intenta nuevamente' });
+        }
+    }
+});
+
+app.post('/api/users/validate', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const user = await sesiones.validateUser({ username, password });
+        user ? res.json({ message: 'Acceso autorizado', user }) : res.status(401).json({ message: 'Credenciales incorrectas' });
+    } catch (err) {
+        res.status(500).json({ error: 'Error del servidor al validar usuario' });
+    }
+});
+
+app.get('/api/users/:id', async (req, res) => {
+    try {
+        const user = await sesiones.getUserById(req.params.id);
+        user ? res.json(user) : res.status(404).json({ message: 'Usuario no encontrado' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/users', async (req, res) => {
+    const { 
+        username, 
+        email, 
+        password, 
+        rut, 
+        telefono, 
+        direccion, 
+        ciudad, 
+        region,
         rol_id = 2 
     } = req.body;
 
@@ -82,11 +145,6 @@ app.post('/api/users', async (req, res) => {
             region, 
             rol_id
         };
-        
-        // Agregar código postal solo si está presente
-        if (codigo_postal) {
-            userData.codigo_postal = codigo_postal;
-        }
         
         const user = await sesiones.createUser(userData);
         res.status(201).json({ message: 'Usuario creado', user });
@@ -418,6 +476,9 @@ app.get('/api/pago-exitoso', async (req, res) => {
 
         const ventaId = await historial.crearVenta(usuario_id, detallesVenta, payment_id);
         
+        // 💰 AGREGAR GANANCIA AL SISTEMA DE ACUMULACIÓN
+        ganancias.agregarGanancia(subtotal, payment_id, usuario_id);
+        
         // 🧹 Vaciar el carrito después de registrar la venta
         await carrito.vaciarCarrito(usuario_id);
         
@@ -557,5 +618,37 @@ app.get('/api/historial', async (req, res) => {
         res.json(data);
     } catch (err) {
         res.status(500).json({ error: err.message });
+    }
+});
+// Endpoint para obtener ganancias acumuladas
+app.get('/api/ganancias', async (req, res) => {
+    try {
+        const datosGanancias = ganancias.obtenerGanancias();
+        res.json(datosGanancias);
+    } catch (error) {
+        console.error('Error al obtener ganancias:', error);
+        res.status(500).json({ error: 'Error al obtener ganancias' });
+    }
+});
+
+// Endpoint para actualizar porcentaje de ganancia
+app.put('/api/ganancias/porcentaje', async (req, res) => {
+    try {
+        const { porcentaje } = req.body;
+        
+        if (!porcentaje || porcentaje < 0 || porcentaje > 100) {
+            return res.status(400).json({ error: 'Porcentaje debe estar entre 0 y 100' });
+        }
+        
+        const actualizado = ganancias.actualizarPorcentaje(porcentaje);
+        
+        if (actualizado) {
+            res.json({ message: 'Porcentaje actualizado correctamente', porcentaje });
+        } else {
+            res.status(500).json({ error: 'Error al actualizar porcentaje' });
+        }
+    } catch (error) {
+        console.error('Error al actualizar porcentaje:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });

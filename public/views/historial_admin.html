@@ -80,7 +80,7 @@
           <thead>
             <tr>
               <th>ID de Venta</th>
-              <th>Usuario ID</th>
+              <th>Usuario</th>
               <th>Fecha</th>
               <th>Total</th>
               <th>Estado</th>
@@ -102,10 +102,34 @@
         <div class="total-line" id="modalSubtitle"></div>
       </div>
       <div class="modal-body">
-        <div class="stack" style="flex-wrap:wrap; gap:8px 12px; margin-bottom:8px">
+        <div class="stack" style="flex-wrap:wrap; gap:8px 12px; margin-bottom:16px">
           <span id="modalStatus" class="badge bg-green"><!-- estado --></span>
           <span id="modalTotal" class="total-line"><!-- total --></span>
           <span id="modalUser" class="total-line"><!-- usuario --></span>
+          <span id="modalPaymentId" class="total-line"><!-- payment_id --></span>
+        </div>
+
+        <!-- Información del usuario -->
+        <div class="user-info" style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+          <h4 style="margin: 0 0 8px 0; font-size: 1.1em; color: #333;">Información del Cliente</h4>
+          <div id="modalUserPhone" class="user-detail"><!-- teléfono --></div>
+          <div id="modalUserAddress" class="user-detail"><!-- dirección --></div>
+          <div id="modalUserLocation" class="user-detail"><!-- ciudad, región --></div>
+        </div>
+
+        <div class="order-summary" style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+          <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span>Subtotal de productos:</span>
+            <span id="modalSubtotal"><!-- subtotal --></span>
+          </div>
+          <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span>Descuentos aplicados:</span>
+            <span id="modalDiscounts" style="color: #dc3545;"><!-- descuentos --></span>
+          </div>
+          <div class="summary-row" style="display: flex; justify-content: space-between; font-weight: bold; border-top: 1px solid #dee2e6; padding-top: 8px;">
+            <span>Total final:</span>
+            <span id="modalFinalTotal"><!-- total final --></span>
+          </div>
         </div>
 
         <div class="items">

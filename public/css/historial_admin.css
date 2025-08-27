@@ -162,3 +162,240 @@ tbody td{vertical-align:middle}
 
 /* Utilities */
 .hidden{display:none !important}
+
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+/* Estilos para el select de estado */
+.status-select {
+  padding: 4px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: white;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.status-select:hover {
+  border-color: #9ca3af;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Estilos para las opciones según el estado */
+.status-select option[value="pendiente"] {
+  color: #f59e0b;
+}
+
+.status-select option[value="completada"] {
+  color: #10b981;
+}
+
+.status-select option[value="cancelada"] {
+  color: #ef4444;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .status-select {
+    font-size: 12px;
+    min-width: 90px;
+    padding: 3px 6px;
+  }
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Status checkbox styles */
+.status-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.status-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.status-checkbox-label:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.status-checkbox {
+  margin: 0;
+  cursor: pointer;
+}
+
+.checkbox-text {
+  font-weight: 500;
+}
+
+.status-orange .checkbox-text {
+  color: #f59e0b;
+}
+
+.status-green .checkbox-text {
+  color: #10b981;
+}
+
+.status-red .checkbox-text {
+  color: #ef4444;
+}
+
+.status-checkbox:checked + .checkbox-text {
+  font-weight: 700;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .status-checkboxes {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .status-checkbox-label {
+    font-size: 11px;
+    padding: 1px 4px;
+  }
+}
+
+/* Estilos para el modal mejorado */
+.modal-body .stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-bottom: 16px;
+}
+
+.modal-body .stack > span {
+  background: #f8f9fa;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.order-summary {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.user-info {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.user-info h4 {
+  margin: 0 0 8px 0;
+  font-size: 1.1em;
+  color: #333;
+  font-weight: 600;
+}
+
+.user-detail {
+  margin-bottom: 4px;
+  font-size: 0.95em;
+  color: #555;
+}
+
+.user-detail:last-child {
+  margin-bottom: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding: 12px 0;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.item-name {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.item-details {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.item-details > div {
+  margin-bottom: 2px;
+}
+
+.item-pricing {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Responsive para el modal */
+@media (max-width: 768px) {
+  .modal-dialog {
+    margin: 10px;
+    max-width: calc(100% - 20px);
+  }
+  
+  .item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .item img {
+    margin-bottom: 8px;
+  }
+  
+  .item-pricing {
+    text-align: left;
+    margin-top: 8px;
+  }
+}

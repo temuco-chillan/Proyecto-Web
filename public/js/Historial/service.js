@@ -65,7 +65,7 @@ async function getAllHistorial() {
       },
       {
         model: Usuario,
-        attributes: ['id', 'username']
+        attributes: ['id', 'username', 'telefono', 'direccion', 'ciudad', 'region']
       }
     ],
     order: [['fecha_venta', 'DESC']]
@@ -79,6 +79,10 @@ async function getAllHistorial() {
     estado: venta.estado,
     usuario_id: venta.usuario_id,
     usuario_nombre: venta.Usuario ? venta.Usuario.username : `Usuario #${venta.usuario_id}`,
+    usuario_telefono: venta.Usuario ? venta.Usuario.telefono : null,
+    usuario_direccion: venta.Usuario ? venta.Usuario.direccion : null,
+    usuario_ciudad: venta.Usuario ? venta.Usuario.ciudad : null,
+    usuario_region: venta.Usuario ? venta.Usuario.region : null,
     detalles: venta.detalles.map(detalle => ({  // Cambiar de DetalleVentas a detalles
       producto_id: detalle.Producto.id,         
       producto: detalle.Producto.nombre,

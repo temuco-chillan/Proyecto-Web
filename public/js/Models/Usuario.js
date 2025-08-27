@@ -60,10 +60,6 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.STRING(100),
     allowNull: false
   },
-  codigo_postal: {
-    type: DataTypes.STRING(10),
-    allowNull: true
-  },
   estado: {
     type: DataTypes.ENUM('activo', 'inactivo'),
     defaultValue: 'activo'
