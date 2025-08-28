@@ -117,25 +117,31 @@ function setupCarousel() {
             card.style.display =
                 i >= start && i < start + visibleCount ? "block" : "none";
         });
-        if (prevBtn) prevBtn.disabled = start === 0;
-        if (nextBtn) nextBtn.disabled = start + visibleCount >= cards.length;
     }
 
     if (prevBtn) {
+        prevBtn.disabled = false;
         prevBtn.addEventListener("click", () => {
             if (start > 0) {
                 start--;
-                updateCarousel();
+            } else {
+                // Si está al inicio, salta al final
+                start = Math.max(cards.length - visibleCount, 0);
             }
+            updateCarousel();
         });
     }
 
     if (nextBtn) {
+        nextBtn.disabled = false;
         nextBtn.addEventListener("click", () => {
             if (start + visibleCount < cards.length) {
                 start++;
-                updateCarousel();
+            } else {
+                // Si está al final, vuelve al inicio
+                start = 0;
             }
+            updateCarousel();
         });
     }
 
