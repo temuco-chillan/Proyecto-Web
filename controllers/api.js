@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
-const mercadopago = require('mercadopago');
+const { MercadoPagoConfig, Preference } = require('mercadopago');
 
 const sesiones = require('../public/js/Sesiones/service');
 const productos = require('../public/js/Productos/service');
@@ -373,9 +373,8 @@ app.delete('/api/Productos/:id/categorias/:categoriaId', async (req, res) => {
 // MercadoPago
 ////////////////////////
 // configuramos el access token
-mercadopago.configure({
-    //configuracion de usuario vendedor en mercado libre de prueba.
-    access_token: "APP_USR-5491912017954458-071117-bb82d2bc034b99dfd56644e4caf03e1a-2549815434"
+const client = new MercadoPagoConfig({
+    accessToken: "APP_USR-5491912017954458-071117-bb82d2bc034b99dfd56644e4caf03e1a-2549815434"
 });
 app.post('/api/pago', async (req, res) => {
     const { usuario_id } = req.body;
@@ -386,7 +385,7 @@ app.post('/api/pago', async (req, res) => {
 
     try {
         const items = await carrito.getCarrito(usuario_id);
-        const ngrok = process.env.Dominio_H;
+        const ngrok = "https://0a5ce4f47eb3.ngrok-free.app";
         if (!items || items.length === 0) {
             return res.status(400).json({ error: 'Carrito vacío' });
         }
@@ -395,24 +394,25 @@ app.post('/api/pago', async (req, res) => {
         for (const item of items) {
             const producto = await productos.getProductoById(item.producto_id);
             if (!producto) {
-                return res.status(400).json({ 
-                    error: `Producto ${item.nombre} no encontrado` 
+                return res.status(400).json({
+                    error: `Producto ${item.nombre} no encontrado`
                 });
             }
-            
+
             if (producto.stock < item.cantidad) {
-                return res.status(400).json({ 
-                    error: `Stock insuficiente para ${item.nombre}. Stock disponible: ${producto.stock}, cantidad solicitada: ${item.cantidad}` 
+                return res.status(400).json({
+                    error: `Stock insuficiente para ${item.nombre}. Stock disponible: ${producto.stock}, cantidad solicitada: ${item.cantidad}`
                 });
             }
         }
 
-        //tomara las preferencias del carrito 
-        const preference = {
+        const preference = new Preference(client);
+        //tomara las preferencias del carrito
+        const preferenceBody = {
             items: items.map(item => {
                 const precio = parseFloat(item.precio);
                 console.log('Precio original:', item.precio, 'Precio parseado:', precio, 'Precio redondeado:', Math.round(precio));
-                
+
                 return {
                     title: item.nombre,
                     quantity: parseInt(item.cantidad),
@@ -422,26 +422,31 @@ app.post('/api/pago', async (req, res) => {
             }),
             // --- ¡IMPORTANTE! Aquí se actualizan las URLs para usar ngrok ---
             back_urls: {
-                success: ngrok+"/api/pago-exitoso",
-                failure: ngrok+"/api/pago-fallido",
-                pending: ngrok+"/api/pago-pendiente"
+                success: ngrok + "/api/pago-exitoso",
+                failure: ngrok + "/api/pago-fallido",
+                pending: ngrok + "/api/pago-pendiente"
             },
             external_reference: String(usuario_id),
             auto_return: "approved" // <- debe ir acompañado de un success definido
         };
 
 
-        const response = await mercadopago.preferences.create(preference);
-        res.json({ init_point: response.body.init_point });
+        const response = await preference.create({ body: preferenceBody });
+        res.json({ init_point: response.init_point });
 
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al crear la preferencia de pago' });
     }
 });
+
+// Ruta para el pago exitoso
 app.get('/api/pago-exitoso', async (req, res) => {
-    const usuario_id = parseInt(req.query.external_reference);
-    const payment_id = req.query.payment_id;
+    // Los datos se obtienen de los parámetros de la URL
+    const { external_reference, payment_id } = req.query;
+    const usuario_id = parseInt(external_reference);
+
+    console.log('Pago Exitoso Recibido:', { external_reference, payment_id });
 
     if (!usuario_id || isNaN(usuario_id)) {
         return res.redirect('/payments/payment-failed.html?reason=Usuario no identificado');
@@ -459,9 +464,22 @@ app.get('/api/pago-exitoso', async (req, res) => {
             return res.redirect('/payments/payment-failed.html?reason=Datos de compra no encontrados');
         }
 
+        // ✅ VERIFICAR SI LA VENTA YA FUE PROCESADA CON ESTE payment_id
+        const ventaExistente = await historial.getVentaByPaymentId(payment_id);
+        if (ventaExistente) {
+            console.log('Venta ya procesada:', payment_id);
+            const params = new URLSearchParams({
+                order_id: payment_id,
+                user_id: usuario_id,
+                subtotal: ventaExistente.subtotal.toFixed(2),
+                items: JSON.stringify(ventaExistente.detalles)
+            });
+            return res.redirect(`/payments/payment-success.html?${params.toString()}`);
+        }
+
         // ✅ CALCULAR SUBTOTAL CON PRECIOS YA DESCONTADOS
         const subtotal = items.reduce((sum, item) => sum + (parseFloat(item.precio) * parseInt(item.cantidad)), 0);
-        
+
         console.log('Subtotal calculado:', subtotal);
 
         // 📝 Registrar la venta en el historial
@@ -475,13 +493,13 @@ app.get('/api/pago-exitoso', async (req, res) => {
         }));
 
         const ventaId = await historial.crearVenta(usuario_id, detallesVenta, payment_id);
-        
+
         // 💰 AGREGAR GANANCIA AL SISTEMA DE ACUMULACIÓN
         ganancias.agregarGanancia(subtotal, payment_id, usuario_id);
-        
+
         // 🧹 Vaciar el carrito después de registrar la venta
         await carrito.vaciarCarrito(usuario_id);
-        
+
         // ✅ PASAR SOLO LOS DATOS NECESARIOS
         const params = new URLSearchParams({
             order_id: payment_id,
@@ -494,11 +512,11 @@ app.get('/api/pago-exitoso', async (req, res) => {
                 precio: parseFloat(item.precio).toFixed(2)
             })))
         });
-        
+
         console.log('Parámetros enviados:', params.toString());
-        
+
         // Redirigir a la página de éxito
-        res.redirect(`/payments/payment-succes.html?${params.toString()}`);
+        res.redirect(`/payments/payment-success.html?${params.toString()}`);
 
     } catch (error) {
         console.error("Error en pago-exitoso:", error);
@@ -507,21 +525,19 @@ app.get('/api/pago-exitoso', async (req, res) => {
 });
 
 
-// Después de la ruta /api/pago-exitoso existente, agrega:
-
 // Buscar y reemplazar la ruta /api/pago-fallido
 app.get('/api/pago-fallido', async (req, res) => {
     const usuario_id = req.query.external_reference;
     const payment_id = req.query.payment_id;
     const collection_id = req.query.collection_id;
-    
+
     console.log('Pago fallido recibido:', { usuario_id, payment_id, collection_id });
-    
+
     const params = new URLSearchParams({
         order_id: payment_id || `ORD-FAIL-${Date.now()}`,
         reason: 'Pago rechazado por la entidad financiera'
     });
-    
+
     // ✅ CORREGIR: payment-failed.html (no payments-failed.html)
     res.redirect(`/payments/payment-failed.html?${params.toString()}`);
 });
@@ -530,9 +546,9 @@ app.get('/api/pago-pendiente', async (req, res) => {
     const usuario_id = req.query.external_reference;
     const payment_id = req.query.payment_id;
     const collection_id = req.query.collection_id;
-    
+
     console.log('Pago pendiente:', { usuario_id, payment_id, collection_id });
-    
+
     try {
         // Obtener información del carrito si el usuario existe
         let total = 0;
@@ -540,14 +556,14 @@ app.get('/api/pago-pendiente', async (req, res) => {
             const items = await carrito.getCarrito(parseInt(usuario_id));
             total = items.reduce((sum, item) => sum + (parseFloat(item.precio) * parseInt(item.cantidad)), 0);
         }
-        
+
         const params = new URLSearchParams({
             status: 'pending',
             order_id: `ORD-${Date.now()}`,
             amount: total,
             payment_id: payment_id || 'N/A'
         });
-        
+
         res.redirect(`/payments/payments-pending.html?${params.toString()}`);
     } catch (error) {
         console.error('Error en pago pendiente:', error);
@@ -559,7 +575,6 @@ app.get('/api/pago-pendiente', async (req, res) => {
         res.redirect(`/payments.html?${params.toString()}`);
     }
 });
-
 
 ////////////////////////
 // INICIAR SERVIDOR

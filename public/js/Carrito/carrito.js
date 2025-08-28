@@ -242,7 +242,7 @@ function pagarCarrito() {
         })
         .catch(error => {
             console.error('❌ Error al procesar pago:', error);
-            
+
             // Verificar si es un error de stock
             if (error.message.includes('Stock insuficiente')) {
                 showStockWarning(error.message, 'Stock Insuficiente');
@@ -251,6 +251,7 @@ function pagarCarrito() {
             }
         });
 }
+
 
 // === Función para mostrar icono de stock insuficiente ===
 function showStockWarning(message, title = 'Stock Insuficiente') {
