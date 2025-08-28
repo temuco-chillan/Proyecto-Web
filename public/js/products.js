@@ -106,7 +106,7 @@ function setupCarousel() {
     const grid = document.getElementById("products-grid");
     if (!grid) return;
 
-    const cards = Array.from(grid.getElementsByClassName("product-card"));
+    let cards = Array.from(grid.getElementsByClassName("product-card"));
     const prevBtn = document.getElementById("prev-btn");
     const nextBtn = document.getElementById("next-btn");
     const visibleCount = 3;
@@ -115,6 +115,11 @@ function setupCarousel() {
     const autoDelay = 3500; // ms
 
     function updateCarousel() {
+        // Si hay menos productos que visibleCount, mostrar todos
+        if (cards.length <= visibleCount) {
+            cards.forEach(card => card.style.display = "block");
+            return;
+        }
         cards.forEach((card, i) => {
             card.style.display =
                 i >= start && i < start + visibleCount ? "block" : "none";
@@ -141,10 +146,13 @@ function setupCarousel() {
 
     function startAuto() {
         if (autoInterval) clearInterval(autoInterval);
-        autoInterval = setInterval(next, autoDelay);
+        autoInterval = setInterval(() => {
+            next();
+        }, autoDelay);
     }
 
     function resetAuto() {
+        // Solo reinicia el temporizador, no cambia la posición
         startAuto();
     }
 
