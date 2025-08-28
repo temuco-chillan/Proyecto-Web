@@ -109,70 +109,45 @@ function setupCarousel() {
     let cards = Array.from(grid.getElementsByClassName("product-card"));
     const prevBtn = document.getElementById("prev-btn");
     const nextBtn = document.getElementById("next-btn");
-    const visibleCount = 3;
+    const visibleCount = 4; // productos visibles a la vez
     let start = 0;
-    let autoInterval = null;
-    const autoDelay = 3500; // ms
+    let autoTimeout = null;
+    const autoDelay = 5000;
 
-    function updateCarousel() {
-        // Si hay menos productos que visibleCount, mostrar todos
-        if (cards.length <= visibleCount) {
-            cards.forEach(card => card.style.display = "block");
-            return;
-        }
-        cards.forEach((card, i) => {
-            card.style.display =
-                i >= start && i < start + visibleCount ? "block" : "none";
-        });
+    // Ajusta el ancho del grid según la cantidad de productos visibles
+    grid.style.width = `${visibleCount * 290}px`; // 250px card + 2*20px margin
+
+    function updateCarousel(animate = true) {
+        const cardWidth = cards[0].offsetWidth + 40; // 20px margen a cada lado
+        let offset = start * cardWidth;
+        if (cards.length < visibleCount) offset = 0; // Solo si hay menos de 4
+        grid.style.transition = animate ? "transform 0.6s cubic-bezier(.4,0,.2,1)" : "none";
+        grid.style.transform = `translateX(-${offset}px)`;
     }
 
-    function next() {
-        if (start + visibleCount < cards.length) {
-            start++;
-        } else {
-            start = 0;
-        }
-        updateCarousel();
+    function next(animate = true) {
+        start = (start + 1) % cards.length;
+        updateCarousel(animate);
+        startAuto();
     }
 
-    function prev() {
-        if (start > 0) {
-            start--;
-        } else {
-            start = Math.max(cards.length - visibleCount, 0);
-        }
-        updateCarousel();
+    function prev(animate = true) {
+        start = (start - 1 + cards.length) % cards.length;
+        updateCarousel(animate);
+        startAuto();
     }
 
     function startAuto() {
-        if (autoInterval) clearInterval(autoInterval);
-        autoInterval = setInterval(() => {
+        if (autoTimeout) clearTimeout(autoTimeout);
+        autoTimeout = setTimeout(() => {
             next();
         }, autoDelay);
     }
 
-    function resetAuto() {
-        // Solo reinicia el temporizador, no cambia la posición
-        startAuto();
-    }
+    if (prevBtn) prevBtn.onclick = () => prev();
+    if (nextBtn) nextBtn.onclick = () => next();
 
-    if (prevBtn) {
-        prevBtn.disabled = false;
-        prevBtn.onclick = () => {
-            prev();
-            resetAuto();
-        };
-    }
-
-    if (nextBtn) {
-        nextBtn.disabled = false;
-        nextBtn.onclick = () => {
-            next();
-            resetAuto();
-        };
-    }
-
-    updateCarousel();
+    updateCarousel(false);
     startAuto();
 }
 
