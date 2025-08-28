@@ -111,6 +111,8 @@ function setupCarousel() {
     const nextBtn = document.getElementById("next-btn");
     const visibleCount = 3;
     let start = 0;
+    let autoInterval = null;
+    const autoDelay = 3500; // ms
 
     function updateCarousel() {
         cards.forEach((card, i) => {
@@ -119,33 +121,51 @@ function setupCarousel() {
         });
     }
 
+    function next() {
+        if (start + visibleCount < cards.length) {
+            start++;
+        } else {
+            start = 0;
+        }
+        updateCarousel();
+    }
+
+    function prev() {
+        if (start > 0) {
+            start--;
+        } else {
+            start = Math.max(cards.length - visibleCount, 0);
+        }
+        updateCarousel();
+    }
+
+    function startAuto() {
+        if (autoInterval) clearInterval(autoInterval);
+        autoInterval = setInterval(next, autoDelay);
+    }
+
+    function resetAuto() {
+        startAuto();
+    }
+
     if (prevBtn) {
         prevBtn.disabled = false;
-        prevBtn.addEventListener("click", () => {
-            if (start > 0) {
-                start--;
-            } else {
-                // Si está al inicio, salta al final
-                start = Math.max(cards.length - visibleCount, 0);
-            }
-            updateCarousel();
-        });
+        prevBtn.onclick = () => {
+            prev();
+            resetAuto();
+        };
     }
 
     if (nextBtn) {
         nextBtn.disabled = false;
-        nextBtn.addEventListener("click", () => {
-            if (start + visibleCount < cards.length) {
-                start++;
-            } else {
-                // Si está al final, vuelve al inicio
-                start = 0;
-            }
-            updateCarousel();
-        });
+        nextBtn.onclick = () => {
+            next();
+            resetAuto();
+        };
     }
 
     updateCarousel();
+    startAuto();
 }
 
 // Función para agregar al carrito

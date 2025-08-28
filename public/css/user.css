@@ -122,7 +122,7 @@ body {
   position: absolute;
   top: 2px;
   right: 2px;
-  background-color: #ef4444;
+  background-color: #2d2323;
   color: white;
   border-radius: 50%;
   width: 18px;
@@ -132,7 +132,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #0f766e;
+  border: 2px solid #6e7a79;
 }
 
 /* ===================================
@@ -249,7 +249,7 @@ body {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #0f766e, #14b8a6);
+  background: linear-gradient(90deg, #a90000c3, #a90000c3);
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
@@ -316,7 +316,7 @@ body {
 /* Add Button */
 .add-button {
   width: 100%;
-  background-color: #0f766e;
+  background-color: #000000;
   color: white;
   border: none;
   padding: 0.75rem 1rem;
@@ -332,14 +332,14 @@ body {
 }
 
 .add-button:hover {
-  background-color: #115e59;
+  background-color: #393e3ebb;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.4);
+  box-shadow: 0 4px 12px rgba(147, 4, 4, 0.937);
 }
 
 .add-button:active {
   transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(15, 118, 110, 0.4);
+  box-shadow: 0 2px 4px rgba(181, 2, 2, 0.829);
 }
 
 /* ===================================
@@ -388,7 +388,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #0f766e;
+  background-color: #111;
   color: white;
 }
 
@@ -458,7 +458,7 @@ body {
 
 .cart-item-name {
   font-weight: 600;
-  color: #0f766e;
+  color: #111;
   margin-bottom: 0.25rem;
   font-size: 0.9rem;
 }
@@ -533,7 +533,7 @@ body {
 
 .checkout-button {
   width: 100%;
-  background-color: #0f766e;
+  background-color: #111;
   color: white;
   border: none;
   padding: 1rem;
@@ -547,7 +547,7 @@ body {
 }
 
 .checkout-button:hover {
-  background-color: #115e59;
+  background-color: #3c3c3c;
 }
 
 /* ===================================
@@ -632,7 +632,7 @@ body {
 
 .dropdown-header i {
   font-size: 2rem;
-  color: #0f766e;
+  color: #3a3a3a;
 }
 
 .dropdown-header > span {
