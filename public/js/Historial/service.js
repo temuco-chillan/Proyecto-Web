@@ -144,6 +144,48 @@ async function actualizarEstadoVenta(venta_id, estado) {
   );
 }
 
+// Obtener venta por payment_id para evitar duplicados
+async function getVentaByPaymentId(payment_id) {
+  if (useFallback) return null; // En modo fallback, no verificamos duplicados
+
+  try {
+    const venta = await Venta.findOne({
+      where: { payment_id },
+      include: [{
+        model: DetalleVenta,
+        as: 'detalles',
+        include: [{
+          model: Producto,
+          attributes: ['id', 'nombre', 'imagen_url']
+        }]
+      }]
+    });
+
+    if (!venta) return null;
+
+    return {
+      id: venta.id,
+      usuario_id: venta.usuario_id,
+      fecha_venta: venta.fecha_venta,
+      subtotal: venta.total,
+      payment_id: venta.payment_id,
+      estado: venta.estado,
+      detalles: venta.detalles.map(detalle => ({
+        producto_id: detalle.Producto.id,
+        producto: detalle.Producto.nombre,
+        imagen_url: detalle.Producto.imagen_url,
+        cantidad: detalle.cantidad,
+        precio_unitario: detalle.precio_unitario,
+        descuento: detalle.descuento_aplicado,
+        subtotal: detalle.subtotal
+      }))
+    };
+  } catch (error) {
+    console.error('Error al buscar venta por payment_id:', error);
+    return null;
+  }
+}
+
 // Inicializa el sistema y decide si usar fallback
 (async () => {
   useFallback = !(await isConnected());
@@ -154,5 +196,6 @@ module.exports = {
   getHistorial,
   getAllHistorial,
   crearVenta,
-  actualizarEstadoVenta
+  actualizarEstadoVenta,
+  getVentaByPaymentId
 };

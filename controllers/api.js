@@ -2,8 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
-const { MercadoPagoConfig, Preference } = require('mercadopago');
-
+// ✅ CORRECCIÓN: Importación correcta para SDK v2.x
+const mercadopago = require('mercadopago');
 const sesiones = require('../public/js/Sesiones/service');
 const productos = require('../public/js/Productos/service');
 const carrito = require('../public/js/Carrito/service');
@@ -372,20 +372,20 @@ app.delete('/api/Productos/:id/categorias/:categoriaId', async (req, res) => {
 ////////////////////////
 // MercadoPago
 ////////////////////////
-// configuramos el access token
-const client = new MercadoPagoConfig({
-    accessToken: "APP_USR-5491912017954458-071117-bb82d2bc034b99dfd56644e4caf03e1a-2549815434"
+// ✅ CORRECCIÓN: Configuración correcta para SDK v2.x
+mercadopago.configure({
+    access_token: "APP_USR-5491912017954458-071117-bb82d2bc034b99dfd56644e4caf03e1a-2549815434"
 });
+
 app.post('/api/pago', async (req, res) => {
     const { usuario_id } = req.body;
-    //validara el id del usuario
     if (!usuario_id) {
         return res.status(400).json({ error: 'Falta el ID del usuario' });
     }
 
     try {
         const items = await carrito.getCarrito(usuario_id);
-        const ngrok = "https://0a5ce4f47eb3.ngrok-free.app";
+        const ngrok = "https://6bea2d8ec0fa.ngrok-free.app";
         if (!items || items.length === 0) {
             return res.status(400).json({ error: 'Carrito vacío' });
         }
@@ -406,8 +406,7 @@ app.post('/api/pago', async (req, res) => {
             }
         }
 
-        const preference = new Preference(client);
-        //tomara las preferencias del carrito
+        // ✅ CORRECCIÓN: Usar la API correcta para SDK v2.x
         const preferenceBody = {
             items: items.map(item => {
                 const precio = parseFloat(item.precio);
@@ -416,23 +415,21 @@ app.post('/api/pago', async (req, res) => {
                 return {
                     title: item.nombre,
                     quantity: parseInt(item.cantidad),
-                    unit_price: Math.round(precio), // Asegurar que sea entero
+                    unit_price: Math.round(precio),
                     currency_id: "CLP"
                 };
             }),
-            // --- ¡IMPORTANTE! Aquí se actualizan las URLs para usar ngrok ---
             back_urls: {
                 success: ngrok + "/api/pago-exitoso",
                 failure: ngrok + "/api/pago-fallido",
                 pending: ngrok + "/api/pago-pendiente"
             },
             external_reference: String(usuario_id),
-            auto_return: "approved" // <- debe ir acompañado de un success definido
+            auto_return: "approved"
         };
 
-
-        const response = await preference.create({ body: preferenceBody });
-        res.json({ init_point: response.init_point });
+        const response = await mercadopago.preferences.create(preferenceBody);
+        res.json({ init_point: response.body.init_point });
 
     } catch (error) {
         console.error(error);
@@ -516,7 +513,7 @@ app.get('/api/pago-exitoso', async (req, res) => {
         console.log('Parámetros enviados:', params.toString());
 
         // Redirigir a la página de éxito
-        res.redirect(`/payments/payment-success.html?${params.toString()}`);
+        res.redirect(`/payments/payment-succes.html?${params.toString()}`);
 
     } catch (error) {
         console.error("Error en pago-exitoso:", error);

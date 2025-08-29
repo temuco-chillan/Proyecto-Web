@@ -20,26 +20,11 @@
   {
     "id": 4,
     "username": "igado",
-    "email": "hidalgoraul349@gmail.com",
+    "email": "hidalgoraul34@gmail.com",
     "password": "$2b$12$iI7kRJx4iznshtTtq4vV6.nCK01qVqsqNtNFOCmvViHQKva/Ns9Sa",
     "estado": "activo",
     "rol_id": 1,
     "creado_en": "2025-07-29T17:16:04.572Z"
-  },
-  {
-    "id": 5,
-    "username": "eligado",
-    "email": "hidalgoraul3495@gmail.com",
-    "password": "$2b$12$9FZ6hLzBstpArcitB4KphOI2QFRrFzLurXO2cSjnV.KgOHl6FNJSG",
-    "rut": null,
-    "codigo_postal": null,
-    "estado": "activo",
-    "rol_id": 2,
-    "creado_en": "2025-08-24T08:30:28.320Z",
-    "telefono": null,
-    "direccion": null,
-    "ciudad": null,
-    "region": null
   },
   {
     "id": 6,
@@ -70,5 +55,19 @@
     "direccion": null,
     "ciudad": null,
     "region": null
+  },
+  {
+    "id": 8,
+    "username": "eligado",
+    "email": "hidalgoraul349@gmail.com",
+    "password": "$2b$12$MbxXDTlrqBQuW3pAfP3OWuH7F6phQkrOy5Js6Q6ygBpcMZxzvj1Ne",
+    "rut": "$2b$12$RvGdAn0XtvWm9uVFkJfeeeo8jJta/mQNwcPGkqABy1FxaJTLLqcUy",
+    "telefono": "936403212",
+    "direccion": "Villa Alegre 507",
+    "ciudad": "Padre las casas",
+    "region": "La Araucanía",
+    "estado": "activo",
+    "rol_id": 1,
+    "creado_en": "2025-08-29T04:48:54.804Z"
   }
 ]

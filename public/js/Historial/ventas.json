@@ -132,5 +132,13 @@
     "total": 5000,
     "payment_id": "123498866622",
     "estado": "completada"
+  },
+  {
+    "id": 18,
+    "usuario_id": 8,
+    "fecha_venta": "2025-08-29T04:49:44.300Z",
+    "total": 1,
+    "payment_id": "123527989959",
+    "estado": "completada"
   }
 ]

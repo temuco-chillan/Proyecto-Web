@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { Venta, DetalleVenta } = require('../Models');
 const productosBackend = require('../Productos/json');
-
+const sesionesService = require('../Sesiones/service');
 const VENTAS_FILE = path.join(__dirname, 'ventas.json');
 const DETALLES_FILE = path.join(__dirname, 'detalles_venta.json');
 
@@ -184,29 +184,60 @@ async function getAllHistorial() {
   const todasLasVentas = ventas
     .sort((a, b) => new Date(b.fecha_venta) - new Date(a.fecha_venta));
 
-  return todasLasVentas.map(venta => ({
-    id: venta.id,
-    fecha: venta.fecha_venta,
-    total: venta.total,
-    estado: venta.estado,
-    usuario_id: venta.usuario_id,
-    usuario_nombre: `Usuario #${venta.usuario_id}`,
-    payment_id: venta.payment_id,
-    detalles: detalles
-      .filter(d => d.venta_id === venta.id)
-      .map(detalle => {
-        const producto = productos.find(p => p.id === detalle.producto_id);
-        return {
-          producto_id: detalle.producto_id,
-          producto: producto?.nombre || 'Desconocido',
-          imagen_url: producto?.imagen_url,
-          cantidad: detalle.cantidad,
-          precio_unitario: detalle.precio_unitario,
-          descuento: detalle.descuento_aplicado,
-          subtotal: detalle.subtotal
-        };
-      })
-  }));
+  // Obtener información de usuarios para cada venta
+  const ventasConUsuarios = await Promise.all(
+    todasLasVentas.map(async (venta) => {
+      let usuarioInfo = {
+        usuario_nombre: `Usuario #${venta.usuario_id}`,
+        usuario_telefono: null,
+        usuario_direccion: null,
+        usuario_ciudad: null,
+        usuario_region: null
+      };
+
+      try {
+        // Intentar obtener información del usuario
+        const usuario = await sesionesService.getUserById(venta.usuario_id);
+        if (usuario) {
+          usuarioInfo = {
+            usuario_nombre: usuario.username || `Usuario #${venta.usuario_id}`,
+            usuario_telefono: usuario.telefono || null,
+            usuario_direccion: usuario.direccion || null,
+            usuario_ciudad: usuario.ciudad || null,
+            usuario_region: usuario.region || null
+          };
+        }
+      } catch (error) {
+        console.warn(`No se pudo obtener información del usuario ${venta.usuario_id}:`, error.message);
+      }
+
+      return {
+        id: venta.id,
+        fecha: venta.fecha_venta,
+        total: venta.total,
+        estado: venta.estado,
+        usuario_id: venta.usuario_id,
+        payment_id: venta.payment_id,
+        ...usuarioInfo, // Incluir toda la información del usuario
+        detalles: detalles
+          .filter(d => d.venta_id === venta.id)
+          .map(detalle => {
+            const producto = productos.find(p => p.id === detalle.producto_id);
+            return {
+              producto_id: detalle.producto_id,
+              producto: producto?.nombre || 'Desconocido',
+              imagen_url: producto?.imagen_url,
+              cantidad: detalle.cantidad,
+              precio_unitario: detalle.precio_unitario,
+              descuento: detalle.descuento_aplicado,
+              subtotal: detalle.subtotal
+            };
+          })
+      };
+    })
+  );
+
+  return ventasConUsuarios;
 }
 
 module.exports = {

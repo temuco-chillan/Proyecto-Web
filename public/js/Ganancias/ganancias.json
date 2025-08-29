@@ -1,5 +1,36 @@
 {
-  "total_acumulado": 0,
+  "total_acumulado": 93.147,
   "porcentaje_ganancia": 15,
-  "historial_ganancias": []
+  "historial_ganancias": [
+    {
+      "id": 1,
+      "fecha": "2025-08-29T04:35:39.949Z",
+      "total_venta": 19.99,
+      "porcentaje_aplicado": 15,
+      "ganancia_calculada": 2.9984999999999995,
+      "payment_id": "123527443945",
+      "usuario_id": 3,
+      "total_acumulado_despues": 2.9984999999999995
+    },
+    {
+      "id": 2,
+      "fecha": "2025-08-29T04:37:52.285Z",
+      "total_venta": 599.99,
+      "porcentaje_aplicado": 15,
+      "ganancia_calculada": 89.9985,
+      "payment_id": "124067974058",
+      "usuario_id": 3,
+      "total_acumulado_despues": 92.997
+    },
+    {
+      "id": 3,
+      "fecha": "2025-08-29T04:49:44.321Z",
+      "total_venta": 1,
+      "porcentaje_aplicado": 15,
+      "ganancia_calculada": 0.15,
+      "payment_id": "123527989959",
+      "usuario_id": 8,
+      "total_acumulado_despues": 93.147
+    }
+  ]
 }
