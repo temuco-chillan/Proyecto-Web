@@ -2,8 +2,17 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
   <title>Historial de Pedidos - Administrador</title>
+
+  <!-- Fuente elegante y legible -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Iconos (Lucide) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../css/historial_admin.css">
 </head>
 <body>
@@ -12,15 +21,14 @@
     <div class="topbar-inner">
       <div class="stack">
         <button class="btn btn-red" type="button" id="logoutBtn" title="Cerrar sesión">
-          <!-- logout icon -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          <i data-lucide="log-out"></i>
           Cerrar sesión
         </button>
       </div>
-      <h1 class="title">HISTORIAL DE PEDIDOS - ADMIN</h1>
+      <h1 class="title">HISTORIAL DE PEDIDOS · ADMIN</h1>
       <div class="stack" aria-label="Acciones">
         <a href="panel_admin.html" class="btn btn-dark" title="Panel Admin">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+          <i data-lucide="home"></i>
           Panel Admin
         </a>
       </div>
@@ -38,41 +46,38 @@
           <option value="cancelada">Cancelada</option>
         </select>
         <button id="reloadBtn" class="btn btn-dark" type="button" title="Actualizar">
-          <!-- refresh icon -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v7h-7"/></svg>
+          <i data-lucide="refresh-cw"></i>
           Actualizar
         </button>
       </div>
     </div>
 
     <!-- Loading -->
-    <div id="loading" class="state row" role="status" aria-live="polite">
+    <div id="loading" class="state row fade-in" role="status" aria-live="polite">
       <div class="spinner" aria-hidden="true"></div>
       <span class="muted">Cargando historial...</span>
     </div>
 
     <!-- Error -->
-    <div id="error" class="state error hidden" role="alert">
+    <div id="error" class="state error hidden fade-in" role="alert">
       <div class="stack">
-        <!-- alert icon -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <i data-lucide="alert-triangle"></i>
         <span id="errorMessage">Error al cargar el historial</span>
       </div>
       <button id="retryBtn" class="btn btn-red" type="button">Reintentar</button>
     </div>
 
     <!-- Empty -->
-    <div id="empty" class="state row hidden">
-      <!-- bag icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2l.3 3M18 2l-.3 3M3 6h18l-1 14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2L3 6z"/><path d="M9 10a3 3 0 0 0 6 0"/></svg>
+    <div id="empty" class="state row hidden fade-in">
+      <i data-lucide="shopping-bag"></i>
       <div>
-        <div class="total-line" style="font-weight:700">No hay pedidos registrados</div>
+        <div class="total-line" style="font-weight:800">No hay pedidos registrados</div>
         <div class="muted">Cuando se realicen compras, aparecerán aquí.</div>
       </div>
     </div>
 
     <!-- Table -->
-    <div id="historialCard" class="card hidden">
+    <div id="historialCard" class="card hidden fade-in">
       <div class="card-head">Todos los pedidos del sistema</div>
       <div class="table-wrap">
         <table aria-describedby="tabla-descripcion">
@@ -110,23 +115,23 @@
         </div>
 
         <!-- Información del usuario -->
-        <div class="user-info" style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
-          <h4 style="margin: 0 0 8px 0; font-size: 1.1em; color: #333;">Información del Cliente</h4>
+        <div class="user-info" style="background: var(--panel-2); padding: 12px; border-radius: 12px; margin-bottom: 16px; border:1px solid var(--border);">
+          <h4 style="margin: 0 0 8px 0; font-size: 1.05em; color: var(--text); font-weight: 800;">Información del Cliente</h4>
           <div id="modalUserPhone" class="user-detail"><!-- teléfono --></div>
           <div id="modalUserAddress" class="user-detail"><!-- dirección --></div>
           <div id="modalUserLocation" class="user-detail"><!-- ciudad, región --></div>
         </div>
 
-        <div class="order-summary" style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
-          <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+        <div class="order-summary" style="background: var(--panel-2); padding: 12px; border-radius: 12px; margin-bottom: 16px; border:1px solid var(--border);">
+          <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 6px;">
             <span>Subtotal de productos:</span>
             <span id="modalSubtotal"><!-- subtotal --></span>
           </div>
-          <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+          <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 6px;">
             <span>Descuentos aplicados:</span>
-            <span id="modalDiscounts" style="color: #dc3545;"><!-- descuentos --></span>
+            <span id="modalDiscounts" style="color: var(--accent-2);"><!-- descuentos --></span>
           </div>
-          <div class="summary-row" style="display: flex; justify-content: space-between; font-weight: bold; border-top: 1px solid #dee2e6; padding-top: 8px;">
+          <div class="summary-row" style="display: flex; justify-content: space-between; font-weight: bold; border-top: 1px solid var(--border); padding-top: 8px;">
             <span>Total final:</span>
             <span id="modalFinalTotal"><!-- total final --></span>
           </div>
@@ -142,6 +147,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Tu JS existente -->
   <script src="../js/Historial/historial_admin.js"></script>
+  <script src="../js/animaciones/panel_admin.js"></script>
 </body>
 </html>
