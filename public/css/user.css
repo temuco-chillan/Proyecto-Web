@@ -797,7 +797,81 @@ body {
 .hidden {
   display: none !important;
 }
+:root {
+  --wsp-bg: #25d366; /* Color de fondo de WhatsApp */
+  --dark-bg: #121212; /* Fondo de la página web */
+  --text-color: #f0f0f0; /* Color del texto */
+}
 
+body {
+  background-color: var(--dark-bg);
+  color: var(--text-color);
+  font-family: Arial, sans-serif;
+  min-height: 200vh; /* Solo para mostrar el efecto fixed */
+}
+
+.wsp-box {
+  /* Posicionamiento y diseño del cuadro principal */
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  background-color: var(--dark-bg);
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.wsp-link {
+  /* Estilos del enlace */
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-color);
+  font-size: 1.1rem;
+  font-weight: bold;
+  white-space: nowrap;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.wsp-icon {
+  /* Estilo del ícono de WhatsApp. Puedes reemplazar esto con una imagen SVG */
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--wsp-bg);
+  -webkit-mask-image: url("https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg");
+  mask-image: url("https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 80%;
+  margin-right: 0.75rem;
+}
+
+.wsp-box:hover .wsp-link {
+  /* Efecto de animación al pasar el cursor */
+  transform: scale(1.05) translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
+}
+
+/* Media Queries para hacerlo responsivo en dispositivos móviles */
+@media (max-width: 768px) {
+  .wsp-box {
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.75rem;
+  }
+  
+  .wsp-text {
+    display: none; /* Oculta el texto en móviles para ahorrar espacio */
+  }
+
+  .wsp-icon {
+    margin-right: 0;
+  }
+}
 /* ===================================
    DESKTOP STYLES (MEDIA QUERY)
    =================================== */
