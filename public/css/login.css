@@ -16,7 +16,7 @@ body {
   box-shadow: 0 8px 32px rgba(0,0,0,0.45);
   padding: 2.5rem 2rem 2rem 2rem;
   width: 100%;
-  max-width: 350px;
+  max-width: 450px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,7 +43,7 @@ label {
 }
 input[type="text"],
 input[type="password"] {
-  width: 100%;
+  width: 94%;
   padding: 0.75rem 1rem;
   margin-bottom: 1.5rem;
   border: none;
@@ -101,3 +101,4 @@ button[type="submit"]:hover {
   color: #ef4444;
   font-size: 0.95rem;
 }
+
