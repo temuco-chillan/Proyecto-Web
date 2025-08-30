@@ -78,25 +78,24 @@ async function renderProducts() {
             `;
             }
             return `
-            <div class="product-card" data-product-id="${product.id}">
-                <div class="product-image">
-                    <img src="${product.imagen_url ||
+            <div class="product-card" data-product-id="${product.id}">
+                <div class="product-image">
+                    <img src="${product.imagen_url ||
                 "https://via.placeholder.com/200x250/4a90e2/ffffff?text=" +
                 encodeURIComponent(product.nombre)
                 }" 
-                         alt="${product.nombre}" 
-                         loading="lazy"
-                         onerror="this.src='https://via.placeholder.com/200x250/cccccc/666666?text=Sin+Imagen'">
-                </div>
-                <h3 class="product-name">${product.nombre}</h3>
-                <p class="product-description">${product.descripcion || ""}</p>
-                ${pricingHTML}
-                <button class="add-button" onclick="addToCart(${product.id})">
-                    <i class="fas fa-shopping-cart"></i>
-                    Agregar al Carrito
-                </button>
-            </div>
-        `;
+                         alt="${product.nombre}" 
+                         loading="lazy"
+                         onerror="this.src='https://via.placeholder.com/200x250/cccccc/666666?text=Sin+Imagen'">
+                </div>
+                <h3 class="product-name">${product.nombre}</h3>
+                ${pricingHTML}
+                <button class="add-button" onclick="addToCart(${product.id})">
+                    <i class="fas fa-shopping-cart"></i>
+                    Agregar al Carrito
+                </button>
+            </div>
+        `;
         })
         .join("");
     setupCarousel();

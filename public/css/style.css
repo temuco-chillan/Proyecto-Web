@@ -381,9 +381,11 @@ main {
     cursor: not-allowed;
 }
 
+/* Comentar esta sección para evitar conflictos
 .cart-item {
     animation: slideIn 0.3s ease;
 }
+*/
 
 @keyframes slideIn {
     from {
