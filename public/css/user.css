@@ -206,13 +206,22 @@ body {
   transform: none;
 }
 
+/* Nuevo contenedor para el carrusel */
+.carousel-wrapper {
+    /* Establece un ancho máximo y centra el contenedor */
+    max-width: 1200px; /* O el mismo max-width de tu .main-content */
+    margin: 0 auto;
+    /* Oculta el contenido que se desborda horizontalmente */
+    overflow: hidden;
+}
+
 .products-grid {
     display: flex;
-    gap: 1rem;
-    overflow: hidden;
+    gap: 1.5rem;
+    overflow: visible;
+    margin: 0;
     transition: transform 0.6s cubic-bezier(.4,0,.2,1);
     will-change: transform;
-    margin: 0 auto;
     position: relative;
 }
 
@@ -222,11 +231,11 @@ body {
 
 /* Product Card */
 .product-card {
-  min-width: 150px;
-  width: 150px;
+  min-width: 250px;
+  width: 250px;
   margin: 0 10px;
   flex: 0 0 auto;
-  background: white;
+  background: rgb(69, 69, 69);
   border-radius: 10px;
   padding: 0.5rem 0.5rem;
   text-align: center;
@@ -239,11 +248,33 @@ body {
 }
 
 .product-card.highlight-center {
-    box-shadow: 0 0 24px 8px #ff000099, 0 2px 8px #0002;
-    border: 2px solid #b40404;
     transform: scale(1.07);
     z-index: 2;
-    transition: box-shadow 0.3s, border 0.3s, transform 0.3s;
+    transition: transform 0.3s, box-shadow 0.5s ease-in-out;
+    /* Box-shadow con un color base para el inicio */
+    box-shadow: 0 0 24px 8px rgba(255, 0, 0, 0.6),
+                0 2px 8px rgba(0, 0, 0, 0.2);
+    animation: simple-color-shadow 4s infinite alternate;
+    border: 2px solid #ffffff;
+}
+
+/* Define la animación para el box-shadow */
+@keyframes simple-color-shadow {
+    0% {
+        box-shadow: 0 0 24px 8px rgba(255, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.2); /* Rojo */
+    }
+    25% {
+        box-shadow: 0 0 24px 8px rgba(255, 140, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.2); /* Naranja */
+    }
+    50% {
+        box-shadow: 0 0 24px 8px rgba(0, 191, 255, 0.6), 0 2px 8px rgba(0, 0, 0, 0.2); /* Azul claro */
+    }
+    75% {
+        box-shadow: 0 0 24px 8px rgba(0, 255, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.2); /* Verde */
+    }
+    100% {
+        box-shadow: 0 0 24px 8px rgba(255, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.2); /* Vuelve a Rojo */
+    }
 }
 
 .product-card:hover {
@@ -298,7 +329,7 @@ body {
 
 /* Product Name */
 .product-name {
-  color: #000000;
+  color: #ffffff;
   font-weight: 600;
   font-size: 0.75rem;
   margin-bottom: 0.5rem;
@@ -319,7 +350,7 @@ body {
 }
 
 .current-price {
-  color: #000000;
+  color: #ffffff;
   font-weight: bold;
   font-size: 1.1rem;
 }
@@ -545,7 +576,7 @@ body {
   text-align: center;
   margin-bottom: 1rem;
   font-size: 1.1rem;
-  color: #0f766e;
+  color: #696969;
 }
 
 .checkout-button {
