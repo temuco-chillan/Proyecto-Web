@@ -312,7 +312,7 @@ app.delete('/api/Productos/:id/categorias/:categoriaId', async (req, res) => {
 
 // Configuración de MercadoPago SDK 2.x
 const client = new MercadoPagoConfig({
-    accessToken: process.env.Access_token || process.env.MERCADOPAGO_ACCESS_TOKEN || 'TEST-2439311736347849-121820-0b8d8e0b5b5c5e5f5a5d5c5b5a5d5c5b-123456789',
+    accessToken: process.env.Access_token,
     options: {
         timeout: 5000,
         idempotencyKey: 'abc'
@@ -344,8 +344,8 @@ app.post('/api/pago', async (req, res) => {
             title: item.nombre || `Producto ${item.producto_id}`,
             description: item.descripcion || 'Producto de la tienda',
             quantity: parseInt(item.cantidad),
-            unit_price: parseFloat(item.precio),
-            currency_id: 'ARS'  // Changed from 'COP' to 'ARS'
+            unit_price: parseInt(item.precio),
+            currency_id: 'CLP'  // Changed from 'COP' to 'ARS'
         }));
 
         // Formatear información del pagador
@@ -369,14 +369,14 @@ app.post('/api/pago', async (req, res) => {
         };
         
         const preference = new Preference(client);
-        
+        const ngrok = process.env.NGROK_URL;
         const preferenceData = {
             items: items,
             payer: payer,
             back_urls: {
-                success: "https://localhost:3000/api/pago-exitoso",
-                failure: "https://localhost:3000/api/pago-fallido",
-                pending: "https://localhost:3000/api/pago-pendiente"
+                success: ngrok+"/api/pago-exitoso",
+                failure: ngrok+"/api/pago-fallido",
+                pending: ngrok+"/api/pago-pendiente"
             },
             auto_return: "approved",
             external_reference: usuario_id.toString(),
@@ -388,7 +388,7 @@ app.post('/api/pago', async (req, res) => {
             shipments: {
                 mode: "not_specified"
             },
-            notification_url: "https://localhost:3000/api/webhook-mercadopago"
+            notification_url: ngrok+"/api/webhook-mercadopago"
         };
         
         const response = await preference.create({ body: preferenceData });
@@ -600,7 +600,7 @@ const HTTP_PORT = PORT;
 const HTTPS_PORT = parseInt(PORT) + 1;
 
 // Iniciar servidor HTTP
-app.listen(HTTP_PORT, () => {
+app.listen(HTTPS_PORT, () => {
     console.log(`🌐 Servidor HTTP ejecutándose en http://localhost:${HTTP_PORT}`);
     console.log(`📋 Accede a tu aplicación en: http://localhost:${HTTP_PORT}`);
 });
@@ -613,7 +613,7 @@ try {
             cert: fs.readFileSync('cert.pem')
         };
         
-        https.createServer(options, app).listen(HTTPS_PORT, () => {
+        https.createServer(options, app).listen(PORT, () => {
             console.log(`🔒 Servidor HTTPS ejecutándose en https://localhost:${HTTPS_PORT}`);
         });
     } else {

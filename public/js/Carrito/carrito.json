@@ -36,16 +36,9 @@
   },
   {
     "id": 7,
-    "cantidad": 1,
+    "cantidad": 2,
     "usuario_id": 8,
-    "producto_id": 5,
-    "fecha_add": "2025-08-30T11:46:47.145Z"
-  },
-  {
-    "id": 8,
-    "cantidad": 1,
-    "usuario_id": 8,
-    "producto_id": 2,
-    "fecha_add": "2025-08-30T12:18:06.577Z"
+    "producto_id": 4,
+    "fecha_add": "2025-08-30T16:13:08.308Z"
   }
 ]
