@@ -99,6 +99,7 @@ async function renderProducts() {
         `;
         })
         .join("");
+    setupCarousel();
 }
 
 // Función para inicializar el carrusel de productos
@@ -106,51 +107,62 @@ function setupCarousel() {
     const grid = document.getElementById("products-grid");
     if (!grid) return;
 
-    let cards = Array.from(grid.getElementsByClassName("product-card"));
     const prevBtn = document.getElementById("prev-btn");
     const nextBtn = document.getElementById("next-btn");
-    const visibleCount = 4; // productos visibles a la vez
-    let start = 0;
-    let autoTimeout = null;
+    const visibleCount = 5; // Número de productos visibles
     const autoDelay = 5000;
+    let autoTimeout = null;
 
-    // Ajusta el ancho del grid según la cantidad de productos visibles
-    grid.style.width = `${visibleCount * 290}px`; // 250px card + 2*20px margin
+    let cards = Array.from(grid.getElementsByClassName("product-card"));
+    if (cards.length === 0) return;
+
+    // Medidas
+    const cardStyle = window.getComputedStyle(cards[0]);
+    const cardWidth = cards[0].offsetWidth
+        + parseInt(cardStyle.marginLeft)
+        + parseInt(cardStyle.marginRight);
+
+    // Ajusta el ancho del grid para que solo se vean los productos visibles
+    grid.style.width = `${visibleCount * cardWidth}px`;
+
+    let start = 0;
 
     function updateCarousel(animate = true) {
-        const cardWidth = cards[0].offsetWidth + 40; // 20px margen a cada lado
-        let offset = start * cardWidth;
-        if (cards.length < visibleCount) offset = 0; // Solo si hay menos de 4
         grid.style.transition = animate ? "transform 0.6s cubic-bezier(.4,0,.2,1)" : "none";
-        grid.style.transform = `translateX(-${offset}px)`;
+        grid.style.transform = `translateX(-${start * cardWidth}px)`;
+
+        // Quitar resaltado previo
+        cards.forEach(card => card.classList.remove("highlight-center"));
+            if (cards.length > 0) {
+                const leftIndex = start % cards.length;
+                cards[leftIndex].classList.add("highlight-center");
+        }
     }
 
-    function next(animate = true) {
+    function next() {
+        // Siempre avanza, aunque haya la misma cantidad de productos que visibles
         start = (start + 1) % cards.length;
-        updateCarousel(animate);
+        updateCarousel(true);
         startAuto();
     }
 
-    function prev(animate = true) {
+    function prev() {
         start = (start - 1 + cards.length) % cards.length;
-        updateCarousel(animate);
+        updateCarousel(true);
         startAuto();
     }
 
     function startAuto() {
         if (autoTimeout) clearTimeout(autoTimeout);
-        autoTimeout = setTimeout(() => {
-            next();
-        }, autoDelay);
+        autoTimeout = setTimeout(next, autoDelay);
     }
 
-    if (prevBtn) prevBtn.onclick = () => prev();
-    if (nextBtn) nextBtn.onclick = () => next();
+    if (prevBtn) prevBtn.onclick = prev;
+    if (nextBtn) nextBtn.onclick = next;
 
     updateCarousel(false);
     startAuto();
 }
-
 // Función para agregar al carrito
 async function addToCart(productId) {
     console.log("=== INICIANDO addToCart ===" + productId);
@@ -532,7 +544,7 @@ async function initializeProducts() {
     try {
         await loadCategories();
         await loadProducts();
-        setupCarousel(); // Ahora se llama después de que los productos se renderizan
+        /*setupCarousel();*/ // Ahora se llama después de que los productos se renderizan
         const currentUser =
             window.currentUser ||
             JSON.parse(localStorage.getItem("currentUser") || "null");
