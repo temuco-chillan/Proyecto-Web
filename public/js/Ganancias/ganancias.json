@@ -1,5 +1,5 @@
 {
-  "total_acumulado": 93.147,
+  "total_acumulado": 111.147,
   "porcentaje_ganancia": 15,
   "historial_ganancias": [
     {
@@ -31,6 +31,16 @@
       "payment_id": "123527989959",
       "usuario_id": 8,
       "total_acumulado_despues": 93.147
+    },
+    {
+      "id": 4,
+      "fecha": "2025-08-31T23:36:34.780Z",
+      "total_venta": 120,
+      "porcentaje_aplicado": 15,
+      "ganancia_calculada": 18,
+      "payment_id": "123848418033",
+      "usuario_id": 3,
+      "total_acumulado_despues": 111.147
     }
   ]
 }

@@ -14,13 +14,6 @@
     "fecha_add": "2025-08-05T21:35:55.056Z"
   },
   {
-    "id": 5,
-    "cantidad": 1,
-    "usuario_id": 3,
-    "producto_id": 5,
-    "fecha_add": "2025-08-24T12:13:43.905Z"
-  },
-  {
     "id": 6,
     "cantidad": 1,
     "usuario_id": 7,
@@ -33,5 +26,19 @@
     "usuario_id": 8,
     "producto_id": 4,
     "fecha_add": "2025-08-30T16:13:08.308Z"
+  },
+  {
+    "id": 8,
+    "cantidad": 1,
+    "usuario_id": 3,
+    "producto_id": 2,
+    "fecha_add": "2025-08-31T23:40:50.038Z"
+  },
+  {
+    "id": 9,
+    "cantidad": 1,
+    "usuario_id": 1,
+    "producto_id": 4,
+    "fecha_add": "2025-08-31T23:41:36.114Z"
   }
 ]

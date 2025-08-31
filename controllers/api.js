@@ -534,6 +534,17 @@ app.get('/api/pago-pendiente', async (req, res) => {
 });
 
 app.post('/api/webhook-mercadopago', express.raw({type: 'application/json'}), (req, res) => {
+    // Verificar si el webhook está habilitado
+    const webhookEnabled = process.env.WEBHOOK_ENABLED !== 'false';
+    
+    if (!webhookEnabled) {
+        console.log('⚠️ Webhook desactivado por configuración');
+        return res.status(200).json({ 
+            status: 'disabled', 
+            message: 'Webhook temporalmente desactivado' 
+        });
+    }
+    
     console.log('Webhook recibido:', req.body);
     res.status(200).send('OK');
 });
@@ -544,7 +555,7 @@ app.post('/api/webhook-mercadopago', express.raw({type: 'application/json'}), (r
 
 app.get('/api/historial/:usuario_id', async (req, res) => {
     try {
-        const data = await historial.getHistorialByUsuario(req.params.usuario_id);
+        const data = await historial.getHistorial(req.params.usuario_id);
         res.json(data);
     } catch (error) {
         res.status(500).json({ error: error.message });

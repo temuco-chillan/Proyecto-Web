@@ -1,77 +1,93 @@
+/* Reset y estilos base - Mobile First */
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4; /* Mantenemos el fondo base más claro */
+    background-color: #f4f4f4;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
-/* Estilos para el encabezado */
+/* ESTILOS MOBILE FIRST (320px+) */
+
+/* Header - Mobile */
 header {
     background: #333;
     color: #fff;
-    padding: 32px 0 24px 0; /* Ajuste para un padding más cómodo */
+    padding: 16px 8px;
     text-align: center;
-    position: relative; /* Necesario para posicionar elementos internos */
+    position: relative;
 }
 
 header h1 {
     margin: 0;
-    font-size: 2.8rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    padding: 0 60px; /* Espacio para botones laterales */
 }
 
-/* Estilos de botones generales */
+/* Botones generales - Mobile */
 .btn {
-    background-color: #e50914; /* Color rojo de Netflix, más vibrante */
+    background-color: #e50914;
     color: #fff;
     border: none;
-    border-radius: 6px; /* Bordes más suaves */
-    padding: 12px 28px; /* Padding más generoso */
-    font-size: 1rem;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Transición suave al hover */
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-bottom: 8px;
 }
 
 .btn:hover {
-    background-color: #c40812; /* Rojo más oscuro al pasar el mouse */
+    background-color: #c40812;
 }
 
-/* Botón de cerrar sesión en el encabezado */
+/* Botón logout - Mobile */
 .logout-btn {
     position: absolute;
-    top: 32px;
-    left: 32px;
+    top: 16px;
+    left: 8px;
+    width: auto;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    margin-bottom: 0;
 }
 
-/* Contenedor del carrito en el encabezado */
+/* Carrito - Mobile */
 .header-carrito-wrapper {
     position: absolute;
-    top: 32px;
-    right: 32px;
-    display: inline-block; /* Para que el dropdown se posicione correctamente */
+    top: 16px;
+    right: 8px;
+    display: inline-block;
 }
 
 .carrito-icono {
-    font-size: 2em; /* Hace el ícono más grande */
+    font-size: 1.5em;
     cursor: pointer;
-    color: #e50914; /* Color rojo para el ícono */
+    color: #e50914;
 }
 
 .carrito-dropdown {
     position: absolute;
-    top: 100%; /* Justo debajo del icono */
-    right: 0; /* Alineado a la derecha del ícono */
+    top: 100%;
+    right: 0;
     background: #fff;
     border: 1px solid #ccc;
-    border-radius: 8px; /* Bordes redondeados */
+    border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    z-index: 1000; /* Asegura que esté por encima de otros elementos */
-    width: 400px; /* Ancho fijo para el dropdown */
-    max-width: 90vw; /* Ajuste para pantallas pequeñas */
-    padding: 10px; /* Espaciado interno */
-    color: #333; /* Color de texto predeterminado para el carrito */
+    z-index: 1000;
+    width: 90vw;
+    max-width: 350px;
+    padding: 8px;
+    color: #333;
 }
 
 .carrito-dropdown.oculto {
@@ -81,45 +97,45 @@ header h1 {
 .carrito-dropdown table {
     width: 100%;
     border-collapse: collapse;
+    font-size: 0.8em;
 }
 
 .carrito-dropdown th,
 .carrito-dropdown td {
-    font-size: 0.9em; /* Fuente ligeramente más pequeña */
-    color: #333;
-    padding: 8px;
+    padding: 6px 4px;
     text-align: center;
-    border-bottom: 1px solid #eee; /* Líneas de división más suaves */
+    border-bottom: 1px solid #eee;
 }
 
 .carrito-dropdown thead th {
-    background-color: #f0f0f0; /* Fondo para el encabezado de la tabla del carrito */
+    background-color: #f0f0f0;
     font-weight: bold;
+    font-size: 0.7em;
 }
 
 .carrito-dropdown tfoot td {
     text-align: left;
     font-weight: bold;
-    display: flex; /* Para el total y el botón de pago */
-    justify-content: space-between;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     padding-top: 10px;
     border-top: 1px solid #ccc;
 }
 
 .carrito-dropdown .btn-pago {
-    background-color: #007bff; /* Azul para el botón de Mercado Pago */
-    padding: 8px 16px;
-    font-size: 0.9em;
-    margin: 0; /* Eliminar margen extra */
+    background-color: #007bff;
+    padding: 8px 12px;
+    font-size: 0.8em;
+    margin: 0;
+    width: 100%;
 }
 
 .carrito-dropdown .btn-pago:hover {
     background-color: #0056b3;
 }
 
-
-/* Estilos principales del contenido */
+/* Main content - Mobile */
 main {
     background: #fff;
     min-height: 100vh;
@@ -129,45 +145,47 @@ main {
 .main-content-wrapper {
     max-width: 100%;
     margin: 0 auto;
-    padding: 40px 32px;
+    padding: 16px 8px;
 }
 
 .section-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 16px;
 }
 
 .section-header h2 {
-    font-size: 2rem;
+    font-size: 1.3rem;
     font-weight: bold;
     margin: 0;
 }
 
-/* Formulario de categoría */
+/* Formulario de categoría - Mobile */
 .category-form-wrapper {
     display: flex;
-    align-items: flex-start;
-    gap: 24px;
-    margin-bottom: 24px;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 16px;
 }
 
 #formCategoria {
     display: flex;
+    flex-direction: column;
     gap: 8px;
     margin: 0;
 }
 
 #nombreCategoria {
-    padding: 8px;
+    padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    font-size: 16px; /* Evita zoom en iOS */
 }
 
 #formCategoria button {
-    padding: 8px 16px;
-    background-color: #007bff; /* Azul para crear categoría */
+    padding: 12px 16px;
+    background-color: #007bff;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -181,44 +199,42 @@ main {
 
 #mensajeCategoria {
     margin: 0;
-    align-self: center;
     font-weight: bold;
-    color: #28a745; /* Color para mensajes de éxito */
+    color: #28a745;
+    text-align: center;
 }
 
-/* Contenedor del formulario de producto (Agregar/Actualizar) */
+/* Formulario de producto - Mobile */
 .product-form-container {
-    display: none; /* Por defecto oculto */
-    margin-bottom: 32px;
+    display: none;
+    margin-bottom: 16px;
     background: #f5f5f5;
-    padding: 24px;
+    padding: 16px;
     border-radius: 8px;
     width: 100%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sutil sombra */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .product-form-container h2 {
-    font-size: 2rem;
+    font-size: 1.3rem;
     font-weight: bold;
-    margin: 0 0 24px 0;
-    color: #333;
+    margin: 0 0 16px 0;
+    color: #f8f7f7;
 }
 
 #ProductosForm {
     display: flex;
-    flex-direction: column; /* Organizar los grupos de campos verticalmente */
+    flex-direction: column;
 }
 
 .form-fields-wrapper {
     display: flex;
-    gap: 32px;
-    align-items: flex-start;
-    flex-wrap: wrap; /* Permitir que los contenedores se envuelvan en pantallas pequeñas */
+    flex-direction: column;
+    gap: 16px;
 }
 
 .form-column {
-    flex: 2; /* Cada columna ocupa 2 unidades */
-    min-width: 280px; /* Ancho mínimo para cada columna */
+    width: 100%;
 }
 
 .form-group {
@@ -229,33 +245,33 @@ main {
     display: block;
     margin-bottom: 4px;
     font-weight: 600;
-    color: #555;
+    color: #ffffff;
 }
 
 .form-group input[type="text"],
 .form-group input[type="number"],
 .form-group select {
     width: 100%;
-    padding: 10px; /* Padding un poco más grande para los inputs */
+    padding: 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    box-sizing: border-box; /* Incluir padding y borde en el ancho */
+    font-size: 16px; /* Evita zoom en iOS */
 }
 
-/* Estilos específicos para la sección de imagen */
+/* Área de subida de imagen - Mobile */
 .image-upload-area {
-    flex: 1; /* Ocupa 1 unidad, es más pequeño */
-    min-width: 180px; /* Ancho mínimo */
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 2px dashed #ccc; /* Borde punteado más claro */
+    border: 2px dashed #ccc;
     border-radius: 8px;
     padding: 20px;
     background: #fafafa;
     cursor: pointer;
     text-align: center;
     transition: border-color 0.3s ease;
+    margin-bottom: 16px;
 }
 
 .image-upload-area:hover {
@@ -263,7 +279,7 @@ main {
 }
 
 .image-upload-area .icon {
-    font-size: 2.5em; /* Icono más grande */
+    font-size: 2em;
     color: #888;
 }
 
@@ -277,12 +293,12 @@ main {
     margin-top: 8px;
 }
 
-/* Botones de acción del formulario de producto */
+/* Botones de acción del formulario - Mobile */
 .form-actions {
     display: flex;
-    gap: 12px;
-    margin-top: 24px;
-    justify-content: flex-end; /* Alinear los botones a la derecha */
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
 }
 
 .form-actions .btn-cancel {
@@ -294,17 +310,18 @@ main {
     background: #666;
 }
 
-/* Tabla de Productos */
+/* Tabla de productos - Mobile */
 .table-container {
     width: 100%;
-    overflow-x: auto; /* Permite scroll horizontal si la tabla es muy ancha */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 #ProductosTable {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.95rem; /* Fuente ligeramente más pequeña para la tabla */
-    min-width: 800px; /* Ancho mínimo para la tabla si es responsive */
+    font-size: 0.8rem;
+    min-width: 600px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
@@ -315,33 +332,35 @@ main {
 
 #ProductosTable th,
 #ProductosTable td {
-    padding: 12px 10px; /* Más padding para celdas */
+    padding: 8px 6px;
     text-align: left;
-    border-bottom: 1px solid #eee; /* Líneas divisorias más sutiles */
+    border-bottom: 1px solid #eee;
 }
 
 #ProductosTable tbody tr:nth-child(even) {
-    background-color: #f9f9f9; /* Rayas para mejor legibilidad */
+    background-color: #f9f9f9;
 }
 
 #ProductosTable tbody tr:hover {
-    background-color: #f0f0f0; /* Resaltar fila al pasar el mouse */
+    background-color: #f0f0f0;
 }
 
 #ProductosTable td.actions-cell {
     text-align: center;
-    white-space: nowrap; /* Evita que los botones se rompan en varias líneas */
+    white-space: nowrap;
 }
 
 #ProductosTable td.actions-cell .btn {
-    padding: 6px 12px; /* Botones más pequeños dentro de la tabla */
-    font-size: 0.85rem;
-    margin: 0 4px;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    margin: 0 2px;
+    width: auto;
+    margin-bottom: 0;
 }
 
-/* Estilos para el select de categorías y el input de nueva categoría */
+/* Estilos para categorías - Mobile */
 #productoCategorias {
-    height: 100px; /* Altura fija para el multiselect */
+    height: 80px;
 }
 
 #nuevaCategoriaInput {
@@ -350,12 +369,13 @@ main {
 
 #crearCategoriaBtn {
     margin-top: 8px;
-    background-color: #28a745; /* Verde para el botón crear categoría */
+    background-color: #28a745;
     color: #fff;
     border: none;
     border-radius: 4px;
-    padding: 8px 16px;
+    padding: 12px 16px;
     cursor: pointer;
+    width: 100%;
 }
 
 #crearCategoriaBtn:hover {
@@ -364,10 +384,10 @@ main {
 
 /* Clases de utilidad */
 .oculto {
-    display: none !important; /* !important para asegurar que se oculte */
+    display: none !important;
 }
 
-/* Agregar estas reglas CSS para las animaciones */
+/* Animaciones */
 #cart-count {
     transition: transform 0.3s ease, background-color 0.3s ease;
 }
@@ -381,12 +401,6 @@ main {
     cursor: not-allowed;
 }
 
-/* Comentar esta sección para evitar conflictos
-.cart-item {
-    animation: slideIn 0.3s ease;
-}
-*/
-
 @keyframes slideIn {
     from {
         opacity: 0;
@@ -395,5 +409,286 @@ main {
     to {
         opacity: 1;
         transform: translateX(0);
+    }
+}
+
+/* MEDIA QUERIES - TABLET (768px+) */
+@media (min-width: 768px) {
+    body {
+        font-size: 16px;
+    }
+
+    header {
+        padding: 24px 16px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+        padding: 0 80px;
+    }
+
+    .logout-btn {
+        top: 24px;
+        left: 16px;
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+
+    .header-carrito-wrapper {
+        top: 24px;
+        right: 16px;
+    }
+
+    .carrito-icono {
+        font-size: 1.8em;
+    }
+
+    .carrito-dropdown {
+        width: 400px;
+        max-width: 400px;
+        padding: 12px;
+    }
+
+    .carrito-dropdown table {
+        font-size: 0.9em;
+    }
+
+    .carrito-dropdown th,
+    .carrito-dropdown td {
+        padding: 8px;
+    }
+
+    .carrito-dropdown tfoot td {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .carrito-dropdown .btn-pago {
+        width: auto;
+        font-size: 0.9em;
+    }
+
+    .main-content-wrapper {
+        padding: 24px 16px;
+    }
+
+    .section-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .section-header h2 {
+        font-size: 1.8rem;
+    }
+
+    .category-form-wrapper {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    #formCategoria {
+        flex-direction: row;
+    }
+
+    #mensajeCategoria {
+        text-align: left;
+        align-self: center;
+    }
+
+    .product-form-container {
+        padding: 24px;
+        margin-bottom: 24px;
+    }
+
+    .product-form-container h2 {
+        font-size: 1.8rem;
+        margin-bottom: 24px;
+    }
+
+    .form-fields-wrapper {
+        flex-direction: row;
+        gap: 24px;
+    }
+
+    .form-column {
+        flex: 2;
+        min-width: 280px;
+    }
+
+    .image-upload-area {
+        flex: 1;
+        min-width: 200px;
+        margin-bottom: 0;
+    }
+
+    .form-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+
+    .btn {
+        width: auto;
+        margin-bottom: 0;
+    }
+
+    #crearCategoriaBtn {
+        width: auto;
+    }
+
+    #ProductosTable {
+        font-size: 0.9rem;
+        min-width: 800px;
+    }
+
+    #ProductosTable th,
+    #ProductosTable td {
+        padding: 10px 8px;
+    }
+
+    #ProductosTable td.actions-cell .btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        margin: 0 4px;
+    }
+
+    #productoCategorias {
+        height: 100px;
+    }
+}
+
+/* MEDIA QUERIES - DESKTOP (1024px+) */
+@media (min-width: 1024px) {
+    header {
+        padding: 32px 0 24px 0;
+    }
+
+    header h1 {
+        font-size: 2.8rem;
+        letter-spacing: 1px;
+        padding: 0 100px;
+    }
+
+    .logout-btn {
+        top: 32px;
+        left: 32px;
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+
+    .header-carrito-wrapper {
+        top: 32px;
+        right: 32px;
+    }
+
+    .carrito-icono {
+        font-size: 2em;
+    }
+
+    .main-content-wrapper {
+        max-width: 1200px;
+        padding: 40px 32px;
+    }
+
+    .section-header h2 {
+        font-size: 2rem;
+    }
+
+    .product-form-container h2 {
+        font-size: 2rem;
+    }
+
+    .form-fields-wrapper {
+        gap: 32px;
+    }
+
+    .image-upload-area {
+        min-width: 180px;
+    }
+
+    .image-upload-area .icon {
+        font-size: 2.5em;
+    }
+
+    #ProductosTable {
+        font-size: 0.95rem;
+    }
+
+    #ProductosTable th,
+    #ProductosTable td {
+        padding: 12px 10px;
+    }
+
+    #ProductosTable td.actions-cell .btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* MEDIA QUERIES - LARGE DESKTOP (1440px+) */
+@media (min-width: 1440px) {
+    .main-content-wrapper {
+        max-width: 1400px;
+    }
+
+    header h1 {
+        font-size: 3rem;
+    }
+
+    .section-header h2 {
+        font-size: 2.2rem;
+    }
+}
+
+/* Mejoras de accesibilidad y UX */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1a1a1a;
+        color: #fff;
+    }
+
+    main {
+        background: #2d2d2d;
+    }
+
+    .product-form-container {
+        background: #3a3a3a;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group select,
+    #nombreCategoria {
+        background: #4a4a4a;
+        color: #fff;
+        border-color: #666;
+    }
+
+    .carrito-dropdown {
+        background: #3a3a3a;
+        border-color: #666;
+        color: #fff;
+    }
+
+    #ProductosTable tbody tr:nth-child(even) {
+        background-color: #3a3a3a;
+    }
+
+    #ProductosTable tbody tr:hover {
+        background-color: #4a4a4a;
     }
 }
