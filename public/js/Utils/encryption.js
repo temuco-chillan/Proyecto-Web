@@ -1,8 +1,13 @@
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 class EncryptionService {
   constructor() {
-    this.saltRounds = 12; // Número de rondas de salt para bcrypt
+    this.saltRounds = 12;
+    this.algorithm = 'aes-256-cbc';
+    // Asegurar que la clave tenga 32 bytes para AES-256
+    const key = process.env.ENCRYPTION_KEY || 'mi-clave-super-secreta-de-32-caracteres!';
+    this.encryptionKey = crypto.createHash('sha256').update(key).digest();
   }
 
   /**
@@ -33,18 +38,50 @@ class EncryptionService {
   }
 
   /**
-   * Encripta un RUT para almacenamiento seguro
+   * Encripta un RUT de forma reversible
    * @param {string} rut - RUT en texto plano
-   * @returns {Promise<string>} - RUT encriptado
+   * @returns {string} - RUT encriptado
    */
-  async hashRut(rut) {
+  encryptRut(rut) {
     try {
-      // Normalizar RUT (remover puntos y guiones, convertir a mayúsculas)
       const normalizedRut = rut.replace(/[.-]/g, '').toUpperCase();
-      return await bcrypt.hash(normalizedRut, this.saltRounds);
+      const iv = crypto.randomBytes(16);
+      const cipher = crypto.createCipheriv(this.algorithm, Buffer.from(this.encryptionKey), iv);
+      let encrypted = cipher.update(normalizedRut, 'utf8', 'hex');
+      encrypted += cipher.final('hex');
+      return iv.toString('hex') + ':' + encrypted;
     } catch (error) {
       throw new Error('Error al encriptar RUT: ' + error.message);
     }
+  }
+
+  /**
+   * Desencripta un RUT
+   * @param {string} encryptedRut - RUT encriptado
+   * @returns {string} - RUT en texto plano
+   */
+  decryptRut(encryptedRut) {
+    try {
+      const parts = encryptedRut.split(':');
+      const iv = Buffer.from(parts[0], 'hex');
+      const encrypted = parts[1];
+      const decipher = crypto.createDecipheriv(this.algorithm, Buffer.from(this.encryptionKey), iv);
+      let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+      decrypted += decipher.final('utf8');
+      return decrypted;
+    } catch (error) {
+      throw new Error('Error al desencriptar RUT: ' + error.message);
+    }
+  }
+
+  /**
+   * Encripta un RUT para almacenamiento seguro (ahora usa encriptación reversible)
+   * @param {string} rut - RUT en texto plano
+   * @returns {string} - RUT encriptado
+   */
+  async hashRut(rut) {
+    // Cambiar a encriptación reversible
+    return this.encryptRut(rut);
   }
 
   /**
@@ -60,6 +97,20 @@ class EncryptionService {
     } catch (error) {
       throw new Error('Error al verificar RUT: ' + error.message);
     }
+  }
+
+  /**
+   * Enmascara un RUT para visualización segura
+   * @param {string} rut - RUT completo
+   * @returns {string} - RUT enmascarado (ej: 12.345.***-*)
+   */
+  maskRut(rut) {
+    const normalizedRut = rut.replace(/[.-]/g, '');
+    if (normalizedRut.length < 8) return '***-*';
+    
+    const visible = normalizedRut.substring(0, 5);
+    const masked = visible.replace(/(\d{2})(\d{3})/, '$1.$2.***-*');
+    return masked;
   }
 
   /**

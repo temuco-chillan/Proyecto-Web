@@ -1,5 +1,5 @@
 const apiUrl = window.location.hostname.includes('localhost')
-  ? 'http://localhost:3000/api/Productos'
+  ? 'https://localhost:3000/api/Productos'
   : '/api/Productos';
 
 // Función para obtener Productos de la API
@@ -149,7 +149,9 @@ function editProducto(id) {
     });
 }
 function getCategories(id_Producto){
-    const CategoriaURL = "http://localhost:3000/api/Productos/" + id_Producto + "/categorias";
+    const CategoriaURL = window.location.hostname.includes('localhost')
+        ? 'https://localhost:3000/api/Productos/' + id_Producto + '/categorias'
+        : '/api/Productos/' + id_Producto + '/categorias';
     
     return fetch(CategoriaURL)
         .then(res => {

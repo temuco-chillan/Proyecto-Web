@@ -38,6 +38,8 @@ const modalPaymentId = $("#modalPaymentId");
 const modalUserPhone = $("#modalUserPhone");
 const modalUserAddress = $("#modalUserAddress");
 const modalUserLocation = $("#modalUserLocation");
+const modalUserEmail = $("#modalUserEmail");
+const modalUserRut = $("#modalUserRut");
 const modalSubtotal = $("#modalSubtotal");
 const modalDiscounts = $("#modalDiscounts");
 const modalFinalTotal = $("#modalFinalTotal");
@@ -262,6 +264,22 @@ function openDetails(id) {
   
   // Información del usuario
   modalUser.textContent = `Usuario: ${o.usuario_nombre || `Usuario #${o.usuario_id}`}`;
+  
+  // Correo electrónico del usuario
+  if (o.usuario_email) {
+    modalUserEmail.textContent = `Correo: ${o.usuario_email}`;
+    modalUserEmail.style.display = 'block';
+  } else {
+    modalUserEmail.style.display = 'none';
+  }
+  
+  // RUT del usuario
+  if (o.usuario_rut) {
+    modalUserRut.textContent = `RUT: ${o.usuario_rut}`;
+    modalUserRut.style.display = 'block';
+  } else {
+    modalUserRut.style.display = 'none';
+  }
   
   // Información adicional del usuario
   if (o.usuario_telefono) {

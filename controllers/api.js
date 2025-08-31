@@ -91,6 +91,8 @@ app.post('/api/users', async (req, res) => {
             res.status(409).json({ message: 'Este nombre de usuario ya está registrado' });
         } else if (err.message === 'EMAIL_EXISTS') {
             res.status(409).json({ message: 'Este correo electrónico ya está en uso' });
+        } else if (err.message === 'RUT_EXISTS') {
+            res.status(409).json({ message: 'Este RUT ya está registrado' });
         } else {
             console.error('Error en registro:', err);
             res.status(500).json({ message: 'Error interno del servidor. Intenta nuevamente' });
@@ -630,5 +632,27 @@ app.put('/api/ganancias/porcentaje', async (req, res) => {
         res.json(resultado);
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+});
+
+// Nuevo endpoint para obtener RUT desencriptado (solo para roles autorizados)
+app.get('/api/users/:id/rut', async (req, res) => {
+    try {
+        const { userRole } = req.headers; // Obtener rol del token/sesión
+        
+        if (userRole !== 'vendedor' && userRole !== 'admin') {
+            return res.status(403).json({ message: 'No autorizado para ver RUT completo' });
+        }
+        
+        const user = await sesiones.getUserById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+        
+        // Desencriptar RUT solo para roles autorizados
+        const decryptedRut = encryptionService.decryptRut(user.rut);
+        res.json({ rut: decryptedRut });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });

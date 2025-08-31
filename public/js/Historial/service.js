@@ -1,6 +1,7 @@
 const { Venta, DetalleVenta, Producto, Usuario } = require('../Models');
 const jsonFallback = require('./json');
 const productosService = require('../Productos/service');
+const encryptionService = require('../Utils/encryption');
 
 let useFallback = false;
 
@@ -65,34 +66,59 @@ async function getAllHistorial() {
       },
       {
         model: Usuario,
-        attributes: ['id', 'username', 'telefono', 'direccion', 'ciudad', 'region']
+        attributes: ['id', 'username', 'email', 'rut', 'telefono', 'direccion', 'ciudad', 'region']
       }
     ],
     order: [['fecha_venta', 'DESC']]
   });
 
-  return ventas.map(venta => ({
-    id: venta.id,
-    fecha: venta.fecha_venta,
-    total: venta.total,
-    payment_id: venta.payment_id,
-    estado: venta.estado,
-    usuario_id: venta.usuario_id,
-    usuario_nombre: venta.Usuario ? venta.Usuario.username : `Usuario #${venta.usuario_id}`,
-    usuario_telefono: venta.Usuario ? venta.Usuario.telefono : null,
-    usuario_direccion: venta.Usuario ? venta.Usuario.direccion : null,
-    usuario_ciudad: venta.Usuario ? venta.Usuario.ciudad : null,
-    usuario_region: venta.Usuario ? venta.Usuario.region : null,
-    detalles: venta.detalles.map(detalle => ({  // Cambiar de DetalleVentas a detalles
-      producto_id: detalle.Producto.id,         
-      producto: detalle.Producto.nombre,
-      imagen_url: detalle.Producto.imagen_url,
-      cantidad: detalle.cantidad,
-      precio_unitario: detalle.precio_unitario,
-      descuento: detalle.descuento_aplicado,
-      subtotal: detalle.subtotal
-    }))
-  }));
+  return ventas.map(venta => {
+    let usuario_email = null;
+    let usuario_rut = null;
+    
+    if (venta.Usuario) {
+      usuario_email = venta.Usuario.email;
+      
+      // Desencriptar RUT si existe
+      if (venta.Usuario.rut) {
+        if (venta.Usuario.rut.includes(':')) {
+          try {
+            usuario_rut = encryptionService.decryptRut(venta.Usuario.rut);
+          } catch (error) {
+            console.warn(`Error al desencriptar RUT del usuario ${venta.usuario_id}:`, error.message);
+            usuario_rut = 'RUT no disponible';
+          }
+        } else {
+          usuario_rut = venta.Usuario.rut;
+        }
+      }
+    }
+    
+    return {
+      id: venta.id,
+      fecha: venta.fecha_venta,
+      total: venta.total,
+      payment_id: venta.payment_id,
+      estado: venta.estado,
+      usuario_id: venta.usuario_id,
+      usuario_nombre: venta.Usuario ? venta.Usuario.username : `Usuario #${venta.usuario_id}`,
+      usuario_email: usuario_email,
+      usuario_rut: usuario_rut,
+      usuario_telefono: venta.Usuario ? venta.Usuario.telefono : null,
+      usuario_direccion: venta.Usuario ? venta.Usuario.direccion : null,
+      usuario_ciudad: venta.Usuario ? venta.Usuario.ciudad : null,
+      usuario_region: venta.Usuario ? venta.Usuario.region : null,
+      detalles: venta.detalles.map(detalle => ({
+        producto_id: detalle.Producto.id,         
+        producto: detalle.Producto.nombre,
+        imagen_url: detalle.Producto.imagen_url,
+        cantidad: detalle.cantidad,
+        precio_unitario: detalle.precio_unitario,
+        descuento: detalle.descuento_aplicado,
+        subtotal: detalle.subtotal
+      }))
+    };
+  });
 }
 
 // Crear nueva venta

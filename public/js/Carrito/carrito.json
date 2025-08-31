@@ -1,12 +1,5 @@
 [
   {
-    "id": 1,
-    "cantidad": 1,
-    "usuario_id": 1,
-    "producto_id": 3,
-    "fecha_add": "2025-07-29T17:11:45.869Z"
-  },
-  {
     "id": 3,
     "cantidad": 3,
     "usuario_id": 2,

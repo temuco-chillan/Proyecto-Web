@@ -80,14 +80,30 @@ async function getUsers() {
   });
 }
 
-async function getUserById(id) {
+async function getUserById(id, includeRut = false) {
   const users = loadUsers();
   const user = users.find(u => u.id === parseInt(id, 10));
   if (!user) return null;
   
-  // Excluir datos sensibles
-  const { password, rut, ...userWithoutSensitiveData } = user;
-  return userWithoutSensitiveData;
+  // Excluir datos sensibles, pero incluir RUT si se solicita
+  if (includeRut) {
+    const { password, ...userWithoutPassword } = user;
+    
+    // Desencriptar el RUT si está encriptado
+    if (userWithoutPassword.rut && userWithoutPassword.rut.includes(':')) {
+      try {
+        userWithoutPassword.rut = encryptionService.decryptRut(userWithoutPassword.rut);
+      } catch (error) {
+        console.warn(`Error al desencriptar RUT del usuario ${id}:`, error.message);
+        userWithoutPassword.rut = 'RUT no disponible';
+      }
+    }
+    
+    return userWithoutPassword;
+  } else {
+    const { password, rut, ...userWithoutSensitiveData } = user;
+    return userWithoutSensitiveData;
+  }
 }
 
 async function createUser({ username, email, password, rol_id, rut, telefono, direccion, ciudad, region }) {
@@ -108,15 +124,28 @@ async function createUser({ username, email, password, rol_id, rut, telefono, di
   
   // Verificar RUT duplicado
   if (rut) {
+    const normalizedInputRut = rut.replace(/[.-]/g, '').toUpperCase();
     for (const user of users) {
-      if (user.rut && await encryptionService.verifyRut(rut, user.rut)) {
-        throw new Error('RUT_EXISTS');
+      if (user.rut) {
+        // Si el RUT almacenado es un hash (empieza con $2b$), usar verifyRut
+        if (user.rut.startsWith('$2b$')) {
+          if (await encryptionService.verifyRut(rut, user.rut)) {
+            throw new Error('RUT_EXISTS');
+          }
+        } else {
+          // Si el RUT almacenado no está hasheado, comparar directamente
+          const normalizedStoredRut = user.rut.replace(/[.-]/g, '').toUpperCase();
+          if (normalizedInputRut === normalizedStoredRut) {
+            throw new Error('RUT_EXISTS');
+          }
+        }
       }
     }
   }
 
   // Encriptar contraseña y RUT
   const hashedPassword = await encryptionService.hashPassword(password);
+  // Activar encriptación reversible del RUT
   const hashedRut = rut ? await encryptionService.hashRut(rut) : null;
 
   const newUser = generateDefaultUserData({ 

@@ -39,27 +39,67 @@ async function getUsers() {
   }
 }
 
-async function getUserById(id) {
+async function getUserById(id, includeRut = true) {
+  console.log('[DEBUG SERVICE] getUserById llamado con id:', id, 'includeRut:', includeRut);
+  console.log('[DEBUG SERVICE] useFallback:', useFallback);
+  
   if (useFallback) {
-    return await jsonFallback.getUserById(id);
+    console.log('[DEBUG SERVICE] Usando fallback JSON');
+    return await jsonFallback.getUserById(id, includeRut);
   }
   
   try {
+    console.log('[DEBUG SERVICE] Consultando base de datos');
     const user = await Usuario.findByPk(id, {
       include: [{ model: Rol, as: 'rol' }]
     });
     
-    if (!user) return null;
+    if (!user) {
+      console.log('[DEBUG SERVICE] Usuario no encontrado en BD');
+      return null;
+    }
     
-    // Excluir datos sensibles
-    const { password, rut, ...userWithoutSensitiveData } = user.toJSON();
-    return {
-      ...userWithoutSensitiveData,
+    console.log('[DEBUG SERVICE] Usuario encontrado en BD');
+    // Convertir a objeto plano
+    const userData = user.toJSON();
+    console.log('[DEBUG SERVICE] RUT original de BD:', userData.rut);
+    
+    // Siempre excluir la contraseña
+    const { password, ...userWithoutPassword } = userData;
+    
+    // Si se solicita incluir RUT, desencriptarlo
+    if (includeRut && userWithoutPassword.rut) {
+      console.log('[DEBUG SERVICE] Procesando RUT para desencriptación');
+      try {
+        // Desencriptar RUT si está encriptado
+        if (userWithoutPassword.rut.includes(':')) {
+          console.log('[DEBUG SERVICE] RUT está encriptado, desencriptando...');
+          const rutDesencriptado = encryptionService.decryptRut(userWithoutPassword.rut);
+          userWithoutPassword.rut = rutDesencriptado;
+          console.log('[DEBUG SERVICE] RUT desencriptado:', rutDesencriptado);
+        } else {
+          console.log('[DEBUG SERVICE] RUT no está encriptado');
+        }
+      } catch (error) {
+        console.warn('[DEBUG SERVICE] Error al desencriptar RUT:', error.message);
+        // Mantener RUT encriptado si falla la desencriptación
+      }
+    } else if (!includeRut) {
+      console.log('[DEBUG SERVICE] Excluyendo RUT de la respuesta');
+      // Si no se solicita RUT, excluirlo
+      delete userWithoutPassword.rut;
+    }
+    
+    const finalUser = {
+      ...userWithoutPassword,
       rol: user.rol ? user.rol.nombre : 'usuario'
     };
+    
+    console.log('[DEBUG SERVICE] Usuario final a retornar:', finalUser);
+    return finalUser;
   } catch (error) {
-    console.error('Error al obtener usuario, usando fallback:', error);
-    return await jsonFallback.getUserById(id);
+    console.error('[DEBUG SERVICE] Error al obtener usuario, usando fallback:', error);
+    return await jsonFallback.getUserById(id, includeRut);
   }
 }
 

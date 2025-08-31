@@ -1,5 +1,5 @@
 const carritoApiUrl = window.location.hostname.includes("localhost")
-  ? "http://localhost:3000/api/carrito"
+  ? "https://localhost:3000/api/carrito"
   : "/api/carrito"
 
 // Obtener cuenta activa desde localStorage

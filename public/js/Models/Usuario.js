@@ -19,21 +19,10 @@ const Usuario = sequelize.define('Usuario', {
   },
   // RUT encriptado para seguridad
   rut: {
-    type: DataTypes.STRING(255), // Aumentado para almacenar hash
+    type: DataTypes.STRING(255),
     unique: true,
     allowNull: false,
-    validate: {
-      async isValidRut(value) {
-        // Si es un hash (ya encriptado), no validar formato
-        if (value.startsWith('$2b$')) {
-          return true;
-        }
-        // Si es texto plano, validar formato y dígito verificador
-        if (!encryptionService.validateRut(value)) {
-          throw new Error('RUT inválido');
-        }
-      }
-    }
+    // Este campo mantiene el RUT encriptado de forma reversible
   },
   telefono: {
     type: DataTypes.STRING(15),
@@ -75,7 +64,8 @@ const Usuario = sequelize.define('Usuario', {
       if (user.password && !user.password.startsWith('$2b$')) {
         user.password = await encryptionService.hashPassword(user.password);
       }
-      if (user.rut && !user.rut.startsWith('$2b$')) {
+      // Activar encriptación reversible del RUT
+      if (user.rut && !user.rut.includes(':')) {
         user.rut = await encryptionService.hashRut(user.rut);
       }
     },
@@ -84,7 +74,8 @@ const Usuario = sequelize.define('Usuario', {
       if (user.changed('password') && !user.password.startsWith('$2b$')) {
         user.password = await encryptionService.hashPassword(user.password);
       }
-      if (user.changed('rut') && !user.rut.startsWith('$2b$')) {
+      // Activar encriptación reversible del RUT
+      if (user.changed('rut') && !user.rut.includes(':')) {
         user.rut = await encryptionService.hashRut(user.rut);
       }
     }

@@ -3,6 +3,7 @@ const path = require('path');
 const { Venta, DetalleVenta } = require('../Models');
 const productosBackend = require('../Productos/json');
 const sesionesService = require('../Sesiones/service');
+const encryptionService = require('../Utils/encryption');
 const VENTAS_FILE = path.join(__dirname, 'ventas.json');
 const DETALLES_FILE = path.join(__dirname, 'detalles_venta.json');
 
@@ -175,7 +176,6 @@ function actualizarEstadoVenta(venta_id, estado) {
   return Promise.resolve();
 }
 
-// Agregar esta función después de getHistorial
 async function getAllHistorial() {
   const ventas = readVentas();
   const detalles = readDetalles();
@@ -189,6 +189,8 @@ async function getAllHistorial() {
     todasLasVentas.map(async (venta) => {
       let usuarioInfo = {
         usuario_nombre: `Usuario #${venta.usuario_id}`,
+        usuario_email: null,
+        usuario_rut: null,
         usuario_telefono: null,
         usuario_direccion: null,
         usuario_ciudad: null,
@@ -197,10 +199,26 @@ async function getAllHistorial() {
 
       try {
         // Intentar obtener información del usuario
-        const usuario = await sesionesService.getUserById(venta.usuario_id);
+        const usuario = await sesionesService.getUserById(venta.usuario_id, true); // Incluir RUT
         if (usuario) {
+          let rutDesencriptado = null;
+          if (usuario.rut) {
+            if (usuario.rut.includes(':')) {
+              try {
+                rutDesencriptado = encryptionService.decryptRut(usuario.rut);
+              } catch (error) {
+                console.warn(`Error al desencriptar RUT del usuario ${venta.usuario_id}:`, error.message);
+                rutDesencriptado = 'RUT no disponible';
+              }
+            } else {
+              rutDesencriptado = usuario.rut;
+            }
+          }
+          
           usuarioInfo = {
             usuario_nombre: usuario.username || `Usuario #${venta.usuario_id}`,
+            usuario_email: usuario.email || null,
+            usuario_rut: rutDesencriptado,
             usuario_telefono: usuario.telefono || null,
             usuario_direccion: usuario.direccion || null,
             usuario_ciudad: usuario.ciudad || null,

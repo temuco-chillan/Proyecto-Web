@@ -1,73 +1,16 @@
 [
   {
-    "id": 2,
-    "username": "Admin5",
-    "email": "admin3@gmail.com",
-    "password": "$2b$12$iI7kRJx4iznshtTtq4vV6.nCK01qVqsqNtNFOCmvViHQKva/Ns9Sa",
-    "estado": "activo",
-    "rol_id": 2,
-    "creado_en": "2025-07-09T17:49:25.669Z"
-  },
-  {
-    "id": 3,
-    "username": "Admin",
-    "email": "micorreo@gmail.com",
-    "password": "$2b$12$iI7kRJx4iznshtTtq4vV6.nCK01qVqsqNtNFOCmvViHQKva/Ns9Sa",
-    "estado": "activo",
-    "rol_id": 2,
-    "creado_en": "2025-07-15T15:32:06.754Z"
-  },
-  {
-    "id": 4,
-    "username": "igado",
-    "email": "hidalgoraul34@gmail.com",
-    "password": "$2b$12$iI7kRJx4iznshtTtq4vV6.nCK01qVqsqNtNFOCmvViHQKva/Ns9Sa",
-    "estado": "activo",
-    "rol_id": 1,
-    "creado_en": "2025-07-29T17:16:04.572Z"
-  },
-  {
-    "id": 6,
-    "username": "user2",
-    "email": "www@gmail.com",
-    "password": "$2b$12$iI7kRJx4iznshtTtq4vV6.nCK01qVqsqNtNFOCmvViHQKva/Ns9Sa",
-    "rut": null,
-    "codigo_postal": null,
-    "estado": "activo",
-    "rol_id": 2,
-    "creado_en": "2025-08-24T08:42:54.907Z",
-    "telefono": null,
-    "direccion": null,
-    "ciudad": null,
-    "region": null
-  },
-  {
-    "id": 7,
-    "username": "user3",
-    "email": "admin@tienda.com",
-    "password": "$2b$12$Oalc7lwKG6HJvX4lbXgvE.swUcUMDmgeGVh0lovXnbvAS0zMRuGNO",
-    "rut": null,
-    "codigo_postal": null,
-    "estado": "activo",
-    "rol_id": 1,
-    "creado_en": "2025-08-24T08:51:17.172Z",
-    "telefono": null,
-    "direccion": null,
-    "ciudad": null,
-    "region": null
-  },
-  {
-    "id": 8,
+    "id": 1,
     "username": "eligado",
     "email": "hidalgoraul349@gmail.com",
-    "password": "$2b$12$MbxXDTlrqBQuW3pAfP3OWuH7F6phQkrOy5Js6Q6ygBpcMZxzvj1Ne",
-    "rut": "$2b$12$RvGdAn0XtvWm9uVFkJfeeeo8jJta/mQNwcPGkqABy1FxaJTLLqcUy",
+    "password": "$2b$12$cr/vSfTKvFvIyIIjyFI/6eSb85s31J.RCPPB1CkQdPgdA.ecEqWGu",
+    "rut": "3afc8d4212f459ebe983b5ac0b5265c2:dc4322ba82dc8f2575a815671a988b0f",
     "telefono": "936403212",
     "direccion": "Villa Alegre 507",
     "ciudad": "Padre las casas",
     "region": "La Araucanía",
     "estado": "activo",
     "rol_id": 1,
-    "creado_en": "2025-08-29T04:48:54.804Z"
+    "creado_en": "2025-08-31T21:49:07.667Z"
   }
 ]
