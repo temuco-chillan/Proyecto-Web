@@ -28,7 +28,7 @@ app.use('/css', express.static(path.join(__dirname, '../public/css'), {
 }));
 app.use('/js', express.static(path.join(__dirname, '../public/js')));
 app.use(express.static(path.join(__dirname, '../public/views')));
-
+app.use('/images', express.static(path.join(__dirname, '../public/images')));
 app.use(cors());
 app.use(express.json());
 
@@ -608,16 +608,6 @@ app.put('/api/ganancias/porcentaje', async (req, res) => {
 ////////////////////////
 // CONFIGURACIÓN DEL SERVIDOR
 ////////////////////////
-
-const HTTP_PORT = PORT;
-const HTTPS_PORT = parseInt(PORT) + 1;
-
-// Iniciar servidor HTTP
-app.listen(HTTPS_PORT, () => {
-    console.log(`🌐 Servidor HTTP ejecutándose en http://localhost:${HTTP_PORT}`);
-    console.log(`📋 Accede a tu aplicación en: http://localhost:${HTTP_PORT}`);
-});
-
 // Intentar iniciar servidor HTTPS (opcional)
 try {
     if (fs.existsSync('key.pem') && fs.existsSync('cert.pem')) {
@@ -627,7 +617,7 @@ try {
         };
         
         https.createServer(options, app).listen(PORT, () => {
-            console.log(`🔒 Servidor HTTPS ejecutándose en https://localhost:${HTTPS_PORT}`);
+            console.log(`🔒 Servidor HTTPS ejecutándose en https://localhost:${PORT}`);
         });
     } else {
         console.log(`⚠️  Certificados SSL no encontrados. Solo HTTP disponible.`);
