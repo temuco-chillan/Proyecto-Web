@@ -4,7 +4,7 @@
     "username": "eligado",
     "email": "hidalgoraul349@gmail.com",
     "password": "$2b$12$cr/vSfTKvFvIyIIjyFI/6eSb85s31J.RCPPB1CkQdPgdA.ecEqWGu",
-    "rut": "3afc8d4212f459ebe983b5ac0b5265c2:dc4322ba82dc8f2575a815671a988b0f",
+    "rut": "",
     "telefono": "936403212",
     "direccion": "Villa Alegre 507",
     "nombreCompleto": "Raul Hidalgo",
@@ -13,5 +13,20 @@
     "estado": "activo",
     "rol_id": 1,
     "creado_en": "2025-08-31T21:49:07.667Z"
+  },
+  {
+    "id": 2,
+    "username": "elenemigos",
+    "nombreCompleto": "Raul Hidalgo",
+    "email": "elusuario@gmail.com",
+    "password": "$2b$12$r4tjHaKT.RsrZ61acN0P/eOBWJrSiw93sHqXsJuvgPxsqI8Nv08eW",
+    "rut": "c2bbaacd0f5fc1105fd59a327840a1f5:5b18018ecdc5b18223340838f8298714",
+    "telefono": "936403212",
+    "direccion": "Avenida Calle 222",
+    "ciudad": "Chile chico",
+    "region": "Los Lagos",
+    "rol_id": 2,
+    "estado": "activo",
+    "creado_en": "2025-09-03T04:00:53.883Z"
   }
 ]

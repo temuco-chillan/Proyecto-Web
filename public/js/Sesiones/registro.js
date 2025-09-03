@@ -142,7 +142,6 @@ document.getElementById('registerForm').addEventListener('submit', async functio
             direccion,
             ciudad,
             region,
-            rol_id
         };
 
         const response = await fetch('/api/users', {

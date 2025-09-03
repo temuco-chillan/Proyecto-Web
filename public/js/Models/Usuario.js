@@ -52,6 +52,11 @@ const Usuario = sequelize.define('Usuario', {
   region: {
     type: DataTypes.STRING(100),
     allowNull: false
+  }, 
+  rol_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 2
   },
   estado: {
     type: DataTypes.ENUM('activo', 'inactivo'),

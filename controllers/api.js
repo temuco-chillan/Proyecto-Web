@@ -64,8 +64,7 @@ app.post('/api/users', async (req, res) => {
         telefono, 
         direccion, 
         ciudad, 
-        region,
-        rol_id = 2 
+        region
     } = req.body;
 
     if (!username || !nombreCompleto || !email || !password || !rut || !telefono || !direccion || !ciudad || !region) {
@@ -82,8 +81,7 @@ app.post('/api/users', async (req, res) => {
             telefono, 
             direccion, 
             ciudad, 
-            region, 
-            rol_id
+            region
         };
         
         const user = await sesiones.createUser(userData);

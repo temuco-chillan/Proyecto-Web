@@ -116,7 +116,6 @@ async function createUser(userData) {
         throw new Error('El RUT ya está registrado');
       }
     }
-    
     const user = await Usuario.create(userData);
     
     // Excluir datos sensibles
