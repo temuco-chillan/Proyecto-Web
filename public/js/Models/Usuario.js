@@ -8,6 +8,10 @@ const Usuario = sequelize.define('Usuario', {
     unique: true,
     allowNull: false
   },
+  nombreCompleto: {   // 👈 AGREGA ESTE CAMPO
+    type: DataTypes.STRING(150),
+    allowNull: false
+  },
   email: {
     type: DataTypes.STRING(150),
     unique: true,

@@ -57,6 +57,7 @@ app.get('/api/users/:id', async (req, res) => {
 app.post('/api/users', async (req, res) => {
     const { 
         username, 
+        nombreCompleto,
         email, 
         password, 
         rut, 
@@ -67,13 +68,14 @@ app.post('/api/users', async (req, res) => {
         rol_id = 2 
     } = req.body;
 
-    if (!username || !email || !password || !rut || !telefono || !direccion || !ciudad || !region) {
+    if (!username || !nombreCompleto || !email || !password || !rut || !telefono || !direccion || !ciudad || !region) {
         return res.status(400).json({ message: 'Todos los campos obligatorios deben ser completados' });
     }
 
     try {
         const userData = {
             username, 
+            nombreCompleto,
             email, 
             password, 
             rut, 

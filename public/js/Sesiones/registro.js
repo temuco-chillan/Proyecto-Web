@@ -10,7 +10,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     const ciudad = document.getElementById('ciudad').value.trim();
     const region = document.getElementById('region').value.trim();
     const message = document.getElementById('message');
-
+    const nombreCompleto = document.getElementById('nombreCompleto').value.trim();
     const rol_id = 2; // Usuario común
 
     // Validaciones específicas con mensajes mejorados
@@ -134,6 +134,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     try {
         const userData = {
             username,
+            nombreCompleto,
             email,
             password,
             rut,

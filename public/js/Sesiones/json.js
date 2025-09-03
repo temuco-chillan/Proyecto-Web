@@ -106,7 +106,7 @@ async function getUserById(id, includeRut = false) {
   }
 }
 
-async function createUser({ username, email, password, rol_id, rut, telefono, direccion, ciudad, region }) {
+async function createUser({ username,nombreCompleto, email, password, rol_id, rut, telefono, direccion, ciudad, region }) {
   const users = loadUsers();
 
   if (users.find(u => u.username === username)) {
@@ -150,6 +150,7 @@ async function createUser({ username, email, password, rol_id, rut, telefono, di
 
   const newUser = generateDefaultUserData({ 
     username, 
+    nombreCompleto,
     email, 
     password: hashedPassword, 
     rol_id,
