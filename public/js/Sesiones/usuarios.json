@@ -28,5 +28,20 @@
     "rol_id": 2,
     "estado": "activo",
     "creado_en": "2025-09-03T04:00:53.883Z"
+  },
+  {
+    "id": 3,
+    "username": "Dani",
+    "nombreCompleto": "Daniel Soto",
+    "email": "dani@gmail.com",
+    "password": "$2b$12$o5TInhhoMNyKhpbfqC3nNuur3BHwv/dO2ZDPmlsXmfC5u/FMuPZvK",
+    "rut": "e86c2b04583398d04d6352003cabef69:5804791ba55233ce15e908e7f9c7ed88",
+    "telefono": "56936331844",
+    "direccion": "Serrano 372",
+    "ciudad": "Temuco",
+    "region": "La Araucanía",
+    "rol_id": 1,
+    "estado": "activo",
+    "creado_en": "2025-09-03T20:02:08.807Z"
   }
 ]

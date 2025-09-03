@@ -45,6 +45,12 @@ body {
   letter-spacing: -0.025em;
   margin-bottom: 0.5rem;
   padding-right: 0.2rem;
+  display: flex;
+  align-items: center;
+}
+
+.logo-img{
+  width: 100px;
 }
 
 .navigation {
@@ -706,7 +712,7 @@ body {
   right: 0;
   width: 90vw;
   max-width: 280px;
-  background: white;
+  background: #000000;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
   z-index: 250;
@@ -730,6 +736,7 @@ body {
   position: relative !important;
 }
 
+/*
 .user-dropdown::before {
   content: "";
   position: absolute;
@@ -737,12 +744,12 @@ body {
   right: 20px;
   width: 16px;
   height: 16px;
-  background: white;
+  background: rgb(0, 0, 0);
   border: 1px solid #e5e7eb;
   border-bottom: none;
   border-right: none;
   transform: rotate(45deg);
-}
+}*/
 
 .dropdown-content {
   padding: 1rem;
@@ -758,12 +765,12 @@ body {
 
 .dropdown-header i {
   font-size: 2rem;
-  color: #3a3a3a;
+  color: #fff;
 }
 
 .dropdown-header > span {
   font-weight: 600;
-  color: #374151;
+  color: #fff;
   font-size: 1.1rem;
 }
 
@@ -775,13 +782,13 @@ body {
 
 .user-name {
   font-weight: 600;
-  color: #0f766e;
+  color: #fff;
   font-size: 1rem;
 }
 
 .user-email {
   font-size: 0.85rem;
-  color: #6b7280;
+  color: #989898;
 }
 
 .dropdown-divider {
@@ -808,28 +815,28 @@ body {
   transition: all 0.3s ease;
   font-size: 0.95rem;
   font-weight: 500;
-  color: #374151;
+  color: #fff;
   text-align: left;
   width: 100%;
 }
 
 .dropdown-button:hover {
   background-color: #f3f4f6;
-  color: #0f766e;
+  color: black;
 }
 
 .dropdown-button i {
-  color: #6b7280;
+  color: #fff;
   width: 16px;
   text-align: center;
 }
 
 .dropdown-button:hover i {
-  color: #0f766e;
+  color: black;
 }
 
 .dropdown-button.primary {
-  background-color: #0f766e;
+  background-color: #191819;
   color: white;
   font-weight: 600;
   justify-content: center;
@@ -837,46 +844,39 @@ body {
 }
 
 .dropdown-button.primary:hover {
-  background-color: #115e59;
-  color: white;
-}
-
-.dropdown-button.primary i {
-  color: white;
+  background-color: #fff;
+  color: black;
 }
 
 .dropdown-button.secondary {
-  border: 2px solid #0f766e;
-  color: #0f766e;
+  background-color: #191819;
+  color: white;
   font-weight: 600;
   justify-content: center;
 }
 
 .dropdown-button.secondary:hover {
-  background-color: #0f766e;
-  color: white;
-}
-
-.dropdown-button.secondary:hover i {
-  color: white;
+  background-color: #fff;
+  color: black;
 }
 
 .dropdown-button.logout {
   color: #dc2626;
-  border-top: 1px solid #e5e7eb;
-  margin-top: 0.5rem;
-  padding-top: 1rem;
+  border: 1px solid #dc2626;
 }
 
 .dropdown-button.logout:hover {
-  background-color: #fef2f2;
-  color: #dc2626;
+  background-color: #dc2626;
+  color: #fff;
 }
 
 .dropdown-button.logout i {
   color: #dc2626;
 }
 
+.dropdown-button.logout:hover i {
+  color: #fff;
+}
 /* ===================================
    NOTIFICATION STYLES
    =================================== */
