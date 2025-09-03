@@ -15,7 +15,7 @@
   },
   {
     "id": 3,
-    "usuario_id": 3,
+    "usuario_id": 1,
     "fecha_venta": "2025-08-19T21:26:53.370Z",
     "total": 2,
     "payment_id": "122418922743",
@@ -23,7 +23,7 @@
   },
   {
     "id": 4,
-    "usuario_id": 3,
+    "usuario_id": 1,
     "fecha_venta": "2025-08-19T21:41:00.475Z",
     "total": 1,
     "payment_id": "122420691337",
@@ -31,7 +31,7 @@
   },
   {
     "id": 5,
-    "usuario_id": 3,
+    "usuario_id": 1,
     "fecha_venta": "2025-08-19T21:45:08.837Z",
     "total": 1,
     "payment_id": "122953912344",

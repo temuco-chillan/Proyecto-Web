@@ -216,7 +216,7 @@ async function getAllHistorial() {
           }
           
           usuarioInfo = {
-            usuario_nombre: usuario.username || `Usuario #${venta.usuario_id}`,
+            usuario_nombre: usuario.nombreCompleto || `Usuario #${venta.usuario_id}`,
             usuario_email: usuario.email || null,
             usuario_rut: rutDesencriptado,
             usuario_telefono: usuario.telefono || null,

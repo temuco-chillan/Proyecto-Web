@@ -66,7 +66,7 @@ async function getAllHistorial() {
       },
       {
         model: Usuario,
-        attributes: ['id', 'username', 'email', 'rut', 'telefono', 'direccion', 'ciudad', 'region']
+        attributes: ['id', 'nombreCompleto', 'email', 'rut', 'telefono', 'direccion', 'ciudad', 'region']
       }
     ],
     order: [['fecha_venta', 'DESC']]
@@ -101,7 +101,7 @@ async function getAllHistorial() {
       payment_id: venta.payment_id,
       estado: venta.estado,
       usuario_id: venta.usuario_id,
-      usuario_nombre: venta.Usuario ? venta.Usuario.username : `Usuario #${venta.usuario_id}`,
+      usuario_nombre: venta.Usuario ? venta.Usuario.nombreCompleto : `Usuario #${venta.usuario_id}`,
       usuario_email: usuario_email,
       usuario_rut: usuario_rut,
       usuario_telefono: venta.Usuario ? venta.Usuario.telefono : null,
