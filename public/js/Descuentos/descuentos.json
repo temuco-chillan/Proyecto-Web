@@ -1,10 +1,11 @@
 [
   {
     "id": 1,
-    "producto_id": 1,
-    "cantidad_minima": 3,
-    "porcentaje_descuento": 5,
-    "activo": true
+    "producto_id": 8,
+    "cantidad_minima": 5,
+    "porcentaje_descuento": 11,
+    "activo": true,
+    "fecha_actualizacion": "2025-09-04T16:48:46.242Z"
   },
   {
     "id": 2,
@@ -21,13 +22,6 @@
     "activo": true
   },
   {
-    "id": 4,
-    "producto_id": 3,
-    "cantidad_minima": 2,
-    "porcentaje_descuento": 10,
-    "activo": true
-  },
-  {
     "id": 5,
     "producto_id": 3,
     "cantidad_minima": 3,
@@ -40,5 +34,14 @@
     "cantidad_minima": 5,
     "porcentaje_descuento": 20,
     "activo": true
+  },
+  {
+    "id": 7,
+    "producto_id": 2,
+    "cantidad_minima": 7,
+    "porcentaje_descuento": 12,
+    "activo": true,
+    "fecha_creacion": "2025-09-04T17:07:28.195Z",
+    "fecha_actualizacion": "2025-09-04T17:07:28.195Z"
   }
 ]

@@ -10,6 +10,7 @@ const categorias = require('../public/js/Categorias/service');
 const { Categoria } = require('../public/js/Models');
 const historial = require('../public/js/Historial/service');
 const ganancias = require('../public/js/Ganancias/service');
+const descuentos = require('../public/js/Descuentos/service');
 const https = require('https');
 const fs = require('fs');
 
@@ -588,6 +589,183 @@ app.get('/api/historial', async (req, res) => {
         res.json(data);
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+});
+
+////////////////////////
+// RUTAS - GANANCIAS
+////////////////////////
+
+app.put('/api/ganancias/porcentaje', async (req, res) => {
+    try {
+        const { porcentaje } = req.body;
+        const resultado = await ganancias.actualizarPorcentaje(porcentaje);
+        res.json(resultado);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+////////////////////////
+// RUTAS - DESCUENTOS
+////////////////////////
+
+// Obtener todos los descuentos
+app.get('/api/descuentos', async (req, res) => {
+    try {
+        const allDescuentos = await descuentos.getAllDescuentos();
+        res.json({ 
+            success: true, 
+            message: 'Descuentos obtenidos correctamente', 
+            data: allDescuentos 
+        });
+    } catch (error) {
+        console.error('Error al obtener descuentos:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error interno del servidor al obtener descuentos', 
+            error: error.message 
+        });
+    }
+});
+
+// Obtener descuentos por producto
+app.get('/api/descuentos/producto/:producto_id', async (req, res) => {
+    try {
+        const { producto_id } = req.params;
+        const descuentosProducto = await descuentos.getDescuentosProducto(producto_id);
+        res.json({ 
+            success: true, 
+            message: `Descuentos del producto ${producto_id} obtenidos correctamente`, 
+            data: descuentosProducto 
+        });
+    } catch (error) {
+        console.error('Error al obtener descuentos del producto:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error al obtener descuentos del producto', 
+            error: error.message 
+        });
+    }
+});
+
+// Crear nuevo descuento
+app.post('/api/descuentos', async (req, res) => {
+    try {
+        const { producto_id, cantidad_minima, porcentaje_descuento } = req.body;
+        
+        if (!producto_id || !cantidad_minima || !porcentaje_descuento) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Todos los campos son obligatorios: producto_id, cantidad_minima, porcentaje_descuento' 
+            });
+        }
+        
+        if (cantidad_minima < 1 || porcentaje_descuento < 1 || porcentaje_descuento > 100) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Valores inválidos: cantidad mínima debe ser mayor a 0 y porcentaje entre 1-100' 
+            });
+        }
+        
+        const resultado = await descuentos.crearDescuento(producto_id, cantidad_minima, porcentaje_descuento);
+        
+        if (resultado) {
+            res.status(201).json({ 
+                success: true, 
+                message: `Descuento creado exitosamente: ${porcentaje_descuento}% para ${cantidad_minima}+ unidades`, 
+                data: { producto_id, cantidad_minima, porcentaje_descuento } 
+            });
+        } else {
+            res.status(400).json({ 
+                success: false, 
+                message: 'No se pudo crear el descuento. Verifique que no exista uno similar.' 
+            });
+        }
+    } catch (error) {
+        console.error('Error al crear descuento:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error interno del servidor al crear descuento', 
+            error: error.message 
+        });
+    }
+});
+
+// Actualizar descuento
+app.put('/api/descuentos/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { producto_id, cantidad_minima, porcentaje_descuento, activo } = req.body;
+        
+        if (!producto_id || !cantidad_minima || !porcentaje_descuento) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Todos los campos son obligatorios para actualizar el descuento' 
+            });
+        }
+        
+        if (cantidad_minima < 1 || porcentaje_descuento < 1 || porcentaje_descuento > 100) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Valores inválidos: cantidad mínima debe ser mayor a 0 y porcentaje entre 1-100' 
+            });
+        }
+        
+        const resultado = await descuentos.actualizarDescuento(
+            id, 
+            producto_id, 
+            cantidad_minima, 
+            porcentaje_descuento, 
+            activo !== undefined ? activo : true
+        );
+        
+        if (resultado) {
+            res.json({ 
+                success: true, 
+                message: `Descuento ID ${id} actualizado correctamente`, 
+                data: { id, producto_id, cantidad_minima, porcentaje_descuento, activo } 
+            });
+        } else {
+            res.status(404).json({ 
+                success: false, 
+                message: `No se encontró el descuento con ID ${id} o no se pudo actualizar` 
+            });
+        }
+    } catch (error) {
+        console.error('Error al actualizar descuento:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error interno del servidor al actualizar descuento', 
+            error: error.message 
+        });
+    }
+});
+
+// Eliminar descuento
+app.delete('/api/descuentos/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const resultado = await descuentos.eliminarDescuento(id);
+        
+        if (resultado) {
+            res.json({ 
+                success: true, 
+                message: `Descuento ID ${id} eliminado exitosamente` 
+            });
+        } else {
+            res.status(404).json({ 
+                success: false, 
+                message: `No se encontró el descuento con ID ${id}` 
+            });
+        }
+    } catch (error) {
+        console.error('Error al eliminar descuento:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error interno del servidor al eliminar descuento', 
+            error: error.message 
+        });
     }
 });
 

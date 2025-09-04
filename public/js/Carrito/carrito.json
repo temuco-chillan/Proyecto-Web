@@ -33,12 +33,5 @@
     "usuario_id": 3,
     "producto_id": 2,
     "fecha_add": "2025-08-31T23:40:50.038Z"
-  },
-  {
-    "id": 9,
-    "cantidad": 1,
-    "usuario_id": 1,
-    "producto_id": 4,
-    "fecha_add": "2025-08-31T23:41:36.114Z"
   }
 ]

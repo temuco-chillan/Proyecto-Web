@@ -2,50 +2,135 @@ const apiUrl = window.location.hostname.includes('localhost')
   ? 'https://localhost:3000/api/Productos'
   : '/api/Productos';
 
-// Función para obtener Productos de la API
+// Variables para paginación
+let currentPage = 1;
+const itemsPerPage = 5;
+let allProducts = [];
+
+// Función para obtener Productos de la API con paginación
 function fetchProductos() {
   fetch(apiUrl)
     .then(response => response.json())
     .then(data => {
-      const tableBody = document.getElementById('ProductosList');
-      if (!tableBody) return;
-      tableBody.innerHTML = '';
-      
-      // Procesar cada producto de forma asíncrona
-      data.forEach(async P => {
-        const row = document.createElement('tr');
-        let CategoriasNombres = 'Sin categorías';
-        try {
-          if (P.id) {
-            CategoriasNombres = []
-            categorias = await getCategories(P.id);
-            categorias.forEach(async c => {
-               CategoriasNombres.push(c.nombre);
-            })
-          }
-        } catch (error) {
-          console.error(`Error al obtener categorías para producto ${P.id}:`, error);
-          CategoriasNombres = 'Error al cargar';
-        }
-        
-        row.innerHTML = `
-          <td>${P.id}</td>
-          <td>${P.nombre}</td>
-          <td>${CategoriasNombres}</td>
-          <td>${P.estado}</td>
-          <td>$${P.precio}</td>
-          <td>${P.descuento}%</td>
-          <td>${P.stock}</td>
-          <td><img src="${P.imagen_url}" alt="Imagen" width="50" height="50"></td>
-          <td>
-            <button class="btn" onclick="editProducto(${P.id})">Editar</button>
-            <button class="btn" onclick="deleteProducto(${P.id})">Eliminar</button>
-          </td>
-        `;
-        tableBody.appendChild(row);
-      });
+      allProducts = data;
+      renderProductsPage(currentPage);
+      renderPagination();
     })
     .catch(error => console.error('❌ Error al obtener productos:', error));
+}
+
+// Función para renderizar productos de una página específica
+async function renderProductsPage(page) {
+  const tableBody = document.getElementById('ProductosList');
+  if (!tableBody) return;
+  
+  tableBody.innerHTML = '';
+  
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const productsToShow = allProducts.slice(startIndex, endIndex);
+  
+  for (const P of productsToShow) {
+    const row = document.createElement('tr');
+    let CategoriasNombres = 'Sin categorías';
+    
+    try {
+      if (P.id) {
+        CategoriasNombres = [];
+        const categorias = await getCategories(P.id);
+        categorias.forEach(c => {
+          CategoriasNombres.push(c.nombre);
+        });
+        CategoriasNombres = CategoriasNombres.join(', ');
+      }
+    } catch (error) {
+      console.error(`Error al obtener categorías para producto ${P.id}:`, error);
+      CategoriasNombres = 'Error al cargar';
+    }
+    
+    row.innerHTML = `
+      <td>${P.id}</td>
+      <td>${P.nombre}</td>
+      <td>${CategoriasNombres}</td>
+      <td>${P.estado}</td>
+      <td>$${P.precio}</td>
+      <td>${P.descuento}%</td>
+      <td>${P.stock}</td>
+      <td><img src="${P.imagen_url}" alt="Imagen" width="50" height="50"></td>
+      <td>
+        <button class="btn" onclick="editProducto(${P.id})">Editar</button>
+        <button class="btn" onclick="deleteProducto(${P.id})">Eliminar</button>
+      </td>
+    `;
+    tableBody.appendChild(row);
+  }
+}
+
+// Función para renderizar controles de paginación
+function renderPagination() {
+  const totalPages = Math.ceil(allProducts.length / itemsPerPage);
+  
+  // Crear contenedor de paginación si no existe
+  let paginationContainer = document.getElementById('pagination-container');
+  if (!paginationContainer) {
+    paginationContainer = document.createElement('div');
+    paginationContainer.id = 'pagination-container';
+    paginationContainer.className = 'pagination-container';
+    
+    const tableContainer = document.querySelector('.table-container');
+    tableContainer.appendChild(paginationContainer);
+  }
+  
+  paginationContainer.innerHTML = '';
+  
+  if (totalPages <= 1) return;
+  
+  // Botón anterior
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'btn pagination-btn';
+  prevBtn.textContent = '← Anterior';
+  prevBtn.disabled = currentPage === 1;
+  prevBtn.onclick = () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderProductsPage(currentPage);
+      renderPagination();
+    }
+  };
+  paginationContainer.appendChild(prevBtn);
+  
+  // Números de página
+  for (let i = 1; i <= totalPages; i++) {
+    const pageBtn = document.createElement('button');
+    pageBtn.className = `btn pagination-btn ${i === currentPage ? 'active' : ''}`;
+    pageBtn.textContent = i;
+    pageBtn.onclick = () => {
+      currentPage = i;
+      renderProductsPage(currentPage);
+      renderPagination();
+    };
+    paginationContainer.appendChild(pageBtn);
+  }
+  
+  // Botón siguiente
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'btn pagination-btn';
+  nextBtn.textContent = 'Siguiente →';
+  nextBtn.disabled = currentPage === totalPages;
+  nextBtn.onclick = () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderProductsPage(currentPage);
+      renderPagination();
+    }
+  };
+  paginationContainer.appendChild(nextBtn);
+  
+  // Información de página
+  const pageInfo = document.createElement('div');
+  pageInfo.className = 'page-info';
+  pageInfo.textContent = `Página ${currentPage} de ${totalPages} (${allProducts.length} productos total)`;
+  paginationContainer.appendChild(pageInfo);
 }
 
 // Crear o actualizar producto
@@ -111,6 +196,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function editProducto(id) {
+  // Mostrar automáticamente el formulario antes de cargar los datos
+  document.getElementById('formularioProducto').style.display = 'block';
+  
   fetch(`${apiUrl}/${id}`)
     .then(res => {
       if (!res.ok) throw new Error('Error al cargar el producto');

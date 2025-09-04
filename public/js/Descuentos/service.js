@@ -80,6 +80,33 @@ class DescuentosService {
     }
 
     /**
+     * Obtiene todos los descuentos
+     * @returns {Promise<Array>} - Lista de todos los descuentos
+     */
+    static async getAllDescuentos() {
+        if (useFallback) {
+            return jsonFallback.getAllDescuentos();
+        }
+        
+        try {
+            const query = `
+                SELECT * FROM descuentos_cantidad 
+                ORDER BY producto_id ASC, cantidad_minima ASC
+            `;
+            
+            const result = await sequelize.query(query, {
+                type: sequelize.QueryTypes.SELECT
+            });
+            
+            return result;
+        } catch (error) {
+            console.error('Error al obtener todos los descuentos:', error);
+            // Fallback automático en caso de error
+            return jsonFallback.getAllDescuentos();
+        }
+    }
+
+    /**
      * Crea o actualiza un descuento por cantidad
      * @param {number} producto_id - ID del producto
      * @param {number} cantidad_minima - Cantidad mínima para el descuento
@@ -109,6 +136,78 @@ class DescuentosService {
             console.error('Error al crear descuento:', error);
             // Fallback automático en caso de error
             return jsonFallback.crearDescuento(producto_id, cantidad_minima, porcentaje_descuento);
+        }
+    }
+
+    /**
+     * Elimina un descuento por ID
+     * @param {number} id - ID del descuento
+     * @returns {Promise<boolean>} - Éxito de la operación
+     */
+    static async eliminarDescuento(id) {
+        if (useFallback) {
+            return jsonFallback.eliminarDescuentoPermanente(id);
+        }
+        
+        try {
+            const query = `
+                DELETE FROM descuentos_cantidad 
+                WHERE id = :id
+            `;
+            
+            const result = await sequelize.query(query, {
+                replacements: { id },
+                type: sequelize.QueryTypes.DELETE
+            });
+            
+            return result[1] > 0; // result[1] contiene el número de filas afectadas
+        } catch (error) {
+            console.error('Error al eliminar descuento:', error);
+            // Fallback automático en caso de error
+            return jsonFallback.eliminarDescuento(id);
+        }
+    }
+
+    /**
+     * Actualiza un descuento existente
+     * @param {number} id - ID del descuento
+     * @param {number} producto_id - ID del producto
+     * @param {number} cantidad_minima - Cantidad mínima para el descuento
+     * @param {number} porcentaje_descuento - Porcentaje de descuento
+     * @param {boolean} activo - Estado del descuento
+     * @returns {Promise<boolean>} - Éxito de la operación
+     */
+    static async actualizarDescuento(id, producto_id, cantidad_minima, porcentaje_descuento, activo = true) {
+        if (useFallback) {
+            return jsonFallback.actualizarDescuento(id, producto_id, cantidad_minima, porcentaje_descuento, activo);
+        }
+        
+        try {
+            const query = `
+                UPDATE descuentos_cantidad 
+                SET producto_id = :producto_id,
+                    cantidad_minima = :cantidad_minima,
+                    porcentaje_descuento = :porcentaje_descuento,
+                    activo = :activo
+                WHERE id = :id
+            `;
+            
+            const result = await sequelize.query(query, {
+                replacements: { 
+                    id, 
+                    producto_id, 
+                    cantidad_minima, 
+                    porcentaje_descuento, 
+                    activo: activo ? 1 : 0 
+                },
+                type: sequelize.QueryTypes.UPDATE
+            });
+            
+            return result[1] > 0; // result[1] contiene el número de filas afectadas
+        } catch (error) {
+            console.error('Error al actualizar descuento:', error);
+            // Fallback automático en caso de error
+            return jsonFallback.actualizarDescuento(id, producto_id, cantidad_minima, porcentaje_descuento, activo);
         }
     }
 }

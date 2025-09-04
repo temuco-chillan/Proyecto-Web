@@ -46,5 +46,21 @@
   {
     "producto_id": 2,
     "categoria_id": 5
+  },
+  {
+    "producto_id": 6,
+    "categoria_id": 4
+  },
+  {
+    "producto_id": 7,
+    "categoria_id": 4
+  },
+  {
+    "producto_id": 8,
+    "categoria_id": 3
+  },
+  {
+    "producto_id": 9,
+    "categoria_id": 2
   }
 ]

@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administrador</title>
-    <link rel="stylesheet" href="../css/style.css"> <meta http-equiv="refresh" content="900;url=login.html"> </head>
+    <link rel="stylesheet" href="../css/style.css"> 
+    <meta http-equiv="refresh" content="900;url=login.html"> 
+</head>
 <body>
     <header>
         <h1>PANEL DE ADMINISTRADOR</h1>
@@ -13,7 +15,9 @@
             <a href="historial_admin.html" class="btn">Gestionar Historial</a>
         </div>
     </header>
-    <main>
+    
+    <!-- Sección principal de productos -->
+    <main class="main-products-section">
         <div class="main-content-wrapper">
             <div class="section-header">
                 <h2>Lista de Productos</h2>
@@ -97,26 +101,104 @@
                     </tbody>
                 </table>
             </div>
+            <!-- Paginación para productos -->
+            <div class="pagination-container" id="paginationProductos" style="display: none;">
+                <button class="pagination-btn" id="prevPageProductos">Anterior</button>
+                <div id="pageNumbersProductos"></div>
+                <button class="pagination-btn" id="nextPageProductos">Siguiente</button>
+                <div class="page-info" id="pageInfoProductos"></div>
+            </div>
+        </div>
+                <div class="footer-content-wrapper">
+            <div class="section-header">
+                <h2>Gestión de Descuentos</h2>
+                <button id="btnMostrarFormularioDescuento" class="btn">Crear Descuento</button>
+            </div>
+            
+            <div class="discount-form-container" id="formularioDescuento" style="display: none;">
+                <h3>Agregar / Actualizar Descuento</h3>
+                <form id="DescuentosForm">
+                    <input type="hidden" id="descuentoId" />
+                    <div class="discount-form-grid">
+                        <div class="form-group">
+                            <label for="descuentoProductoSelect">Producto</label>
+                            <select id="descuentoProductoSelect" required>
+                                <option value="">-- Selecciona un producto --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="descuentoCantidadMinima">Cantidad Mínima</label>
+                            <input type="number" id="descuentoCantidadMinima" placeholder="Cantidad mínima" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="descuentoPorcentaje">Porcentaje (%)</label>
+                            <input type="number" id="descuentoPorcentaje" placeholder="Porcentaje" min="1" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="descuentoActivo">Estado</label>
+                            <select id="descuentoActivo" required>
+                                <option value="">-- Selecciona un estado --</option>
+                                <option value="true">Activo</option>
+                                <option value="false">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn" id="submitBtnDescuento">Crear Descuento</button>
+                        <button type="button" id="btnCancelarDescuento" class="btn btn-cancel">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="discount-table-container">
+                <table id="ProductosTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th class="product-name-col">Producto</th>
+                            <th>Cant. Mín.</th>
+                            <th>Porcentaje</th>
+                            <th>Estado</th>
+                            <th class="actions-cell">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="DescuentosList">
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination-container" id="paginationDescuentos" style="display: none;">
+                <button class="pagination-btn" id="prevPageDescuentos">Anterior</button>
+                <div id="pageNumbersDescuentos"></div>
+                <button class="pagination-btn" id="nextPageDescuentos">Siguiente</button>
+                <div class="page-info" id="pageInfoDescuentos"></div>
+            </div>
         </div>
     </main>
+    
+
+
     <script>
         function toggleCarrito() {
             const carrito = document.getElementById('CarroContainer');
-            carrito.classList.toggle('oculto');
+            if (carrito) {
+                carrito.classList.toggle('oculto');
+            }
         }
+        
         document.addEventListener('click', function (event) {
             const carrito = document.getElementById('CarroContainer');
-            const icono = document.querySelector('.carrito-icono');
-            const contenedor = document.querySelector('.header-carrito-wrapper'); // Usar la clase del contenedor padre
-            if (!contenedor.contains(event.target)) {
+            const contenedor = document.querySelector('.header-carrito-wrapper');
+            if (carrito && contenedor && !contenedor.contains(event.target)) {
                 carrito.classList.add('oculto');
             }
         });
+        
         document.getElementById('btnMostrarFormulario').addEventListener('click', function() {
             document.getElementById('formularioProducto').style.display = 'block';
             document.getElementById('ProductosForm').reset();
             document.getElementById('productoId').value = '';
-            document.getElementById('submitBtn').innerText = 'Crear Producto'; // Texto original
+            document.getElementById('submitBtn').innerText = 'Crear Producto';
         });
 
         document.getElementById('btnCancelar').addEventListener('click', function() {
@@ -130,21 +212,20 @@
             const form = document.getElementById('ProductosForm');
             if (form) {
                 form.addEventListener('submit', function(e) {
-                    // Aquí tu lógica de submit de formulario.
-                    // Probablemente esta función deba ser asíncrona y manejar la lógica de guardado.
-                    // Para el ejemplo, solo ocultamos el formulario y reseteamos.
                     setTimeout(() => {
                         document.getElementById('formularioProducto').style.display = 'none';
                         document.getElementById('ProductosForm').reset();
                         document.getElementById('productoId').value = '';
                         document.getElementById('submitBtn').innerText = 'Crear Producto';
-                    }, 1000); // Pequeño retraso para simular una acción
+                    }, 1000);
                 });
             }
         });
     </script>
+    
     <script src="../js/Categorias/Categorias.js"></script>
     <script src="../js/Productos/Productos.js"></script>
+    <script src="../js/Descuentos/descuentos_admin.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
