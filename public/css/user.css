@@ -47,12 +47,21 @@ body {
   padding-right: 0.2rem;
   display: flex;
   align-items: center;
-  gap: 10%;
 }
-
 .logo-img{
   width: 100px;
 }
+
+.logo-img2{
+  width: 120px;
+}
+
+.logo a {
+  text-decoration: none;
+  display: flex;
+  gap: 6%;
+}
+
 
 .navigation {
   display: flex;
@@ -1037,6 +1046,11 @@ body {
     padding: 0.6rem 0.8rem !important;
     font-size: 0.75rem !important;
     height: 38px !important;
+  }
+
+  .header-container {
+    display: flex;
+    align-items: center;
   }
 }
 
