@@ -372,7 +372,7 @@ app.post('/api/pago', async (req, res) => {
         };
         
         const preference = new Preference(client);
-        const ngrok = process.env.NGROK_URL;
+        const ngrok = process.env.Dominio_H;
         const preferenceData = {
             items: items,
             payer: payer,
