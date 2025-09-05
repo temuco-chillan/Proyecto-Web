@@ -47,6 +47,7 @@ body {
   padding-right: 0.2rem;
   display: flex;
   align-items: center;
+  gap: 10%;
 }
 
 .logo-img{
