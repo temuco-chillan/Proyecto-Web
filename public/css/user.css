@@ -999,7 +999,105 @@ body {
     margin-right: 0;
   }
 }
+.marquee-container {
+  width: 100%;
+  background: linear-gradient(135deg, #121212 0%, #121212 25%, #121212 50%, #121212 75%, #121212 100%);
+  padding: 15px 0;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-top: 3px solid #121212;
+  border-bottom: 3px solid #121212;
+}
 
+.marquee-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, 
+      rgba(255, 255, 255, 0.1) 0%, 
+      rgba(255, 255, 255, 0.05) 50%, 
+      rgba(255, 255, 255, 0.1) 100%);
+  pointer-events: none;
+}
+
+.marquee-content {
+  display: flex;
+  animation: scroll-left 20s linear infinite;
+  white-space: nowrap;
+  align-items: center;
+}
+
+.marquee-item {
+  color: #ecf0f1;
+  font-size: 18px;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin-right: 100px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.5px;
+}
+
+.highlight {
+  background: linear-gradient(45deg, #ffffff, #000000);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-weight: 700;
+  box-shadow: 0 3px 15px rgba(231, 76, 60, 0.4);
+  animation: pulse 2s ease-in-out infinite alternate;
+}
+
+.emoji {
+  font-size: 20px;
+  margin: 0 5px;
+}
+
+@keyframes scroll-left {
+  0% {
+      transform: translateX(100%);
+  }
+  100% {
+      transform: translateX(-100%);
+  }
+}
+
+@keyframes pulse {
+  0% {
+      transform: scale(1);
+      box-shadow: 0 3px 15px rgba(231, 76, 60, 0.4);
+  }
+  100% {
+      transform: scale(1.05);
+      box-shadow: 0 5px 25px rgba(231, 76, 60, 0.6);
+  }
+}
+
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .marquee-item {
+      font-size: 16px;
+      margin-right: 80px;
+  }
+  
+  .highlight {
+      padding: 6px 12px;
+      font-size: 14px;
+  }
+  
+  .emoji {
+      font-size: 18px;
+  }
+}
 /* Media Queries para hacerlo responsivo en dispositivos móviles */
 @media (max-width: 480px) {
   .cart-sidebar {
