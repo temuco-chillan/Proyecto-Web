@@ -103,117 +103,155 @@ async function renderProducts() {
 
 // Función para inicializar el carrusel de productos
 function setupCarousel() {
-    const grid = document.getElementById("products-grid");
-    if (!grid) return;
+            const grid = document.getElementById("products-grid");
+            const prevBtn = document.getElementById("prev-btn");
+            const nextBtn = document.getElementById("next-btn");
+            const indicatorsContainer = document.getElementById("indicators");
+            
+            if (!grid) return;
 
-    const prevBtn = document.getElementById("prev-btn");
-    const nextBtn = document.getElementById("next-btn");
-    const visibleCount = 5; // Número de productos visibles
-    const autoDelay = 5000;
-    let autoTimeout = null;
+            const cards = Array.from(grid.getElementsByClassName("product-card"));
+            if (cards.length === 0) return;
 
-    let cards = Array.from(grid.getElementsByClassName("product-card"));
-    if (cards.length === 0) return;
+            const visibleCount = window.innerWidth > 1200 ? 5 : window.innerWidth > 768 ? 4 : 3;
+            const autoDelay = 5000;
+            let autoTimeout = null;
+            let currentIndex = 0;
 
-    // Medidas
-    const cardStyle = window.getComputedStyle(cards[0]);
-    const cardWidth = cards[0].offsetWidth
-        + parseInt(cardStyle.marginLeft)
-        + parseInt(cardStyle.marginRight);
+            // Crear indicadores
+            function createIndicators() {
+                indicatorsContainer.innerHTML = '';
+                const totalSlides = Math.max(1, cards.length - visibleCount + 1);
+                
+                for (let i = 0; i < totalSlides; i++) {
+                    const indicator = document.createElement('div');
+                    indicator.className = 'indicator';
+                    if (i === 0) indicator.classList.add('active');
+                    indicator.addEventListener('click', () => goToSlide(i));
+                    indicatorsContainer.appendChild(indicator);
+                }
+            }
 
-    // Ajusta el ancho del grid para que solo se vean los productos visibles
-    grid.style.width = `${visibleCount * cardWidth}px`;
+// Actualizar carrusel
+function updateCarousel(animate = true) {
+    const cardWidth = cards[0].offsetWidth + 24; // 24px es el gap
+    grid.style.transition = animate ? "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)" : "none";
+    grid.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
 
-    let start = 0;
+    // Actualizar indicadores
+    const indicators = indicatorsContainer.children;
+    Array.from(indicators).forEach((indicator, index) => {
+        indicator.classList.toggle('active', index === currentIndex);
+    });
 
-    function updateCarousel(animate = true) {
-        grid.style.transition = animate ? "transform 0.6s cubic-bezier(.4,0,.2,1)" : "none";
-        grid.style.transform = `translateX(-${start * cardWidth}px)`;
-
-        // Quitar resaltado previo
-        cards.forEach(card => card.classList.remove("highlight-center"));
-            if (cards.length > 0) {
-                const leftIndex = start % cards.length;
-                cards[leftIndex].classList.add("highlight-center");
-        }
+    // Quitar y agregar highlight
+    cards.forEach(card => card.classList.remove("highlight-center"));
+    if (cards[currentIndex]) {
+        cards[currentIndex].classList.add("highlight-center");
     }
+}
 
-    function next() {
-        // Siempre avanza, aunque haya la misma cantidad de productos que visibles
-        start = (start + 1) % cards.length;
-        updateCarousel(true);
-        startAuto();
-    }
-
-    function prev() {
-        start = (start - 1 + cards.length) % cards.length;
-        updateCarousel(true);
-        startAuto();
-    }
-
-    function startAuto() {
-        if (autoTimeout) clearTimeout(autoTimeout);
-        autoTimeout = setTimeout(next, autoDelay);
-    }
-
-    if (prevBtn) prevBtn.onclick = prev;
-    if (nextBtn) nextBtn.onclick = next;
-
-    updateCarousel(false);
+// Ir a slide específico
+function goToSlide(index) {
+    const maxIndex = Math.max(0, cards.length - visibleCount);
+    currentIndex = Math.max(0, Math.min(index, maxIndex));
+    updateCarousel(true);
     startAuto();
 }
+
+// Siguiente slide
+function next() {
+    const maxIndex = Math.max(0, cards.length - visibleCount);
+    currentIndex = currentIndex >= maxIndex ? 0 : currentIndex + 1;
+    updateCarousel(true);
+    startAuto();
+}
+
+// Slide anterior
+function prev() {
+    const maxIndex = Math.max(0, cards.length - visibleCount);
+    currentIndex = currentIndex <= 0 ? maxIndex : currentIndex - 1;
+    updateCarousel(true);
+    startAuto();
+}
+
+// Auto-play
+function startAuto() {
+    if (autoTimeout) clearTimeout(autoTimeout);
+    autoTimeout = setTimeout(next, autoDelay);
+}
+
+// Pausar auto-play en hover
+function pauseAuto() {
+    if (autoTimeout) clearTimeout(autoTimeout);
+}
+
+// Event listeners
+if (prevBtn) prevBtn.onclick = prev;
+if (nextBtn) nextBtn.onclick = next;
+
+// Pausar en hover
+grid.addEventListener('mouseenter', pauseAuto);
+grid.addEventListener('mouseleave', startAuto);
+
+// Responsive
+window.addEventListener('resize', () => {
+    createIndicators();
+    updateCarousel(false);
+});
+
+// Inicializar
+createIndicators();
+updateCarousel(false);
+startAuto();
+
+// Touch/swipe support para móviles
+let startX = 0;
+let currentX = 0;
+let isDragging = false;
+
+grid.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    isDragging = true;
+    pauseAuto();
+});
+
+grid.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    currentX = e.touches[0].clientX;
+});
+
+grid.addEventListener('touchend', () => {
+    if (!isDragging) return;
+    isDragging = false;
+                
+    const diffX = startX - currentX;
+    if (Math.abs(diffX) > 50) {
+        if (diffX > 0) {
+            next();
+        } else {
+            prev();
+        }
+    } else {
+        startAuto();
+    }
+});}
+document.addEventListener('DOMContentLoaded', setupCarousel);
 // Función para agregar al carrito
 async function addToCart(productId) {
-    console.log("=== INICIANDO addToCart ===" + productId);
-    const currentUser =
-        window.currentUser ||
-        JSON.parse(localStorage.getItem("currentUser") || "null");
-    if (!currentUser) {
-        if (window.showNotification) {
-            window.showNotification(
-                "Debes iniciar sesión para agregar productos al carrito",
-                "error"
-            );
-        }
-        return;
-    }
-    try {
-        console.log("Enviando petición POST...");
-        const response = await fetch("/api/carrito", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                usuario_id: currentUser.id,
-                producto_id: productId,
-                cantidad: 1,
-            }),
-        });
-        console.log("Respuesta recibida:", response.status);
-        if (response.ok) {
-            console.log("Producto agregado, actualizando vista...");
-            setTimeout(async () => {
-                await forceUpdateCart();
-            }, 100);
-            if (window.showNotification) {
-                window.showNotification("Producto agregado al carrito", "success");
-            }
-        } else {
-            const error = await response.json();
-            if (window.showNotification) {
-                window.showNotification(
-                    error.error || "Error al agregar producto",
-                    "error"
-                );
-            }
-        }
-    } catch (error) {
-        console.error("Error al agregar al carrito:", error);
-        if (window.showNotification) {
-            window.showNotification("Error de conexión", "error");
-        }
-    }
+    const product = products.find(p => p.id === productId);
+    console.log(`Agregado al carrito: ${product.nombre}`);
+            
+    // Efecto visual del botón
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '✅ Agregado!';
+    button.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+            
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+    }, 2000);
 }
 
 // Función para actualizar cantidad en carrito
