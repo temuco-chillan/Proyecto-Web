@@ -4,10 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Producto</title>
+    <link rel="stylesheet" href="../css/user.css">
     <link rel="stylesheet" href="../css/producto.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </head>
 <body>
     <!-- Header -->
+     <header class="header">
+        <div class="header-container">
+            <!-- Logo -->
+             <div class="logo">
+                <a href="index.html">
+                    <img src="../images/ElDespertarLogo.png" alt="Logo el despertar" class="logo-img" >
+                    <img src="../images/Fungi.png" alt="Tipografia Fungi" class="logo-img2">
+                </a>
+            </div>
+            <div class="user-actions">
+                <button class="icon-button" id="user-btn">
+                    <i class="fas fa-user"></i>
+                </button>
+                <!-- Cambiar cart-counter por cart-count para consistencia -->
+                <button class="icon-button" id="cart-btn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cart-count" style="display: none;">0</span>
+                </button>
+
+                <!-- User Dropdown -->
+                <div class="user-dropdown" id="user-dropdown">
+                    <!-- Cuando NO hay sesión activa -->
+                    <div class="dropdown-content" id="dropdown-guest">
+                        <div class="dropdown-header">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Mi Cuenta</span>
+                        </div>
+                        <div class="dropdown-actions">
+                            <button class="dropdown-button primary" id="login-btn">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Iniciar Sesión
+                            </button>
+                            <button class="dropdown-button secondary" id="register-btn">
+                                <i class="fas fa-user-plus"></i>
+                                Registrarse
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cuando SÍ hay sesión activa -->
+                    <div class="dropdown-content hidden" id="dropdown-user">
+                        <div class="dropdown-header">
+                            <i class="fas fa-user-circle"></i>
+                            <div class="user-info">
+                                <span class="user-name" id="dropdown-user-name">Juan Pérez</span>
+                                <span class="user-email" id="dropdown-user-email">juan@email.com</span>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-actions">
+                            <button class="dropdown-button" id="profile-btn">
+                                <i class="fas fa-user-cog"></i>
+                                Mi Perfil
+                            </button>
+                            <button class="dropdown-button" id="orders-btn">
+                                <i class="fas fa-shopping-bag"></i>
+                                Mis Pedidos
+                            </button>
+                            <button class="dropdown-button" id="wishlist-btn">
+                                <i class="fas fa-heart"></i>
+                                Lista de Deseos
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-button logout" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Cerrar Sesión
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </header>
     <main class="page">
         <!-- ====== HERO DEL PRODUCTO ====== -->
         <section class="product-hero">
@@ -86,14 +162,6 @@
           </div>
         </section>
       </main>
-    <!-- Producto -->
-    <div>
-
-    </div>
-
-    <!-- Descripción + Video + Características-->
-    <div> 
-
-    </div>
+    <script src="../js/header.js"></script>
 </body>
 </html>
