@@ -236,12 +236,11 @@ function updateHeaderUserInterface() {
     const userEmailElement = document.getElementById('dropdown-user-email');
     
     const currentUser = window.currentUser || JSON.parse(localStorage.getItem('currentUser') || 'null');
-    
     if (currentUser && dropdownGuest && dropdownUser) {
         dropdownGuest.classList.add('hidden');
         dropdownUser.classList.remove('hidden');
-        if (userNameElement) userNameElement.textContent = currentUser.username;
-        if (userEmailElement) userEmailElement.textContent = currentUser.email || '';
+        if (userNameElement) userNameElement.textContent = currentUser.user.username;
+        if (userEmailElement) userEmailElement.textContent = currentUser.user.email || '';
     } else if (dropdownGuest && dropdownUser) {
         dropdownGuest.classList.remove('hidden');
         dropdownUser.classList.add('hidden');
