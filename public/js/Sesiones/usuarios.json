@@ -1,2 +1,17 @@
 [
+  {
+    "id": 1,
+    "username": "eligado",
+    "nombreCompleto": "Raúl Hidalgo",
+    "email": "hidalgoraul349@gmail.com",
+    "password": "$2b$12$aw3E3B/S8Z0Pmkjk3dz6yeMQZ0rT76NvOI6/MSDoisNiyw1YMIXzi",
+    "rut": "c3d08bedc3abf3d252d0e6f1127acea8:87dd5553136edbb2b04464c24e727fdc",
+    "telefono": "936403212",
+    "direccion": "Villa Alegre 507",
+    "ciudad": "Padre las casas",
+    "region": "La Araucanía",
+    "rol_id": 1,
+    "estado": "activo",
+    "creado_en": "2025-09-11T08:28:12.815Z"
+  }
 ]

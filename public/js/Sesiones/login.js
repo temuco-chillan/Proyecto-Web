@@ -41,66 +41,27 @@ document.getElementById('loginForm').addEventListener('submit', async function (
     message.textContent = '🔄 Verificando credenciales...';
 
     try {
-        const response = await fetch('/api/users/validate', {
+        const response = await fetch('/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include', // Enviar/recibir cookies de sesión
             body: JSON.stringify({ username, password })
         });
 
-        const result = await response.json();
+        const data = await response.json();
 
-        if (response.ok) {
-            message.style.color = 'green';
-            const welcomeMessages = [
-                '🎉 ¡Bienvenido de vuelta!',
-                '✅ Inicio de sesión exitoso',
-                '🚀 ¡Perfecto! Accediendo a tu cuenta...',
-                '👋 ¡Hola! Redirigiendo...'
-            ];
-            message.textContent = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
-
-            // Cambiar 'loggedUser' por 'currentUser'
-            localStorage.setItem('currentUser', JSON.stringify(result.user));
-
-            // Redirigir según el rol del usuario
-            setTimeout(() => {
-                if (result.user.rol_id === 1) {
-                    // Si el usuario es administrador, redirigimos a 'admin.html'
-                    window.location.href = 'panel_admin.html'; 
-                } else {
-                    // Para cualquier otro rol (usuario común), redirigimos a 'index.html'
-                    window.location.href = 'index.html';
-                }
-            }, 1500);
-        } else {
+        if (!response.ok) {
             message.style.color = 'red';
-            
-            // Mensajes de error más específicos y variados
-            if (response.status === 401) {
-                const errorMessages = [
-                    '❌ Usuario o contraseña incorrectos. Verifica tus datos',
-                    '🚫 Credenciales inválidas. ¿Olvidaste tu contraseña?',
-                    '⚠️ Los datos ingresados no coinciden con nuestros registros',
-                    '🔍 No pudimos encontrar una cuenta con esas credenciales'
-                ];
-                message.textContent = errorMessages[Math.floor(Math.random() * errorMessages.length)];
-            } else if (response.status === 429) {
-                message.textContent = '⏰ Demasiados intentos. Espera un momento antes de intentar nuevamente';
-            } else if (response.status >= 500) {
-                message.textContent = '🛠️ Problema temporal en nuestros servidores. Intenta en unos minutos';
-            } else {
-                message.textContent = result.message || '❗ Error inesperado. Contacta al soporte si persiste';
-            }
+            message.textContent = data.message || 'Credenciales incorrectas';
+            return;
         }
+
+        message.style.color = 'green';
+        message.textContent = '✅ Sesión iniciada';
+        setTimeout(() => window.location.href = '/', 500);
     } catch (error) {
+        console.error(error);
         message.style.color = 'red';
-        const connectionErrors = [
-            '🌐 Sin conexión a internet. Verifica tu red',
-            '📡 Error de conectividad. Revisa tu conexión',
-            '⚡ Problema de red. Intenta nuevamente',
-            '🔌 No se pudo conectar al servidor'
-        ];
-        message.textContent = connectionErrors[Math.floor(Math.random() * connectionErrors.length)];
-        console.error('Error:', error);
+        message.textContent = 'Error al iniciar sesión. Intenta nuevamente.';
     }
 });

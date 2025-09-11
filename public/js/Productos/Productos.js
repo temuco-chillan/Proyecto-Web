@@ -1,6 +1,4 @@
-const apiUrl = window.location.hostname.includes('localhost')
-  ? 'https://localhost:3000/api/Productos'
-  : '/api/Productos';
+const apiUrl = '/api/Productos';
 
 // Variables para paginación
 let currentPage = 1;
@@ -8,15 +6,14 @@ const itemsPerPage = 5;
 let allProducts = [];
 
 // Función para obtener Productos de la API con paginación
-function fetchProductos() {
-  fetch(apiUrl)
-    .then(response => response.json())
-    .then(data => {
-      allProducts = data;
-      renderProductsPage(currentPage);
-      renderPagination();
-    })
-    .catch(error => console.error('❌ Error al obtener productos:', error));
+async function fetchProductos(page = 1, limit = 10) {
+    const resp = await fetch(`/api/Productos?page=${page}&limit=${limit}`, {
+        credentials: 'include'
+    });
+    const data = await resp.json();
+    allProducts = data;
+    renderProductsPage(currentPage);
+    renderPagination();
 }
 
 // Función para renderizar productos de una página específica

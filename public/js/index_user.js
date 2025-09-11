@@ -36,11 +36,48 @@ async function initializeApp() {
 // GESTIÓN DE SESIONES
 // ========================
 
-function checkUserSession() {
-    const userData = localStorage.getItem('currentUser');
-    if (userData) {
-        currentUser = JSON.parse(userData);
-        updateUserInterface();
+async function checkUserSession() {
+    try {
+        // Verificar sesión en el servidor PRIMERO
+        const response = await fetch('/api/users/me', {
+            credentials: 'include'
+        });
+        
+        if (response.ok) {
+            const userData = await response.json();
+            // Crear estructura consistente con el login
+            currentUser = { 
+                user: {
+                    id: userData.id,
+                    username: userData.username,
+                    rol: userData.role || userData.rol || (userData.rol_id === 1 ? 'admin' : 'usuario')
+                }
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            console.log("usuario logeado");
+            updateUserInterface();
+        } else {
+            // Si no hay sesión válida en el servidor, limpiar localStorage
+            console.log("usuario no logeado");
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            updateUserInterface();
+        }
+    } catch (error) {
+        console.error('Error verificando sesión:', error);
+        // Fallback a localStorage solo si hay error de conexión
+        const userData = localStorage.getItem('currentUser');
+        if (userData) {
+            try {
+                currentUser = JSON.parse(userData);
+                updateUserInterface();
+            } catch (parseError) {
+                console.error('Error parsing localStorage user data:', parseError);
+                localStorage.removeItem('currentUser');
+                currentUser = null;
+                updateUserInterface();
+            }
+        }
     }
 }
 
@@ -68,6 +105,7 @@ async function login(username, password) {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify({ username, password })
         });
         
@@ -95,7 +133,17 @@ async function login(username, password) {
     }
 }
 
-function logout() {
+async function logout() {
+    try {
+        // Llamar al endpoint de logout del servidor
+        await fetch('/api/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
+    } catch (error) {
+        console.error('Error al cerrar sesión en servidor:', error);
+    }
+    
     currentUser = null;
     localStorage.removeItem('currentUser');
     cartItems = [];
@@ -209,6 +257,7 @@ async function addToCart(productId) {
         console.log('Enviando petición POST...');
         const response = await fetch('/api/carrito', {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -223,12 +272,9 @@ async function addToCart(productId) {
         
         if (response.ok) {
             console.log('Producto agregado, actualizando vista...');
-            
-            // ✅ FORZAR ACTUALIZACIÓN INMEDIATA Y SIMPLE
             setTimeout(async () => {
                 await forceUpdateCart();
             }, 100);
-            
             showNotification('Producto agregado al carrito', 'success');
         } else {
             const error = await response.json();
@@ -314,6 +360,7 @@ async function updateCartQuantity(productId, newQuantity) {
     try {
         const response = await fetch('/api/carrito', {
             method: 'PUT',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -345,6 +392,7 @@ async function removeFromCart(productId) {
     try {
         const response = await fetch('/api/carrito', {
             method: 'DELETE',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -769,17 +817,14 @@ async function refreshCartFromAPI() {
     
     try {
         console.log('Consultando API del carrito para usuario:', currentUser.id);
-        const response = await fetch(`/api/carrito/${currentUser.id}`);
+        const response = await fetch(`/api/carrito/${currentUser.id}`, {
+            credentials: 'include'
+        });
         const items = await response.json();
         
         console.log('Items recibidos:', items);
-        
-        // Actualizar variable global
         cartItems = items;
-        
-        // ✅ USAR updateCartUI QUE AHORA LLAMA A updateCartSidebar
         updateCartUI();
-        
         console.log('✅ Carrito refrescado exitosamente');
     } catch (error) {
         console.error('❌ Error al refrescar carrito:', error);
@@ -787,6 +832,4 @@ async function refreshCartFromAPI() {
         updateCartUI();
     }
 }
-
-// Exponer currentUser globalmente
-window.currentUser = currentUser;
+checkUserSession();

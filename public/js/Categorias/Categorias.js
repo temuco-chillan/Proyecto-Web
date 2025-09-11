@@ -10,10 +10,11 @@ document.getElementById('formCategoria').addEventListener('submit', async functi
   }
 
   try {
-    const res = await fetch('/api/categorias', {
+    const resp = await fetch('/api/categorias', {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nombre })
+      body: JSON.stringify(payload)
     });
 
     if (!res.ok) {

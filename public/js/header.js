@@ -79,7 +79,17 @@ function toggleCartSidebar() {
 }
 
 // Función para hacer logout
-function logout() {
+async function logout() {
+    try {
+        // Llamar al endpoint de logout del servidor
+        await fetch('/api/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
+    } catch (error) {
+        console.error('Error al cerrar sesión en servidor:', error);
+    }
+    
     // Acceder a currentUser desde window si está disponible
     if (window.currentUser) {
         window.currentUser = null;

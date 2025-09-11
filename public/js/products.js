@@ -90,9 +90,9 @@ async function renderProducts() {
                 </div>
                 <h3 class="product-name">${product.nombre}</h3>
                 ${pricingHTML}
-                <button class="add-button" onclick="addToCart(${product.id})">
-                    <i class="fas fa-shopping-cart"></i>
-                    Agregar al Carrito
+                    <!-- cambia el onclick al renderizar la tarjeta -->
+                    <button class="add-button" onclick="addToCart(this, ${product.id})">
+                    <i class="fas fa-shopping-cart"></i> Agregar al Carrito
                 </button>
             </div>
         `;
@@ -103,162 +103,177 @@ async function renderProducts() {
 
 // Función para inicializar el carrusel de productos
 function setupCarousel() {
-            const grid = document.getElementById("products-grid");
-            const prevBtn = document.getElementById("prev-btn");
-            const nextBtn = document.getElementById("next-btn");
-            const indicatorsContainer = document.getElementById("indicators");
-            
-            if (!grid) return;
+    const grid = document.getElementById("products-grid");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const indicatorsContainer = document.getElementById("indicators");
 
-            const cards = Array.from(grid.getElementsByClassName("product-card"));
-            if (cards.length === 0) return;
+    if (!grid) return;
 
-            const visibleCount = window.innerWidth > 1200 ? 5 : window.innerWidth > 768 ? 4 : 3;
-            const autoDelay = 5000;
-            let autoTimeout = null;
-            let currentIndex = 0;
+    const cards = Array.from(grid.getElementsByClassName("product-card"));
+    if (cards.length === 0) return;
 
-            // Crear indicadores
-            function createIndicators() {
-                indicatorsContainer.innerHTML = '';
-                const totalSlides = Math.max(1, cards.length - visibleCount + 1);
-                
-                for (let i = 0; i < totalSlides; i++) {
-                    const indicator = document.createElement('div');
-                    indicator.className = 'indicator';
-                    if (i === 0) indicator.classList.add('active');
-                    indicator.addEventListener('click', () => goToSlide(i));
-                    indicatorsContainer.appendChild(indicator);
-                }
-            }
+    const visibleCount = window.innerWidth > 1200 ? 5 : window.innerWidth > 768 ? 4 : 3;
+    const autoDelay = 5000;
+    let autoTimeout = null;
+    let currentIndex = 0;
 
-// Actualizar carrusel
-function updateCarousel(animate = true) {
-    const cardWidth = cards[0].offsetWidth + 24; // 24px es el gap
-    grid.style.transition = animate ? "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)" : "none";
-    grid.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+    // Crear indicadores
+    function createIndicators() {
+        indicatorsContainer.innerHTML = '';
+        const totalSlides = Math.max(1, cards.length - visibleCount + 1);
 
-    // Actualizar indicadores
-    const indicators = indicatorsContainer.children;
-    Array.from(indicators).forEach((indicator, index) => {
-        indicator.classList.toggle('active', index === currentIndex);
-    });
-
-    // Quitar y agregar highlight
-    cards.forEach(card => card.classList.remove("highlight-center"));
-    if (cards[currentIndex]) {
-        cards[currentIndex].classList.add("highlight-center");
-    }
-}
-
-// Ir a slide específico
-function goToSlide(index) {
-    const maxIndex = Math.max(0, cards.length - visibleCount);
-    currentIndex = Math.max(0, Math.min(index, maxIndex));
-    updateCarousel(true);
-    startAuto();
-}
-
-// Siguiente slide
-function next() {
-    const maxIndex = Math.max(0, cards.length - visibleCount);
-    currentIndex = currentIndex >= maxIndex ? 0 : currentIndex + 1;
-    updateCarousel(true);
-    startAuto();
-}
-
-// Slide anterior
-function prev() {
-    const maxIndex = Math.max(0, cards.length - visibleCount);
-    currentIndex = currentIndex <= 0 ? maxIndex : currentIndex - 1;
-    updateCarousel(true);
-    startAuto();
-}
-
-// Auto-play
-function startAuto() {
-    if (autoTimeout) clearTimeout(autoTimeout);
-    autoTimeout = setTimeout(next, autoDelay);
-}
-
-// Pausar auto-play en hover
-function pauseAuto() {
-    if (autoTimeout) clearTimeout(autoTimeout);
-}
-
-// Event listeners
-if (prevBtn) prevBtn.onclick = prev;
-if (nextBtn) nextBtn.onclick = next;
-
-// Pausar en hover
-grid.addEventListener('mouseenter', pauseAuto);
-grid.addEventListener('mouseleave', startAuto);
-
-// Responsive
-window.addEventListener('resize', () => {
-    createIndicators();
-    updateCarousel(false);
-});
-
-// Inicializar
-createIndicators();
-updateCarousel(false);
-startAuto();
-
-// Touch/swipe support para móviles
-let startX = 0;
-let currentX = 0;
-let isDragging = false;
-
-grid.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
-    isDragging = true;
-    pauseAuto();
-});
-
-grid.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    currentX = e.touches[0].clientX;
-});
-
-grid.addEventListener('touchend', () => {
-    if (!isDragging) return;
-    isDragging = false;
-                
-    const diffX = startX - currentX;
-    if (Math.abs(diffX) > 50) {
-        if (diffX > 0) {
-            next();
-        } else {
-            prev();
+        for (let i = 0; i < totalSlides; i++) {
+            const indicator = document.createElement('div');
+            indicator.className = 'indicator';
+            if (i === 0) indicator.classList.add('active');
+            indicator.addEventListener('click', () => goToSlide(i));
+            indicatorsContainer.appendChild(indicator);
         }
-    } else {
+    }
+
+    // Actualizar carrusel
+    function updateCarousel(animate = true) {
+        const cardWidth = cards[0].offsetWidth + 24; // 24px es el gap
+        grid.style.transition = animate ? "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)" : "none";
+        grid.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+
+        // Actualizar indicadores
+        const indicators = indicatorsContainer.children;
+        Array.from(indicators).forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === currentIndex);
+        });
+
+        // Quitar y agregar highlight
+        cards.forEach(card => card.classList.remove("highlight-center"));
+        if (cards[currentIndex]) {
+            cards[currentIndex].classList.add("highlight-center");
+        }
+    }
+
+    // Ir a slide específico
+    function goToSlide(index) {
+        const maxIndex = Math.max(0, cards.length - visibleCount);
+        currentIndex = Math.max(0, Math.min(index, maxIndex));
+        updateCarousel(true);
         startAuto();
     }
-});}
-document.addEventListener('DOMContentLoaded', setupCarousel);
-// Función para agregar al carrito
-async function addToCart(productId) {
-    const product = products.find(p => p.id === productId);
-    console.log(`Agregado al carrito: ${product.nombre}`);
-            
-    // Efecto visual del botón
-    const button = event.target;
-    const originalText = button.innerHTML;
-    button.innerHTML = '✅ Agregado!';
-    button.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-            
-    setTimeout(() => {
-        button.innerHTML = originalText;
-        button.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-    }, 2000);
+
+    // Siguiente slide
+    function next() {
+        const maxIndex = Math.max(0, cards.length - visibleCount);
+        currentIndex = currentIndex >= maxIndex ? 0 : currentIndex + 1;
+        updateCarousel(true);
+        startAuto();
+    }
+
+    // Slide anterior
+    function prev() {
+        const maxIndex = Math.max(0, cards.length - visibleCount);
+        currentIndex = currentIndex <= 0 ? maxIndex : currentIndex - 1;
+        updateCarousel(true);
+        startAuto();
+    }
+
+    // Auto-play
+    function startAuto() {
+        if (autoTimeout) clearTimeout(autoTimeout);
+        autoTimeout = setTimeout(next, autoDelay);
+    }
+
+    // Pausar auto-play en hover
+    function pauseAuto() {
+        if (autoTimeout) clearTimeout(autoTimeout);
+    }
+
+    // Event listeners
+    if (prevBtn) prevBtn.onclick = prev;
+    if (nextBtn) nextBtn.onclick = next;
+
+    // Pausar en hover
+    grid.addEventListener('mouseenter', pauseAuto);
+    grid.addEventListener('mouseleave', startAuto);
+
+    // Responsive
+    window.addEventListener('resize', () => {
+        createIndicators();
+        updateCarousel(false);
+    });
+
+    // Inicializar
+    createIndicators();
+    updateCarousel(false);
+    startAuto();
+
+    // Touch/swipe support para móviles
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+
+    grid.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        isDragging = true;
+        pauseAuto();
+    });
+
+    grid.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        currentX = e.touches[0].clientX;
+    });
+
+    grid.addEventListener('touchend', () => {
+        if (!isDragging) return;
+        isDragging = false;
+
+        const diffX = startX - currentX;
+        if (Math.abs(diffX) > 50) {
+            if (diffX > 0) {
+                next();
+            } else {
+                prev();
+            }
+        } else {
+            startAuto();
+        }
+    });
 }
+document.addEventListener('DOMContentLoaded', setupCarousel);
+// ADD: usa POST (cantidad +1)
+async function addToCart(btnEl, productId) {
+    const user = JSON.parse(localStorage.getItem('currentUser') || 'null') || window.currentUser;
+    if (!user) { window.showNotification?.('Debes iniciar sesión', 'error'); return; }
+
+    const original = btnEl.innerHTML;
+    btnEl.disabled = true;
+
+    try {
+        const resp = await fetch('/api/carrito', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ producto_id: productId, cantidad: 1 })
+        });
+        if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err.error || 'No se pudo agregar');
+        }
+        await forceUpdateCart();
+        btnEl.innerHTML = '✅ Agregado!';
+        setTimeout(() => btnEl.innerHTML = original, 1200);
+    } catch (e) {
+        console.error(e);
+        window.showNotification?.(e.message, 'error');
+    } finally {
+        btnEl.disabled = false;
+    }
+}
+
+
 
 // Función para actualizar cantidad en carrito
 async function updateCartQuantity(productId, newQuantity) {
-    const currentUser =
-        window.currentUser ||
-        JSON.parse(localStorage.getItem("currentUser") || "null");
+    const stored = localStorage.getItem('currentUser');
+    const currentUser = stored ? JSON.parse(stored) : window.currentUser;
     if (!currentUser) {
         if (window.showNotification) {
             window.showNotification(
@@ -301,46 +316,31 @@ async function updateCartQuantity(productId, newQuantity) {
 
 // Función para remover del carrito
 async function removeFromCart(productId) {
-    const currentUser =
-        window.currentUser ||
-        JSON.parse(localStorage.getItem("currentUser") || "null");
-    if (!currentUser) {
-        if (window.showNotification) {
-            window.showNotification(
-                "Debes iniciar sesión para modificar el carrito",
-                "error"
-            );
-        }
-        return;
+  const stored = localStorage.getItem('currentUser');
+  const currentUser = stored ? JSON.parse(stored) : window.currentUser;
+  if (!currentUser) return;
+
+  try {
+    const resp = await fetch('/api/carrito', {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ producto_id: productId })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error || 'Error al eliminar producto');
     }
-    try {
-        const response = await fetch("/api/carrito", {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                usuario_id: currentUser.id,
-                producto_id: productId,
-            }),
-        });
-        if (response.ok) {
-            await forceUpdateCart();
-            if (window.showNotification) {
-                window.showNotification("Producto eliminado del carrito", "success");
-            }
-        } else {
-            if (window.showNotification) {
-                window.showNotification("Error al eliminar producto", "error");
-            }
-        }
-    } catch (error) {
-        console.error("Error al eliminar del carrito:", error);
-        if (window.showNotification) {
-            window.showNotification("Error de conexión", "error");
-        }
-    }
+
+    await forceUpdateCart();
+    window.showNotification?.('Producto eliminado del carrito', 'success');
+  } catch (e) {
+    console.error('removeFromCart:', e);
+    window.showNotification?.(e.message || 'Error de conexión', 'error');
+  }
 }
+
 
 // Función para actualizar display del carrito
 async function updateCartDisplay(silent = false) {
@@ -358,7 +358,7 @@ async function updateCartDisplay(silent = false) {
     }
     try {
         console.log("Obteniendo carrito del usuario:", currentUser.id);
-        const response = await fetch(`/api/carrito/${currentUser.id}`);
+        const response = await fetch(`/api/carrito`);
         const newCartItems = await response.json();
         console.log("Nuevos items del carrito:", newCartItems);
         cartItems = newCartItems;
@@ -502,7 +502,7 @@ async function refreshCartFromAPI() {
     }
     try {
         console.log("Consultando API del carrito para usuario:", currentUser.id);
-        const response = await fetch(`/api/carrito/${currentUser.id}`);
+        const response = await fetch(`/api/carrito`);
         const items = await response.json();
         console.log("Items recibidos:", items);
         cartItems = items;
@@ -527,7 +527,7 @@ async function forceUpdateCart() {
     }
     try {
         console.log("Consultando API del carrito...");
-        const response = await fetch(`/api/carrito/${currentUser.id}`);
+        const response = await fetch(`/api/carrito`);
         const items = await response.json();
         console.log("Items recibidos de la API:", items);
         cartItems = items;

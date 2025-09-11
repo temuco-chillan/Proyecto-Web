@@ -6,11 +6,10 @@ const fmtDate = (iso) => new Date(iso).toLocaleDateString("es-MX", { year:"numer
 
 // --- Fetch real data from API ---
 async function fetchOrders() {
-  const response = await fetch('/api/historial');
-  if (!response.ok) {
-    throw new Error(`Error ${response.status}: ${response.statusText}`);
-  }
-  const data = await response.json();
+    const resp = await fetch('/api/historial/admin', {
+        credentials: 'include'
+    });
+    const data = await resp.json();
   
   // Los datos ya vienen en el formato correcto desde la API
   return data;
@@ -64,14 +63,12 @@ function showOnly(node) {
 }
 
 // Función para actualizar estado de venta
-async function updateOrderStatus(orderId, newStatus) {
-  try {
-    const response = await fetch(`/api/historial/${orderId}/estado`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ estado: newStatus })
+async function updateOrderStatus(orderId, estado) {
+    const resp = await fetch(`/api/historial/${orderId}/estado`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estado })
     });
     
     if (!response.ok) {
@@ -86,11 +83,7 @@ async function updateOrderStatus(orderId, newStatus) {
     }
     
     alert(`Estado actualizado a: ${newStatus}`);
-  } catch (error) {
-    console.error('Error al actualizar estado:', error);
-    alert('Error al actualizar el estado del pedido');
   }
-}
 
 function rowHtml(o, idx) {
   return `

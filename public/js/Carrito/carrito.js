@@ -1,6 +1,4 @@
-const carritoApiUrl = window.location.hostname.includes("localhost")
-  ? "https://localhost:3000/api/carrito"
-  : "/api/carrito"
+const carritoApiUrl = "/api/carrito"
 
 // Obtener cuenta activa desde localStorage
 function getAccount() {
@@ -20,7 +18,7 @@ function fetchCarritoPage() {
   const user = getAccount()
   if (!user) return
 
-  fetch(`${carritoApiUrl}/${user.id}`)
+  fetch(`${carritoApiUrl}`, { credentials: "include" })
     .then((response) => response.json())
     .then((data) => {
       const tableBody = document.getElementById("carritoList")
@@ -142,45 +140,44 @@ function renderCarritoTable(data, tableBody) {
 
 // === Agregar producto al carrito ===
 function addToCarritoPage(producto_id, cantidad = 1) {
-  // ✅ RENOMBRADO
   const user = getAccount()
   if (!user) return
 
   fetch(carritoApiUrl, {
     method: "POST",
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ usuario_id: user.id, producto_id, cantidad }),
   })
     .then((res) => res.json())
     .then((data) => {
       alert("🛒 Producto agregado al carrito")
-      fetchCarritoPage() // ✅ ACTUALIZADO
+      fetchCarritoPage()
     })
     .catch((error) => console.error("❌ Error al agregar producto al carrito:", error))
 }
 
 // === Actualizar cantidad ===
 function updateCantidadPage(producto_id, cantidad) {
-  // ✅ RENOMBRADO
   const user = getAccount()
   if (!user) return
 
   fetch(carritoApiUrl, {
     method: "PUT",
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ usuario_id: user.id, producto_id, cantidad }),
   })
     .then((res) => res.json())
     .then(() => {
       console.log("✅ Cantidad actualizada")
-      fetchCarritoPage() // ✅ ACTUALIZADO
+      fetchCarritoPage()
     })
     .catch((error) => console.error("❌ Error al actualizar cantidad:", error))
 }
 
 // === Eliminar producto del carrito ===
 function removeFromCarritoPage(producto_id) {
-  // ✅ RENOMBRADO
   const user = getAccount()
   if (!user) return
 
@@ -188,32 +185,33 @@ function removeFromCarritoPage(producto_id) {
 
   fetch(carritoApiUrl, {
     method: "DELETE",
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ usuario_id: user.id, producto_id }),
   })
     .then((res) => res.json())
     .then(() => {
       alert("🗑️ Producto eliminado del carrito")
-      fetchCarritoPage() // ✅ ACTUALIZADO
+      fetchCarritoPage()
     })
     .catch((error) => console.error("❌ Error al eliminar producto:", error))
 }
 
 // === Vaciar carrito completo ===
 function vaciarCarritoPage() {
-  // ✅ RENOMBRADO
   const user = getAccount()
   if (!user) return
 
   if (!confirm("¿Vaciar todo el carrito?")) return
 
-  fetch(`${carritoApiUrl}/usuario/${user.id}`, {
+  fetch(`${carritoApiUrl}`, {
     method: "DELETE",
+    credentials: "include",
   })
     .then((res) => res.json())
     .then(() => {
       alert("🧹 Carrito vaciado")
-      fetchCarritoPage() // ✅ ACTUALIZADO
+      fetchCarritoPage()
     })
     .catch((error) => console.error("❌ Error al vaciar carrito:", error))
 }
@@ -225,6 +223,7 @@ function pagarCarrito() {
 
   fetch("/api/pago", {
     method: "POST",
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ usuario_id: user.id }),
   })

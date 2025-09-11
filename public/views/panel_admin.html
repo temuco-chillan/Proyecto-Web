@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administrador</title>
-    <link rel="stylesheet" href="../css/style.css"> 
-    <meta http-equiv="refresh" content="900;url=login.html"> 
+    <link rel="stylesheet" href="../css/style.css">
+    <meta http-equiv="refresh" content="900;url=login.html">
 </head>
+
 <body>
     <header>
         <h1>PANEL DE ADMINISTRADOR</h1>
@@ -15,7 +17,7 @@
             <a href="historial_admin.html" class="btn">Gestionar Historial</a>
         </div>
     </header>
-    
+
     <!-- Sección principal de productos -->
     <main class="main-products-section">
         <div class="main-content-wrapper">
@@ -67,7 +69,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="productoDescuento">Descuento (%)</label>
-                                <input type="number" id="productoDescuento" placeholder="Descuento (%)" min="0" max="100">
+                                <input type="number" id="productoDescuento" placeholder="Descuento (%)" min="0"
+                                    max="100">
                             </div>
                         </div>
                         <div class="image-upload-area" onclick="document.getElementById('productoImagen').click()">
@@ -109,12 +112,12 @@
                 <div class="page-info" id="pageInfoProductos"></div>
             </div>
         </div>
-                <div class="footer-content-wrapper">
+        <div class="footer-content-wrapper">
             <div class="section-header">
                 <h2>Gestión de Descuentos</h2>
                 <button id="btnMostrarFormularioDescuento" class="btn">Crear Descuento</button>
             </div>
-            
+
             <div class="discount-form-container" id="formularioDescuento" style="display: none;">
                 <h3>Agregar / Actualizar Descuento</h3>
                 <form id="DescuentosForm">
@@ -128,11 +131,13 @@
                         </div>
                         <div class="form-group">
                             <label for="descuentoCantidadMinima">Cantidad Mínima</label>
-                            <input type="number" id="descuentoCantidadMinima" placeholder="Cantidad mínima" min="1" required>
+                            <input type="number" id="descuentoCantidadMinima" placeholder="Cantidad mínima" min="1"
+                                required>
                         </div>
                         <div class="form-group">
                             <label for="descuentoPorcentaje">Porcentaje (%)</label>
-                            <input type="number" id="descuentoPorcentaje" placeholder="Porcentaje" min="1" max="100" required>
+                            <input type="number" id="descuentoPorcentaje" placeholder="Porcentaje" min="1" max="100"
+                                required>
                         </div>
                         <div class="form-group">
                             <label for="descuentoActivo">Estado</label>
@@ -149,7 +154,7 @@
                     </div>
                 </form>
             </div>
-            
+
             <div class="discount-table-container">
                 <table id="ProductosTable">
                     <thead>
@@ -166,7 +171,7 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <div class="pagination-container" id="paginationDescuentos" style="display: none;">
                 <button class="pagination-btn" id="prevPageDescuentos">Anterior</button>
                 <div id="pageNumbersDescuentos"></div>
@@ -175,7 +180,7 @@
             </div>
         </div>
     </main>
-    
+
 
 
     <script>
@@ -185,7 +190,7 @@
                 carrito.classList.toggle('oculto');
             }
         }
-        
+
         document.addEventListener('click', function (event) {
             const carrito = document.getElementById('CarroContainer');
             const contenedor = document.querySelector('.header-carrito-wrapper');
@@ -193,25 +198,25 @@
                 carrito.classList.add('oculto');
             }
         });
-        
-        document.getElementById('btnMostrarFormulario').addEventListener('click', function() {
+
+        document.getElementById('btnMostrarFormulario').addEventListener('click', function () {
             document.getElementById('formularioProducto').style.display = 'block';
             document.getElementById('ProductosForm').reset();
             document.getElementById('productoId').value = '';
             document.getElementById('submitBtn').innerText = 'Crear Producto';
         });
 
-        document.getElementById('btnCancelar').addEventListener('click', function() {
+        document.getElementById('btnCancelar').addEventListener('click', function () {
             document.getElementById('formularioProducto').style.display = 'none';
             document.getElementById('ProductosForm').reset();
             document.getElementById('productoId').value = '';
             document.getElementById('submitBtn').innerText = 'Crear Producto';
         });
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('ProductosForm');
             if (form) {
-                form.addEventListener('submit', function(e) {
+                form.addEventListener('submit', function (e) {
                     setTimeout(() => {
                         document.getElementById('formularioProducto').style.display = 'none';
                         document.getElementById('ProductosForm').reset();
@@ -222,21 +227,52 @@
             }
         });
     </script>
-    
+
     <script src="../js/Categorias/Categorias.js"></script>
     <script src="../js/Productos/Productos.js"></script>
     <script src="../js/Descuentos/descuentos_admin.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    
-            if (!currentUser || currentUser.rol_id !== 1) {
-                alert("⚠️ Acceso denegado: no tienes permisos de administrador.");
-                window.location.href = "index.html";
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // 1) Verifica en /api/admin/ping (backend debería protegerlo)
+                const pingResp = await fetch('/api/admin/ping', { credentials: 'include' });
+                if (!pingResp.ok) throw new Error('forbidden');
+                const pingData = await pingResp.json();
+
+                // 2) Obtén /api/users/me (para guardar el user y doble validar)
+                const meResp = await fetch('/api/users/me', { credentials: 'include' });
+                if (!meResp.ok) throw new Error('No autenticado');
+                const me = await meResp.json();
+
+                // 3) Normaliza la verificación de rol
+                const isAdminFromPing = String(pingData.role || pingData.rol || '').toLowerCase() === 'admin';
+                const isAdminFromMe =
+                    String(me.role || me.rol || '').toLowerCase() === 'admin' ||
+                    me.rol_id === 1 || me.role_id === 1; // por si viene numérico
+
+                if (!(isAdminFromPing || isAdminFromMe)) {
+                    alert('⚠️ Acceso denegado: no tienes permisos de administrador.');
+                    window.location.replace('/index.html');
+                    return;
+                }
+
+                // 4) Guarda al usuario en localStorage
+                localStorage.setItem('currentUser', JSON.stringify({
+                    id: me.id,
+                    username: me.username,
+                    rol: me.role || me.rol || (me.rol_id === 1 ? 'admin' : 'usuario')
+                }));
+            } catch (e) {
+                console.error('Auth/admin guard error:', e);
+                alert('⚠️ Acceso denegado: no tienes permisos de administrador.');
+                window.location.replace('/index.html');
             }
         });
     </script>
-    
+
+
+
 </body>
+
 </html>

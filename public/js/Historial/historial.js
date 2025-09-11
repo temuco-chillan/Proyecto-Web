@@ -54,6 +54,11 @@ function redirectToLogin() {
 }
 
 async function loadHistorial() {
+    if (!window.currentUser) return;
+    const resp = await fetch(`/api/historial`, {
+        credentials: 'include'
+    });
+    const data = await resp.json();
     const loading = document.getElementById('loading');
     const error = document.getElementById('error');
     const emptyState = document.getElementById('empty-state');
@@ -67,7 +72,7 @@ async function loadHistorial() {
         historialCard.classList.add('hidden');
         
         // Hacer petición al API usando la variable global
-        const response = await fetch(`/api/historial/${window.currentUser.id}`);
+        const response = await fetch(`/api/historial`);
         
         if (!response.ok) {
             throw new Error('Error al cargar el historial');

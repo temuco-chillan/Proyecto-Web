@@ -65,7 +65,10 @@ class DescuentosAdmin {
         }
     }
 
-    async loadDescuentos() {
+    async loadDescuentos(page = 1) {
+        const resp = await fetch(`/api/descuentos?page=${page}`, {
+            credentials: 'include'
+        });
         try {
             const response = await fetch('/api/descuentos');
             if (response.ok) {
@@ -273,27 +276,21 @@ class DescuentosAdmin {
         }
     }
 
-    async createDescuento(descuentoData) {
-        try {
-            const response = await fetch('/api/descuentos', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(descuentoData)
-            });
+    async createDescuento(data) {
+        const resp = await fetch('/api/descuentos', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
 
-            const result = await response.json();
+        const result = await response.json();
 
-            if (response.ok && result.success) {
-                console.log('Descuento creado exitosamente');
-                return true;
-            } else {
-                console.error('Error al crear descuento:', result.message);
-                return false;
-            }
-        } catch (error) {
-            console.error('Error al crear descuento:', error);
+        if (response.ok && result.success) {
+            console.log('Descuento creado exitosamente');
+            return true;
+        } else {
+            console.error('Error al crear descuento:', result.message);
             return false;
         }
     }

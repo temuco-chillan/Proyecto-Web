@@ -19,6 +19,104 @@ const nTunel = "548200159a34";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// === Sesiones y CORS ===
+const session = require('express-session');
+let RedisStore, createClient;
+try {
+    RedisStore = require('connect-redis').default;
+    ({ createClient } = require('redis'));
+} catch (e) {
+    // En desarrollo puede no estar instalado Redis, se usará MemoryStore
+}
+
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const SESSION_SECRET = process.env.SESSION_SECRET; // Debe estar definido en .env
+if (!SESSION_SECRET) {
+    console.warn('ADVERTENCIA: Falta SESSION_SECRET en variables de entorno. Define uno seguro en .env');
+}
+
+if (NODE_ENV === 'production') {
+    app.set('trust proxy', 1); // necesario si estás detrás de un proxy o en plataformas como Heroku/Render
+}
+
+// Configuración de CORS con credenciales y orígenes permitidos
+const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
+// Si no configuras CORS_ORIGINS, se permitirá cualquier origen en desarrollo (no recomendado en prod)
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true); // requests sin origin (postman, curl) permitidas
+        if (allowedOrigins.length === 0 && NODE_ENV !== 'production') return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        return callback(new Error('Not allowed by CORS: ' + origin));
+    },
+    credentials: true
+};
+
+// Body parser
+app.use(express.json());
+
+// Habilitar CORS ANTES de las rutas
+app.use(cors(corsOptions));
+
+// Configurar Redis store en producción si REDIS_URL está disponible
+let sessionStore;
+if (NODE_ENV === 'production' && RedisStore && process.env.REDIS_URL) {
+    const redisClient = createClient({ url: process.env.REDIS_URL });
+    redisClient.on('error', (err) => console.error('Redis error', err));
+    redisClient.connect().catch(err => console.error('Redis connect error', err));
+    sessionStore = new RedisStore({ client: redisClient, prefix: 'sess:' });
+}
+
+// Definir sameSite y secure según entorno o envs
+const cookieSameSite = (process.env.SESSION_SAMESITE || (NODE_ENV === 'production' ? 'lax' : 'lax')).toLowerCase();
+// Nota: si tu frontend está en OTRO dominio, para que el navegador envíe cookie cross-site, usa sameSite='none' y secure: true.
+const cookieSecure = NODE_ENV === 'production' ? true : false;
+
+app.use(session({
+    name: 'sid',
+    secret: SESSION_SECRET || 'dev-insecure-secret',
+    resave: false,
+    saveUninitialized: false,
+    store: sessionStore,
+    cookie: {
+        httpOnly: true,
+        secure: cookieSecure,
+        sameSite: cookieSameSite, // 'lax'/'strict' en mismo dominio; 'none' si necesitas cross-site
+        maxAge: 1000 * 60 * 60 * 2 // 2 horas
+    }
+}));
+
+// Middlewares de seguridad
+function ensureAuth(req, res, next) {
+    const auth = req.session && req.session.auth;
+    if (auth && auth.userId) {
+        req.userId = auth.userId;
+        req.role = auth.role;
+        return next();
+    }
+    return res.status(401).json({ message: 'No autenticado' });
+}
+
+function ensureRole(role) {
+    return (req, res, next) => {
+        const auth = req.session && req.session.auth;
+        if (!auth || !auth.userId) return res.status(401).json({ message: 'No autenticado' });
+        if (auth.role === role) return next();
+        return res.status(403).json({ message: 'Acceso denegado' });
+    };
+}
+
+function ensureOwnerOrAdmin(paramName = 'id') {
+    return (req, res, next) => {
+        const auth = req.session && req.session.auth;
+        if (!auth || !auth.userId) return res.status(401).json({ message: 'No autenticado' });
+        if (auth.role === 'admin') return next();
+        const target = parseInt(req.params[paramName], 10);
+        if (!isNaN(target) && target === auth.userId) return next();
+        return res.status(403).json({ message: 'Acceso denegado' });
+    };
+}
+
 // Servir archivos estáticos
 app.use('/css', express.static(path.join(__dirname, '../public/css'), {
     setHeaders: (res, filePath) => {
@@ -37,7 +135,7 @@ app.use(express.json());
 // RUTAS - USUARIOS
 ////////////////////////
 
-app.get('/api/users', async (req, res) => {
+app.get('/api/users', ensureRole('admin'), async (req, res) => {
     try {
         const users = await sesiones.getUsers();
         res.json(users);
@@ -46,7 +144,16 @@ app.get('/api/users', async (req, res) => {
     }
 });
 
-app.get('/api/users/:id', async (req, res) => {
+app.get('/api/users/me', ensureAuth, async (req, res) => {
+    try {
+        const user = await sesiones.getUserById(req.userId);
+        user ? res.json(user) : res.status(404).json({ message: 'Usuario no encontrado' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/users/:id', ensureOwnerOrAdmin('id'), async (req, res) => {
     try {
         const user = await sesiones.getUserById(req.params.id);
         user ? res.json(user) : res.status(404).json({ message: 'Usuario no encontrado' });
@@ -101,6 +208,41 @@ app.post('/api/users', async (req, res) => {
     }
 });
 
+// Nuevo endpoint de login con sesión
+app.post('/api/login', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const user = await sesiones.validateUser({ username, password });
+        if (!user) {
+            return res.status(401).json({ message: 'Credenciales incorrectas' });
+        }
+        req.session.regenerate((err) => {
+            if (err) {
+                console.error('Error al regenerar sesión:', err);
+                return res.status(500).json({ message: 'Error al iniciar sesión' });
+            }
+            req.session.auth = { userId: user.id, role: user.rol || 'usuario' };
+            res.json({ message: 'Acceso autorizado', user: { id: user.id, username: user.username, rol: user.rol || 'usuario' } });
+        });
+    } catch (err) {
+        console.error('Error del servidor al validar usuario:', err);
+        res.status(500).json({ error: 'Error del servidor al validar usuario' });
+    }
+});
+
+// Logout
+app.post('/api/logout', ensureAuth, (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            console.error('Error al cerrar sesión:', err);
+            return res.status(500).json({ message: 'Error al cerrar sesión' });
+        }
+        res.clearCookie('sid');
+        res.json({ message: 'Sesión cerrada' });
+    });
+});
+
+// IMPORTANTE: elimina/retira el endpoint antiguo /api/users/validate para evitar duplicados.
 app.post('/api/users/validate', async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -173,60 +315,60 @@ app.delete('/api/Productos/:id', async (req, res) => {
 // RUTAS - CARRITO
 ////////////////////////
 
-app.get('/api/carrito/:usuario_id', async (req, res) => {
+app.get('/api/carrito', ensureAuth, async (req, res) => {
     try {
-        const data = await carrito.getCarrito(req.params.usuario_id);
+        const data = await carrito.getCarrito(req.userId);
         res.json(data);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-app.post('/api/carrito', async (req, res) => {
-    const { usuario_id, producto_id, cantidad } = req.body;
-    if (!usuario_id || !producto_id || !cantidad) {
+app.post('/api/carrito', ensureAuth, async (req, res) => {
+    const { producto_id, cantidad } = req.body;
+    if (!producto_id || !cantidad) {
         return res.status(400).json({ error: 'Faltan datos obligatorios' });
     }
 
     try {
-        await carrito.agregarAlCarrito(usuario_id, producto_id, cantidad);
+        await carrito.agregarAlCarrito(req.userId, producto_id, cantidad);
         res.status(201).json({ mensaje: 'Producto agregado/actualizado en carrito' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-app.put('/api/carrito', async (req, res) => {
-    const { usuario_id, producto_id, cantidad } = req.body;
-    if (!usuario_id || !producto_id || !cantidad) {
+app.put('/api/carrito', ensureAuth, async (req, res) => {
+    const { producto_id, cantidad } = req.body;
+    if (!producto_id || !cantidad) {
         return res.status(400).json({ error: 'Faltan datos obligatorios' });
     }
 
     try {
-        await carrito.actualizarCantidad(usuario_id, producto_id, cantidad);
+        await carrito.actualizarCantidad(req.userId, producto_id, cantidad);
         res.json({ mensaje: 'Cantidad actualizada' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-app.delete('/api/carrito', async (req, res) => {
-    const { usuario_id, producto_id } = req.body;
-    if (!usuario_id || !producto_id) {
+app.delete('/api/carrito', ensureAuth, async (req, res) => {
+    const { producto_id } = req.body;
+    if (!producto_id) {
         return res.status(400).json({ error: 'Faltan datos obligatorios' });
     }
 
     try {
-        await carrito.eliminarDelCarrito(usuario_id, producto_id);
+        await carrito.eliminarDelCarrito(req.userId, producto_id);
         res.json({ mensaje: 'Producto eliminado del carrito' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-app.delete('/api/carrito/usuario/:usuario_id', async (req, res) => {
+app.delete('/api/carrito/clear', ensureAuth, async (req, res) => {
     try {
-        await carrito.vaciarCarrito(req.params.usuario_id);
+        await carrito.vaciarCarrito(req.userId);
         res.json({ mensaje: 'Carrito vaciado' });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -322,13 +464,9 @@ const client = new MercadoPagoConfig({
     }
 });
 
-app.post('/api/pago', async (req, res) => {
+app.post('/api/pago', ensureAuth, async (req, res) => {
     try {
-        const { usuario_id } = req.body;
-        
-        if (!usuario_id) {
-            return res.status(400).json({ error: 'usuario_id es requerido' });
-        }
+        const usuario_id = req.userId;
 
         // Obtener información del usuario
         const usuario = await sesiones.getUserById(usuario_id);
@@ -377,11 +515,12 @@ app.post('/api/pago', async (req, res) => {
             items: items,
             payer: payer,
             back_urls: {
-                success: ngrok+"/api/pago-exitoso",
-                failure: ngrok+"/api/pago-fallido",
-                pending: ngrok+"/api/pago-pendiente"
+                success: ngrok + "/api/pago-exitoso",
+                failure: ngrok + "/api/pago-fallido",
+                pending: ngrok + "/api/pago-pendiente"
             },
             auto_return: "approved",
+            // external_reference solo como apoyo (no se confía en él para identidad)
             external_reference: usuario_id.toString(),
             payment_methods: {
                 excluded_payment_methods: [],
@@ -391,18 +530,11 @@ app.post('/api/pago', async (req, res) => {
             shipments: {
                 mode: "not_specified"
             },
-            notification_url: ngrok+"/api/webhook-mercadopago"
+            notification_url: ngrok + "/api/webhook-mercadopago"
         };
         
         const response = await preference.create({ body: preferenceData });
-        
-        res.cookie('mp_session', usuario_id.toString(), {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            maxAge: 3600000
-        });
-        
+        // NO seteamos cookies manuales aquí; la sesión ya maneja la cookie.
         res.json({ init_point: response.init_point });
     } catch (error) {
         console.error('Error al crear preferencia:', error);
@@ -410,16 +542,10 @@ app.post('/api/pago', async (req, res) => {
     }
 });
 
-// Ruta para el pago exitoso
-app.get('/api/pago-exitoso', async (req, res) => {
-    const { external_reference, payment_id } = req.query;
-    const usuario_id = parseInt(external_reference);
-
-    console.log('Pago Exitoso Recibido:', { external_reference, payment_id });
-
-    if (!usuario_id || isNaN(usuario_id)) {
-        return res.redirect('/payments/payment-failed.html?reason=Usuario no identificado');
-    }
+// Pago exitoso (se espera que el usuario mantenga su sesión activa)
+app.get('/api/pago-exitoso', ensureAuth, async (req, res) => {
+    const { payment_id } = req.query;
+    const usuario_id = req.userId;
 
     if (!payment_id) {
         return res.redirect('/payments/payment-failed.html?reason=ID de pago no encontrado');
@@ -433,9 +559,9 @@ app.get('/api/pago-exitoso', async (req, res) => {
             return res.redirect('/payments/payment-failed.html?reason=Datos de compra no encontrados');
         }
 
+        // Validación básica: evitar doble procesamiento por payment_id
         const ventaExistente = await historial.getVentaByPaymentId(payment_id);
         if (ventaExistente) {
-            console.log('Venta ya procesada:', payment_id);
             const params = new URLSearchParams({
                 order_id: payment_id,
                 user_id: usuario_id,
@@ -447,8 +573,6 @@ app.get('/api/pago-exitoso', async (req, res) => {
 
         const subtotal = items.reduce((sum, item) => sum + (parseFloat(item.precio) * parseInt(item.cantidad)), 0);
 
-        console.log('Subtotal calculado:', subtotal);
-
         const detallesVenta = items.map(item => ({
             producto_id: item.producto_id,
             nombre: item.nombre,
@@ -458,10 +582,8 @@ app.get('/api/pago-exitoso', async (req, res) => {
             subtotal: parseFloat(item.precio) * parseInt(item.cantidad)
         }));
 
-        const ventaId = await historial.crearVenta(usuario_id, detallesVenta, payment_id);
-
+        await historial.crearVenta(usuario_id, detallesVenta, payment_id);
         ganancias.agregarGanancia(subtotal, payment_id, usuario_id);
-
         await carrito.vaciarCarrito(usuario_id);
 
         const params = new URLSearchParams({
@@ -476,8 +598,6 @@ app.get('/api/pago-exitoso', async (req, res) => {
             })))
         });
 
-        console.log('Parámetros enviados:', params.toString());
-
         res.redirect(`/payments/payment-succes.html?${params.toString()}`);
 
     } catch (error) {
@@ -486,12 +606,11 @@ app.get('/api/pago-exitoso', async (req, res) => {
     }
 });
 
-app.get('/api/pago-fallido', async (req, res) => {
-    const usuario_id = req.query.external_reference;
+app.get('/api/pago-fallido', ensureAuth, async (req, res) => {
     const payment_id = req.query.payment_id;
     const collection_id = req.query.collection_id;
 
-    console.log('Pago fallido recibido:', { usuario_id, payment_id, collection_id });
+    console.log('Pago fallido recibido:', { userId: req.userId, payment_id, collection_id });
 
     const params = new URLSearchParams({
         order_id: payment_id || `ORD-FAIL-${Date.now()}`,
@@ -501,19 +620,15 @@ app.get('/api/pago-fallido', async (req, res) => {
     res.redirect(`/payments/payment-failed.html?${params.toString()}`);
 });
 
-app.get('/api/pago-pendiente', async (req, res) => {
-    const usuario_id = req.query.external_reference;
+app.get('/api/pago-pendiente', ensureAuth, async (req, res) => {
     const payment_id = req.query.payment_id;
     const collection_id = req.query.collection_id;
 
-    console.log('Pago pendiente:', { usuario_id, payment_id, collection_id });
+    console.log('Pago pendiente:', { userId: req.userId, payment_id, collection_id });
 
     try {
-        let total = 0;
-        if (usuario_id && !isNaN(parseInt(usuario_id))) {
-            const items = await carrito.getCarrito(parseInt(usuario_id));
-            total = items.reduce((sum, item) => sum + (parseFloat(item.precio) * parseInt(item.cantidad)), 0);
-        }
+        const items = await carrito.getCarrito(req.userId);
+        const total = items.reduce((sum, item) => sum + (parseFloat(item.precio) * parseInt(item.cantidad)), 0);
 
         const params = new URLSearchParams({
             status: 'pending',
@@ -554,26 +669,36 @@ app.post('/api/webhook-mercadopago', express.raw({type: 'application/json'}), (r
 // RUTAS - HISTORIAL
 ////////////////////////
 
-app.get('/api/historial/:usuario_id', async (req, res) => {
+app.get('/api/historial', ensureAuth, async (req, res) => {
     try {
-        const data = await historial.getHistorial(req.params.usuario_id);
+        const data = await historial.getHistorial(req.userId);
         res.json(data);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-app.post('/api/historial', async (req, res) => {
+// Admin: ver todo el historial
+app.get('/api/historial/admin', ensureRole('admin'), async (req, res) => {
     try {
-        const { usuario_id, detalles } = req.body;
-        const ventaId = await historial.crearVenta(usuario_id, detalles);
+        const data = await historial.getAllHistorial();
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/historial', ensureAuth, async (req, res) => {
+    try {
+        const { detalles } = req.body; // usuario actual desde sesión
+        const ventaId = await historial.crearVenta(req.userId, detalles);
         res.status(201).json({ mensaje: 'Venta registrada', venta_id: ventaId });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-app.put('/api/historial/:venta_id/estado', async (req, res) => {
+app.put('/api/historial/:venta_id/estado', ensureRole('admin'), async (req, res) => {
     try {
         const { estado } = req.body;
         await historial.actualizarEstadoVenta(req.params.venta_id, estado);
@@ -596,7 +721,7 @@ app.get('/api/historial', async (req, res) => {
 // RUTAS - GANANCIAS
 ////////////////////////
 
-app.put('/api/ganancias/porcentaje', async (req, res) => {
+app.put('/api/ganancias/porcentaje', ensureRole('admin'), async (req, res) => {
     try {
         const { porcentaje } = req.body;
         const resultado = await ganancias.actualizarPorcentaje(porcentaje);
@@ -610,176 +735,45 @@ app.put('/api/ganancias/porcentaje', async (req, res) => {
 // RUTAS - DESCUENTOS
 ////////////////////////
 
-// Obtener todos los descuentos
+// Obtener todos los descuentos (público o autenticado, según tu necesidad)
 app.get('/api/descuentos', async (req, res) => {
     try {
         const allDescuentos = await descuentos.getAllDescuentos();
         res.json({ 
-            success: true, 
-            message: 'Descuentos obtenidos correctamente', 
-            data: allDescuentos 
+            success: true,
+            data: allDescuentos
         });
     } catch (error) {
-        console.error('Error al obtener descuentos:', error);
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error interno del servidor al obtener descuentos', 
-            error: error.message 
-        });
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// Obtener descuentos por producto
-app.get('/api/descuentos/producto/:producto_id', async (req, res) => {
+// Crear/actualizar/eliminar descuentos: solo admin
+app.post('/api/descuentos', ensureRole('admin'), async (req, res) => {
     try {
-        const { producto_id } = req.params;
-        const descuentosProducto = await descuentos.getDescuentosProducto(producto_id);
-        res.json({ 
-            success: true, 
-            message: `Descuentos del producto ${producto_id} obtenidos correctamente`, 
-            data: descuentosProducto 
-        });
+        const result = await descuentos.createDescuento(req.body);
+        res.status(201).json({ success: true, data: result });
     } catch (error) {
-        console.error('Error al obtener descuentos del producto:', error);
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error al obtener descuentos del producto', 
-            error: error.message 
-        });
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// Crear nuevo descuento
-app.post('/api/descuentos', async (req, res) => {
+app.put('/api/descuentos/:id', ensureRole('admin'), async (req, res) => {
     try {
-        const { producto_id, cantidad_minima, porcentaje_descuento } = req.body;
-        
-        if (!producto_id || !cantidad_minima || !porcentaje_descuento) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Todos los campos son obligatorios: producto_id, cantidad_minima, porcentaje_descuento' 
-            });
-        }
-        
-        if (cantidad_minima < 1 || porcentaje_descuento < 1 || porcentaje_descuento > 100) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Valores inválidos: cantidad mínima debe ser mayor a 0 y porcentaje entre 1-100' 
-            });
-        }
-        
-        const resultado = await descuentos.crearDescuento(producto_id, cantidad_minima, porcentaje_descuento);
-        
-        if (resultado) {
-            res.status(201).json({ 
-                success: true, 
-                message: `Descuento creado exitosamente: ${porcentaje_descuento}% para ${cantidad_minima}+ unidades`, 
-                data: { producto_id, cantidad_minima, porcentaje_descuento } 
-            });
-        } else {
-            res.status(400).json({ 
-                success: false, 
-                message: 'No se pudo crear el descuento. Verifique que no exista uno similar.' 
-            });
-        }
+        const result = await descuentos.updateDescuento(req.params.id, req.body);
+        res.json({ success: true, data: result });
     } catch (error) {
-        console.error('Error al crear descuento:', error);
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error interno del servidor al crear descuento', 
-            error: error.message 
-        });
-    }
-});
-
-// Actualizar descuento
-app.put('/api/descuentos/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { producto_id, cantidad_minima, porcentaje_descuento, activo } = req.body;
-        
-        if (!producto_id || !cantidad_minima || !porcentaje_descuento) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Todos los campos son obligatorios para actualizar el descuento' 
-            });
-        }
-        
-        if (cantidad_minima < 1 || porcentaje_descuento < 1 || porcentaje_descuento > 100) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Valores inválidos: cantidad mínima debe ser mayor a 0 y porcentaje entre 1-100' 
-            });
-        }
-        
-        const resultado = await descuentos.actualizarDescuento(
-            id, 
-            producto_id, 
-            cantidad_minima, 
-            porcentaje_descuento, 
-            activo !== undefined ? activo : true
-        );
-        
-        if (resultado) {
-            res.json({ 
-                success: true, 
-                message: `Descuento ID ${id} actualizado correctamente`, 
-                data: { id, producto_id, cantidad_minima, porcentaje_descuento, activo } 
-            });
-        } else {
-            res.status(404).json({ 
-                success: false, 
-                message: `No se encontró el descuento con ID ${id} o no se pudo actualizar` 
-            });
-        }
-    } catch (error) {
-        console.error('Error al actualizar descuento:', error);
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error interno del servidor al actualizar descuento', 
-            error: error.message 
-        });
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
 // Eliminar descuento
-app.delete('/api/descuentos/:id', async (req, res) => {
+app.delete('/api/descuentos/:id', ensureRole('admin'), async (req, res) => {
     try {
-        const { id } = req.params;
-        const resultado = await descuentos.eliminarDescuento(id);
-        
-        if (resultado) {
-            res.json({ 
-                success: true, 
-                message: `Descuento ID ${id} eliminado exitosamente` 
-            });
-        } else {
-            res.status(404).json({ 
-                success: false, 
-                message: `No se encontró el descuento con ID ${id}` 
-            });
-        }
+        await descuentos.deleteDescuento(req.params.id);
+        res.json({ success: true, message: 'Descuento eliminado' });
     } catch (error) {
-        console.error('Error al eliminar descuento:', error);
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error interno del servidor al eliminar descuento', 
-            error: error.message 
-        });
-    }
-});
-
-////////////////////////
-// RUTAS - GANANCIAS
-////////////////////////
-
-app.put('/api/ganancias/porcentaje', async (req, res) => {
-    try {
-        const { porcentaje } = req.body;
-        const resultado = await ganancias.actualizarPorcentaje(porcentaje);
-        res.json(resultado);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
@@ -815,23 +809,26 @@ app.put('/api/ganancias/porcentaje', async (req, res) => {
 });
 
 // Nuevo endpoint para obtener RUT desencriptado (solo para roles autorizados)
-app.get('/api/users/:id/rut', async (req, res) => {
+app.get('/api/users/:id/rut', ensureRole('admin'), async (req, res) => {
     try {
-        const { userRole } = req.headers; // Obtener rol del token/sesión
+        const userId = req.params.id;
         
-        if (userRole !== 'vendedor' && userRole !== 'admin') {
-            return res.status(403).json({ message: 'No autorizado para ver RUT completo' });
-        }
+        // Obtener el usuario con RUT desencriptado
+        const user = await sesiones.getUserById(userId, true); // includeRut = true para desencriptar
         
-        const user = await sesiones.getUserById(req.params.id);
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
         
-        // Desencriptar RUT solo para roles autorizados
-        const decryptedRut = encryptionService.decryptRut(user.rut);
-        res.json({ rut: decryptedRut });
+        // Retornar el RUT ya desencriptado por el servicio
+        res.json({ rut: user.rut });
     } catch (err) {
+        console.error('Error al obtener RUT desencriptado:', err);
         res.status(500).json({ error: err.message });
     }
+});
+
+// (ya definidos arriba) ensureAuth, ensureRole, ensureOwnerOrAdmin
+app.get('/api/admin/ping', ensureRole('admin'), (req, res) => {
+    return res.status(200).json({ ok: true, role: req.session.auth.role });
 });
