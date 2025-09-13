@@ -123,12 +123,16 @@ async function reducirStock(producto_id, cantidad) {
   return nuevoStock;
 }
 
-// === Inicializa fallback automáticamente ===
-(async () => {
-  useFallback = !(await isConnected());
-  console.log(useFallback ? '🟡 Fallback JSON activado para Productos' : '🟢 DB conectada para Productos');
-})();
-
+// Nueva función para obtener solo el carrusel de imágenes
+async function getCarruselById(id) {
+  if (useFallback) return jsonFallback.getCarruselById(id);
+  
+  const producto = await Producto.findByPk(id, {
+    attributes: ['img_carrusel']
+  });
+  
+  return producto ? producto.img_carrusel : null;
+}
 
 // === Exportar funciones ===
 module.exports = {
@@ -141,5 +145,11 @@ module.exports = {
   asignarCategoriasAProducto,
   agregarCategoriaAProducto,
   quitarCategoriaAProducto,
-  reducirStock  // Agregar la nueva función
+  reducirStock,
+  getCarruselById  // Nueva función exportada
 };
+// === Inicializa fallback automáticamente ===
+(async () => {
+  useFallback = !(await isConnected());
+  console.log(useFallback ? '🟡 Fallback JSON activado para Productos' : '🟢 DB conectada para Productos');
+})();

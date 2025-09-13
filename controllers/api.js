@@ -275,6 +275,81 @@ app.get('/api/Productos/:id', async (req, res) => {
     }
 });
 
+// Nueva ruta para obtener solo el carrusel de imágenes de un producto
+app.get('/api/Productos/:id/carrusel', async (req, res) => {
+    try {
+        const carrusel = await productos.getCarruselById(req.params.id);
+        if (carrusel === null) {
+            return res.status(404).json({ mensaje: 'Producto no encontrado o sin carrusel' });
+        }
+        res.json({ img_carrusel: carrusel });
+    } catch (error) {
+        console.error('Error al obtener carrusel:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Nueva ruta API dinámica para servir producto.html con ID del producto
+app.get('/producto/:id', async (req, res) => {
+    try {
+        const productId = req.params.id;
+        
+        // Validar que el ID sea un número válido
+        if (!productId || isNaN(productId) || parseInt(productId) <= 0) {
+            return res.status(400).json({ 
+                error: 'ID de producto inválido. Debe ser un número positivo.' 
+            });
+        }
+        
+        // Verificar que el producto existe en la base de datos
+        const producto = await productos.getProductoById(parseInt(productId));
+        if (!producto) {
+            return res.status(404).json({ 
+                error: 'Producto no encontrado.' 
+            });
+        }
+        
+        // Verificar que el archivo producto.html existe
+        const productoHtmlPath = path.join(__dirname, '../public/views/producto.html');
+        if (!fs.existsSync(productoHtmlPath)) {
+            return res.status(500).json({ 
+                error: 'Archivo de producto no encontrado en el servidor.' 
+            });
+        }
+        
+        // Leer el archivo HTML
+        let htmlContent = fs.readFileSync(productoHtmlPath, 'utf8');
+        
+        // Inyectar datos del producto en el HTML
+        const productScript = `
+            <script>
+                window.productData = ${JSON.stringify(producto)};
+                window.productId = ${productId};
+                console.log('Datos del producto inyectados:', window.productData);
+            </script>
+        `;
+        
+        // Insertar el script antes del cierre del tag body
+        htmlContent = htmlContent.replace('</body>', `${productScript}</body>`);
+        
+        // Establecer headers apropiados
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+        
+        // Enviar el archivo HTML modificado
+        res.send(htmlContent);
+        
+    } catch (error) {
+        console.error('Error al servir producto:', error);
+        res.status(500).json({ 
+            error: 'Error interno del servidor al cargar el producto.' 
+        });
+    }
+});
+
+
 app.post('/api/Productos', async (req, res) => {
     try {
         const id = await productos.insertProducto(req.body);

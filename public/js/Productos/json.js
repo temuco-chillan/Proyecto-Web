@@ -194,6 +194,51 @@ function reducirStock(producto_id, cantidad) {
   return Promise.resolve(nuevoStock);
 }
 
+
+// === Métodos para manejo del carrusel ===
+
+function getCarruselById(id) {
+  const productos = readData();
+  const producto = productos.find(p => p.id === parseInt(id, 10));
+  
+  if (!producto) {
+    return Promise.resolve(null);
+  }
+  
+  // Retornar el campo img_carrusel del producto
+  return Promise.resolve(producto.img_carrusel);
+}
+
+function updateCarrusel(id, carruselData) {
+  const productos = readData();
+  const index = productos.findIndex(p => p.id === parseInt(id, 10));
+  
+  if (index === -1) {
+    return Promise.reject(new Error('Producto no encontrado'));
+  }
+  
+  // Actualizar el campo img_carrusel
+  productos[index].img_carrusel = carruselData;
+  writeData(productos);
+  
+  return Promise.resolve();
+}
+
+function deleteCarrusel(id) {
+  const productos = readData();
+  const index = productos.findIndex(p => p.id === parseInt(id, 10));
+  
+  if (index === -1) {
+    return Promise.reject(new Error('Producto no encontrado'));
+  }
+  
+  // Establecer img_carrusel como null
+  productos[index].img_carrusel = null;
+  writeData(productos);
+  
+  return Promise.resolve();
+}
+
 module.exports = {
   getProducto,
   getProductoById,
@@ -204,5 +249,9 @@ module.exports = {
   getCategorias,
   getCategoriasDeProducto,
   getRelaciones,
-  reducirStock  // ← Agregar esta función al export
+  reducirStock,
+  // Nuevos métodos del carrusel
+  getCarruselById,
+  updateCarrusel,
+  deleteCarrusel
 };

@@ -11,7 +11,8 @@ class Producto extends Model {
       descuento: this.descuento,
       stock: this.stock,
       imagen_url: this.imagen_url,
-      video_url: this.video_url
+      video_url: this.video_url,
+      img_carrusel: this.img_carrusel
     };
   }
 
@@ -23,7 +24,8 @@ class Producto extends Model {
       descuento: json.descuento || 0,
       stock: json.stock || 0,
       imagen_url: json.imagen_url,
-      video_url: json.video_url
+      video_url: json.video_url,
+      img_carrusel: json.img_carrusel
     });
   }
 }
@@ -45,6 +47,13 @@ Producto.init({
       }
     },
     comment: 'URL del video tutorial (YouTube, Vimeo, etc.)'
+  },
+  // Nuevo campo para carrusel de imágenes
+  img_carrusel: {
+    type: DataTypes.JSON,
+    allowNull: true,
+    defaultValue: null,
+    comment: 'JSON con URLs de imágenes para carrusel: {"imagenes": ["url1", "url2"]}'
   },
   estado: {
     type: DataTypes.ENUM('activo', 'inactivo', 'mantenimiento'),

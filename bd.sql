@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS productos (
     imagen_url VARCHAR(255),
     video_url VARCHAR(500),
     fecha_add TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    img_carrusel JSON DEFAULT NULL COMMENT 'JSON con URLs de imágenes para carrusel: {"imagenes": ["url1", "url2"]}',
 );
 
 -- -----------------------------
