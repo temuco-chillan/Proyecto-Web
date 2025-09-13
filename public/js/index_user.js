@@ -36,6 +36,27 @@ async function initializeApp() {
 // GESTIÓN DE SESIONES
 // ========================
 
+// Función helper para verificar si un usuario es administrador
+function checkIfUserIsAdmin(user) {
+    if (!user) return false;
+    
+    // Verificar diferentes formas de identificar un administrador
+    const role = user.rol || user.role;
+    const roleId = user.rol_id || user.role_id;
+    
+    // Verificar por rol string
+    if (role && (role.toLowerCase() === 'admin' || role.toLowerCase() === 'administrador')) {
+        return true;
+    }
+    
+    // Verificar por rol_id numérico (1 = admin)
+    if (roleId === 1) {
+        return true;
+    }
+    
+    return false;
+}
+
 async function checkUserSession() {
     try {
         // Verificar sesión en el servidor PRIMERO
@@ -55,6 +76,14 @@ async function checkUserSession() {
             };
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
             console.log("usuario logeado");
+            
+            // Verificar si el usuario es administrador y redirigir automáticamente
+            const isAdmin = checkIfUserIsAdmin(currentUser.user);
+            if (isAdmin) {
+                window.location.href = '/panel_admin.html';
+                return;
+            }
+            
             updateUserInterface();
         } else {
             // Si no hay sesión válida en el servidor, limpiar localStorage
@@ -120,6 +149,14 @@ async function login(username, password) {
             updateUserInterface();
             await updateCartDisplay();
             showNotification('Inicio de sesión exitoso', 'success');
+            
+            // Verificar si el usuario es administrador y redirigir
+            const isAdmin = checkIfUserIsAdmin(userData.user);
+            if (isAdmin) {
+                window.location.href = '/panel_admin.html';
+                return true;
+            }
+            
             return true;
         } else {
             const error = await response.json();

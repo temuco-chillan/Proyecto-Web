@@ -1,3 +1,24 @@
+// Función helper para verificar si un usuario es administrador
+function checkIfUserIsAdmin(user) {
+    if (!user) return false;
+    
+    // Verificar diferentes formas de identificar un administrador
+    const role = user.rol || user.role;
+    const roleId = user.rol_id || user.role_id;
+    
+    // Verificar por rol string
+    if (role && (role.toLowerCase() === 'admin' || role.toLowerCase() === 'administrador')) {
+        return true;
+    }
+    
+    // Verificar por rol_id numérico (1 = admin)
+    if (roleId === 1) {
+        return true;
+    }
+    
+    return false;
+}
+
 document.getElementById('loginForm').addEventListener('submit', async function (event) {
     event.preventDefault();
 
@@ -58,7 +79,14 @@ document.getElementById('loginForm').addEventListener('submit', async function (
 
         message.style.color = 'green';
         message.textContent = '✅ Sesión iniciada';
-        setTimeout(() => window.location.href = '/', 500);
+        
+        // Verificar si el usuario es administrador
+        const isAdmin = checkIfUserIsAdmin(data.user);
+        if (isAdmin) {
+            setTimeout(() => window.location.href = '/panel_admin.html', 500);
+        } else {
+            setTimeout(() => window.location.href = '/', 500);
+        }
     } catch (error) {
         console.error(error);
         message.style.color = 'red';
