@@ -436,6 +436,35 @@ body {
   box-shadow: 0 2px 4px rgba(181, 2, 2, 0.3);
 }
 
+/* View Button */
+.view-button {
+    width: calc(100% - 40px);
+    margin: 0 20px 20px;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.view-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+}
+
+.view-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+}
+
 .indicator {
     width: 12px;
     height: 12px;
@@ -1164,6 +1193,12 @@ body {
   }
   
   .add-button {
+    padding: 0.6rem 0.8rem !important;
+    font-size: 0.75rem !important;
+    height: 38px !important;
+  }
+  
+  .view-button {
     padding: 0.6rem 0.8rem !important;
     font-size: 0.75rem !important;
     height: 38px !important;

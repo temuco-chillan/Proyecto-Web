@@ -94,6 +94,9 @@ async function renderProducts() {
                     <button class="add-button" onclick="addToCart(this, ${product.id})">
                     <i class="fas fa-shopping-cart"></i> Agregar al Carrito
                 </button>
+                    <button class="view-button" onclick="viewProduct(${product.id})">
+                    <i class="fas fa-eye"></i> Ver Producto
+                </button>
             </div>
         `;
         })
@@ -595,6 +598,17 @@ async function initializeProducts() {
     }
 }
 
+// Función para ver un producto específico
+function viewProduct(productId) {
+    if (!productId) {
+        console.error('ID de producto no válido');
+        return;
+    }
+    
+    // Redirigir a la página de producto con el ID correspondiente
+    window.location.href = `/producto/${productId}`;
+}
+
 // El único y correcto punto de entrada para todo el script
 document.addEventListener("DOMContentLoaded", initializeProducts);
 
@@ -610,6 +624,7 @@ window.startCartAutoUpdate = startCartAutoUpdate;
 window.stopCartAutoUpdate = stopCartAutoUpdate;
 window.loadProducts = loadProducts;
 window.renderProducts = renderProducts;
+window.viewProduct = viewProduct;
 
 // Exponer variables globales
 window.products = products;
