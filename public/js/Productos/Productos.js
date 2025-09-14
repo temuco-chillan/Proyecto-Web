@@ -225,6 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const descuento = parseInt(document.getElementById('productoDescuento').value) || 0;
       const stock = parseInt(document.getElementById('productoStock').value) || 0;
       const imagen_url = document.getElementById('productoImagen').value.trim();
+      const video_url = document.getElementById('productoVideo').value.trim();
       
       // Obtener imágenes del carrusel
       const carouselImages = getCarouselImages();
@@ -251,6 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
           descuento,
           stock,
           imagen_url,
+          video_url: video_url,
           img_carrusel,
           categorias
         })
@@ -270,6 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
           document.getElementById('productoStock').value = '';
           document.getElementById('productoDescripcion').value = '';
           document.getElementById('productoImagen').value = '';
+          document.getElementById('productoVideo').value = '';
           document.getElementById('productoId').value = '';
           document.getElementById('submitBtn').innerText = 'Agregar Producto';
           // Resetear carrusel
@@ -296,6 +299,7 @@ function editProducto(id) {
       // Asignar valores al formulario
       document.getElementById('productoId').value = producto.id;
       document.getElementById('productoName').value = producto.nombre;
+      document.getElementById('productoVideo').value = producto.video_url || '';
       document.getElementById('productoDescripcion').value = producto.descripcion || '';
       document.getElementById('productoState').value = producto.estado;
       document.getElementById('productoPrice').value = producto.precio;

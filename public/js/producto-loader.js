@@ -57,6 +57,8 @@ function loadProductData(producto) {
         
         // Actualizar video si existe video_url
         if (producto.video_url) {
+            console.log("Video:")
+            console.log(producto.video_url);
             updateProductVideo(producto.video_url);
         }
         
@@ -119,8 +121,49 @@ async function fetchCarruselImages(productId) {
 function updateProductVideo(videoUrl) {
     const videoIframe = document.querySelector('.video-frame iframe');
     if (videoIframe && videoUrl) {
-        videoIframe.src = videoUrl;
+        // Limpiar y validar la URL del video
+        let cleanUrl = videoUrl.trim();
+        
+        // Si es una URL de YouTube, convertir a formato embed
+        if (cleanUrl.includes('youtube.com/watch?v=')) {
+            const videoId = cleanUrl.split('v=')[1].split('&')[0];
+            cleanUrl = `https://www.youtube.com/embed/${videoId}`;
+        } else if (cleanUrl.includes('youtu.be/')) {
+            const videoId = cleanUrl.split('youtu.be/')[1].split('?')[0];
+            cleanUrl = `https://www.youtube.com/embed/${videoId}`;
+        }
+        
+        // Agregar parámetros para evitar bloqueos
+        if (cleanUrl.includes('youtube.com/embed/')) {
+            cleanUrl += '?rel=0&modestbranding=1&showinfo=0';
+        }
+        
+        videoIframe.src = cleanUrl;
         videoIframe.title = 'Video del producto';
+        
+        // Agregar manejo de errores
+        videoIframe.onerror = function() {
+            console.warn('Error al cargar el video, mostrando mensaje alternativo');
+            const videoContainer = videoIframe.parentElement;
+            videoContainer.innerHTML = `
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
+                    background-color: #f0f0f0;
+                    color: #666;
+                    text-align: center;
+                    padding: 20px;
+                ">
+                    <div>
+                        <i class="fas fa-video" style="font-size: 48px; margin-bottom: 10px;"></i>
+                        <p>Video no disponible</p>
+                        <a href="${videoUrl}" target="_blank" style="color: #007bff;">Ver en nueva pestaña</a>
+                    </div>
+                </div>
+            `;
+        };
     }
 }
 
@@ -311,7 +354,7 @@ async function updateCartCounter() {
         if (response.ok) {
             const carrito = await response.json();
             const cartCount = document.getElementById('cart-count');
-            if (cartCount && carrito.items) {
+            if (cartCount && carrito.items && Array.isArray(carrito.items)) {
                 const totalItems = carrito.items.reduce((sum, item) => sum + item.cantidad, 0);
                 cartCount.textContent = totalItems;
                 cartCount.style.display = totalItems > 0 ? 'block' : 'none';
@@ -319,6 +362,7 @@ async function updateCartCounter() {
         }
     } catch (error) {
         console.error('Error al actualizar contador del carrito:', error);
+        // No mostrar error al usuario, solo registrar en consola
     }
 }
 
