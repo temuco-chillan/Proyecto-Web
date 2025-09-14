@@ -200,13 +200,28 @@ function reducirStock(producto_id, cantidad) {
 function getCarruselById(id) {
   const productos = readData();
   const producto = productos.find(p => p.id === parseInt(id, 10));
-  
   if (!producto) {
     return Promise.resolve(null);
   }
   
-  // Retornar el campo img_carrusel del producto
-  return Promise.resolve(producto.img_carrusel);
+  // Parsear el JSON del carrusel si existe
+  let carrusel = [];
+  if (producto.img_carrusel) {
+    try {
+      const carruselData = JSON.parse(producto.img_carrusel);
+      carrusel = carruselData.imagenes || [];
+    } catch (error) {
+      console.error('Error parsing img_carrusel:', error);
+      carrusel = [];
+    }
+  }
+  
+  // Agregar la imagen_url al final del array si existe
+  if (producto.imagen_url) {
+    carrusel.push(producto.imagen_url);
+  }
+  
+  return Promise.resolve(carrusel);
 }
 
 function updateCarrusel(id, carruselData) {

@@ -130,8 +130,88 @@ function renderPagination() {
   paginationContainer.appendChild(pageInfo);
 }
 
+// Variables para gestión del carrusel
+let carouselImageCount = 0;
+
+// Función para añadir un input de imagen del carrusel
+function addCarouselImageInput(value = '') {
+    const container = document.getElementById('carouselImagesContainer');
+    const inputGroup = document.createElement('div');
+    inputGroup.className = 'carousel-input-group';
+    inputGroup.style.cssText = 'display: flex; margin-bottom: 10px; align-items: center;';
+    
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'carousel-image-input';
+    input.placeholder = 'URL de imagen del carrusel';
+    input.value = value;
+    input.style.cssText = 'flex: 1; margin-right: 10px;';
+    
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'btn btn-danger';
+    removeBtn.textContent = '×';
+    removeBtn.style.cssText = 'background: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer;';
+    removeBtn.onclick = () => {
+        container.removeChild(inputGroup);
+        carouselImageCount--;
+    };
+    
+    inputGroup.appendChild(input);
+    inputGroup.appendChild(removeBtn);
+    container.appendChild(inputGroup);
+    carouselImageCount++;
+}
+
+// Función para obtener las URLs del carrusel
+function getCarouselImages() {
+    const inputs = document.querySelectorAll('.carousel-image-input');
+    return Array.from(inputs)
+        .map(input => input.value.trim())
+        .filter(url => url !== '');
+}
+
+// Función para cargar imágenes del carrusel en el formulario
+function loadCarouselImages(imgCarruselData) {
+    const container = document.getElementById('carouselImagesContainer');
+    container.innerHTML = '';
+    carouselImageCount = 0;
+    
+    try {
+        let imagenes = [];
+        if (typeof imgCarruselData === 'string') {
+            const parsed = JSON.parse(imgCarruselData);
+            imagenes = parsed.imagenes || [];
+        } else if (imgCarruselData && imgCarruselData.imagenes) {
+            imagenes = imgCarruselData.imagenes;
+        }
+        
+        if (imagenes.length === 0) {
+            // Si no hay imágenes, añadir un input vacío por defecto
+            addCarouselImageInput();
+        } else {
+            // Cargar las imágenes existentes
+            imagenes.forEach(url => addCarouselImageInput(url));
+        }
+    } catch (error) {
+        console.error('Error al cargar imágenes del carrusel:', error);
+        addCarouselImageInput();
+    }
+}
+
 // Crear o actualizar producto
 document.addEventListener('DOMContentLoaded', () => {
+  // Añadir event listener para el botón de añadir imagen del carrusel
+  const addCarouselBtn = document.getElementById('addCarouselImageBtn');
+  if (addCarouselBtn) {
+    addCarouselBtn.addEventListener('click', () => addCarouselImageInput());
+  }
+  
+  // Inicializar con un input vacío
+  setTimeout(() => {
+    loadCarouselImages(null);
+  }, 100);
+
   const form = document.getElementById('ProductosForm');
   if (form) {
     form.addEventListener('submit', function (event) {
@@ -139,11 +219,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const id = document.getElementById('productoId').value;
       const nombre = document.getElementById('productoName').value.trim();
+      const descripcion = document.getElementById('productoDescripcion').value.trim();
       const estado = document.getElementById('productoState').value.trim();
       const precio = parseFloat(document.getElementById('productoPrice').value);
       const descuento = parseInt(document.getElementById('productoDescuento').value) || 0;
       const stock = parseInt(document.getElementById('productoStock').value) || 0;
       const imagen_url = document.getElementById('productoImagen').value.trim();
+      
+      // Obtener imágenes del carrusel
+      const carouselImages = getCarouselImages();
+      const img_carrusel = JSON.stringify({ imagenes: carouselImages });
+      
       let categorias = [];
 
       const categoriasSelect = document.getElementById('productoCategorias');
@@ -159,11 +245,13 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre,
+          descripcion,
           estado,
           precio,
           descuento,
           stock,
           imagen_url,
+          img_carrusel,
           categorias
         })
       })
@@ -180,9 +268,12 @@ document.addEventListener('DOMContentLoaded', () => {
           form.reset();
           document.getElementById('productoDescuento').value = '';
           document.getElementById('productoStock').value = '';
+          document.getElementById('productoDescripcion').value = '';
           document.getElementById('productoImagen').value = '';
           document.getElementById('productoId').value = '';
           document.getElementById('submitBtn').innerText = 'Agregar Producto';
+          // Resetear carrusel
+          loadCarouselImages(null);
         })
         .catch(error => console.error('❌ Error al agregar/actualizar producto:', error));
     });
@@ -205,11 +296,15 @@ function editProducto(id) {
       // Asignar valores al formulario
       document.getElementById('productoId').value = producto.id;
       document.getElementById('productoName').value = producto.nombre;
+      document.getElementById('productoDescripcion').value = producto.descripcion || '';
       document.getElementById('productoState').value = producto.estado;
       document.getElementById('productoPrice').value = producto.precio;
       document.getElementById('productoDescuento').value = producto.descuento || 0;
       document.getElementById('productoStock').value = producto.stock || 0;
       document.getElementById('productoImagen').value = producto.imagen_url || '';
+      
+      // Cargar imágenes del carrusel
+      loadCarouselImages(producto.img_carrusel);
 
       document.getElementById('submitBtn').innerText = 'Actualizar Producto';
 

@@ -2,14 +2,29 @@
   {
     "id": 1,
     "nombre": "Secadora",
-    "descripcion": null,
+    "descripcion": "ww",
     "precio": 123,
     "descuento": 12,
     "stock": 123,
     "imagen_url": "data:image/webp;base64,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",
     "video_url": null,
     "estado": "activo",
+    "img_carrusel": "{\"imagenes\":[\"asda\"]}",
     "fecha_add": "2025-09-11T08:28:40.896Z",
+    "categorias": []
+  },
+  {
+    "id": 2,
+    "nombre": "asdadasd",
+    "descripcion": "w",
+    "precio": 123,
+    "descuento": 12,
+    "stock": 123,
+    "imagen_url": "asdasd",
+    "video_url": null,
+    "img_carrusel": "{\"imagenes\":[\"asdasd\"]}",
+    "estado": "activo",
+    "fecha_add": "2025-09-14T00:40:17.072Z",
     "categorias": []
   }
 ]

@@ -52,7 +52,7 @@ Producto.init({
   img_carrusel: {
     type: DataTypes.JSON,
     allowNull: true,
-    defaultValue: null,
+    defaultValue: '{"imagenes:[]}',
     comment: 'JSON con URLs de imágenes para carrusel: {"imagenes": ["url1", "url2"]}'
   },
   estado: {

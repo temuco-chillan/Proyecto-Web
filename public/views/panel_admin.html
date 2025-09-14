@@ -50,6 +50,10 @@
                                 <label for="productoStock">Stock</label>
                                 <input type="number" id="productoStock" placeholder="Stock" min="0">
                             </div>
+                            <div class="form-group">
+                                <label for="productoDescripcion">Descripción</label>
+                                <textarea id="productoDescripcion" placeholder="Descripción del producto" rows="4" style="resize: none; width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;"></textarea>
+                            </div>
                         </div>
                         <div class="form-column">
                             <div class="form-group">
@@ -76,7 +80,14 @@
                         <div class="image-upload-area" onclick="document.getElementById('productoImagen').click()">
                             <div class="icon">📄</div>
                             <div class="text">Haz clic para subir imagen</div>
-                            <input type="text" id="productoImagen" placeholder="URL de la imagen">
+                            <input type="text" id="productoImagen" placeholder="URL de la imagen principal">
+                        </div>
+                        <div class="carousel-images-section">
+                            <h4>Imágenes del Carrusel</h4>
+                            <div id="carouselImagesContainer">
+                                <!-- Los inputs se generarán dinámicamente -->
+                            </div>
+                            <button type="button" id="addCarouselImageBtn" class="btn btn-secondary">+ Añadir Imagen al Carrusel</button>
                         </div>
                     </div>
                     <div class="form-actions">

@@ -120,7 +120,7 @@ async function logout() {
     
     // Redirigir a login después de un breve delay
     setTimeout(() => {
-        window.location.href = 'login.html';
+        window.location.href = '../login.html';
     }, 1000);
 }
 
@@ -182,7 +182,7 @@ function setupHeaderEventListeners() {
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.addEventListener('click', () => {
-            window.location.href = 'login.html';
+            window.location.href = '../login.html';
         });
     }
     
@@ -212,7 +212,7 @@ function setupHeaderEventListeners() {
         ordersBtn.addEventListener('click', function() {
             const currentUser = window.currentUser || JSON.parse(localStorage.getItem('currentUser') || 'null');
             if (currentUser) {
-                window.location.href = 'historial.html';
+                window.location.href = '../historial.html';
             } else {
                 showNotification('Debes iniciar sesión para ver tu historial', 'warning');
             }

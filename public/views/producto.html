@@ -20,14 +20,19 @@
                     <img src="../images/Fungi.png" alt="Tipografia Fungi" class="logo-img2">
                 </a>
             </div>
+            <!-- Navigation -->
+            <nav class="navigation">
+                <a href="index.html" class="nav-link">Inicio</a>
+                <!--<a href="#" class="nav-link">Productos</a>-->
+            </nav>
+            <!-- User Actions -->
             <div class="user-actions">
                 <button class="icon-button" id="user-btn">
                     <i class="fas fa-user"></i>
                 </button>
-                <!-- Cambiar cart-counter por cart-count para consistencia -->
                 <button class="icon-button" id="cart-btn">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count" id="cart-count" style="display: none;">0</span>
+                    <span class="cart-count" id="cart-count">0</span>
                 </button>
 
                 <!-- User Dropdown -->
@@ -114,7 +119,7 @@
                 <button class="cantidad-btn" aria-label="Aumentar">+</button>
               </div>
     
-              <button class="add-carrito">Agregar al Carrito</button>
+              <button class="add-carrito" onclick="addToCartFromProduct()">Agregar al Carrito</button>
     
               <span class="stock">
                 <span class="dot" aria-hidden="true"></span>
@@ -137,15 +142,6 @@
                 Donec eget commodo nulla. Donec vitae tempor leo, a bibendum erat.
               </p>
             </div>
-    
-            <div class="block">
-              <h2>Características</h2>
-              <ul class="features">
-                <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-                <li>Etiam nibh neque, tincidunt maximus dolor a, feugiat blandit justo.</li>
-                <li>Phasellus sit amet sapien ut turpis fermentum pharetra at sed nunc.</li>
-              </ul>
-            </div>
           </div>
     
           <!-- Video (derecha) -->
@@ -162,7 +158,44 @@
           </div>
         </section>
       </main>
+    
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Carrito de Compras</h3>
+            <button class="close-cart" id="close-cart">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-content" id="cart-content">
+            <div class="empty-cart" id="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Tu carrito está vacío</p>
+            </div>
+        </div>
+        <div class="cart-footer" id="cart-footer" style="display: none;">
+            <div class="cart-total">
+                <strong>Total: $<span id="cart-total">0</span></strong>
+            </div>
+            <button class="checkout-button" onclick="pagarCarrito()">Proceder al Pago</button>
+        </div>
+    </div>
+
+    <!-- Dropdown Overlay -->
+    <div class="dropdown-overlay" id="dropdown-overlay"></div>
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+
+    <!-- Elemento de notificación -->
+    <div id="notification" class="notification">
+        <span id="notification-message"></span>
+    </div>
+    
+    <!-- Scripts modulares -->
+    <script src="../js/session-validator.js"></script>
     <script src="../js/header.js"></script>
+    <script src="../js/products.js"></script>
+    <script src="../js/Carrito/carrito.js"></script>
     <script src="../js/producto-loader.js"></script>
 </body>
 </html>

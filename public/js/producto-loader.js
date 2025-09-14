@@ -104,8 +104,8 @@ async function fetchCarruselImages(productId) {
         
         if (response.ok) {
             const carruselData = await response.json();
-            if (carruselData.img_carrusel && carruselData.img_carrusel.imagenes) {
-                updateProductImages(carruselData.img_carrusel.imagenes);
+            if (carruselData.img_carrusel) {
+                updateProductImages(carruselData.img_carrusel);
             }
         } else {
             console.warn('No se encontraron imágenes de carrusel para el producto');
@@ -377,3 +377,47 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Función para agregar producto al carrito desde la página de producto
+function addToCartFromProduct() {
+    // Obtener la cantidad seleccionada
+    const cantidad = parseInt(document.querySelector('.valor-cantidad').textContent) || 1;
+    
+    // Obtener el ID del producto desde la URL o datos cargados
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+    
+    if (productId) {
+        // Usar la función addToCart existente si está disponible
+        if (typeof addToCart === 'function') {
+            for (let i = 0; i < cantidad; i++) {
+                addToCart(parseInt(productId));
+            }
+        } else {
+            console.error('Función addToCart no encontrada');
+        }
+    } else {
+        console.error('ID del producto no encontrado');
+    }
+}
+
+// Funcionalidad para los botones de cantidad
+document.addEventListener('DOMContentLoaded', function() {
+    const decreaseBtn = document.querySelector('.cantidad-btn[aria-label="Disminuir"]');
+    const increaseBtn = document.querySelector('.cantidad-btn[aria-label="Aumentar"]');
+    const quantitySpan = document.querySelector('.valor-cantidad');
+    
+    if (decreaseBtn && increaseBtn && quantitySpan) {
+        decreaseBtn.addEventListener('click', function() {
+            let currentValue = parseInt(quantitySpan.textContent) || 1;
+            if (currentValue > 1) {
+                quantitySpan.textContent = currentValue - 1;
+            }
+        });
+        
+        increaseBtn.addEventListener('click', function() {
+            let currentValue = parseInt(quantitySpan.textContent) || 1;
+            quantitySpan.textContent = currentValue + 1;
+        });
+    }
+});

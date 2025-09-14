@@ -5,5 +5,19 @@
     "usuario_id": 2,
     "producto_id": 1,
     "fecha_add": "2025-09-13T23:43:43.394Z"
+  },
+  {
+    "id": 2,
+    "cantidad": 1,
+    "usuario_id": 1,
+    "producto_id": 2,
+    "fecha_add": "2025-09-14T01:13:27.191Z"
+  },
+  {
+    "id": 3,
+    "cantidad": 2,
+    "usuario_id": 1,
+    "producto_id": 1,
+    "fecha_add": "2025-09-14T01:24:35.429Z"
   }
 ]

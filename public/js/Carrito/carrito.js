@@ -23,7 +23,7 @@ function fetchCarritoPage() {
     .then((data) => {
       const tableBody = document.getElementById("carritoList")
       const cartContent = document.getElementById("cart-content")
-
+      debug.log(data);
       if (tableBody) {
         renderCarritoTable(data, tableBody)
       } else if (cartContent) {

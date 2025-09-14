@@ -126,13 +126,18 @@ async function reducirStock(producto_id, cantidad) {
 // Nueva función para obtener solo el carrusel de imágenes
 async function getCarruselById(id) {
   if (useFallback) return jsonFallback.getCarruselById(id);
-  
+
   const producto = await Producto.findByPk(id, {
-    attributes: ['img_carrusel']
+    attributes: ['img_carrusel', 'imagen_url']
   });
-  
-  return producto ? producto.img_carrusel : null;
+
+  if (!producto) return null;
+
+  let carrusel = producto.img_carrusel.imagenes
+  carrusel.push(producto.imagen_url);
+  return carrusel;
 }
+
 
 // === Exportar funciones ===
 module.exports = {
