@@ -85,11 +85,11 @@ function renderCartSidebar(cartData) {
                         ${item.descuento > 0 ? `<span class="discount">(-${item.descuento}%)</span>` : ""}
                     </div>
                     <div class="quantity-controls">
+                        <span class="quantity">${item.cantidad}</span>
                         <button class="quantity-btn" onclick="updateCantidadPage(${item.producto_id}, ${item.cantidad - 1})" 
                                 ${item.cantidad <= 1 ? "disabled" : ""}>
                             <i class="fas fa-minus"></i>
                         </button>
-                        <span class="quantity">${item.cantidad}</span>
                         <button class="quantity-btn" onclick="updateCantidadPage(${item.producto_id}, ${item.cantidad + 1})">
                             <i class="fas fa-plus"></i>
                         </button>
