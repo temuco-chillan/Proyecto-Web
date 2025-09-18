@@ -96,8 +96,8 @@ function rowHtml(o, idx) {
         <select class="status-select" 
                 data-order-id="${o.id}" 
                 onchange="handleStatusChange(this)">
-          <option value="pendiente" ${o.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
-          <option value="completada" ${o.estado === 'completada' ? 'selected' : ''}>Completada</option>
+          <option value="pendiente" ${o.estado === 'pendiente' ? 'selected' : ''}>En tránsito</option>
+          <option value="completada" ${o.estado === 'completada' ? 'selected' : ''}>Enviado</option>
           <option value="cancelada" ${o.estado === 'cancelada' ? 'selected' : ''}>Cancelada</option>
         </select>
       </td>
@@ -122,8 +122,8 @@ function handleStatusChange(selectElement) {
   }
   
   const statusLabels = {
-    'pendiente': 'Pendiente',
-    'completada': 'Completada', 
+    'pendiente': 'En tránsito',
+    'completada': 'Enviado', 
     'cancelada': 'Cancelada'
   };
   
@@ -178,11 +178,11 @@ async function updateOrderStatus(orderId, newStatus) {
 
 function statusBadge(st) {
   const map = {
-    completada: { cls:"bg-green", label:"completada",
+    completada: { cls:"bg-green", label:"Enviado",
       icon:'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' },
-    pendiente: { cls:"bg-amber", label:"pendiente",
+    pendiente: { cls:"bg-amber", label:"En tránsito",
       icon:'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 7h18"/></svg>' },
-    cancelada: { cls:"bg-red", label:"cancelada",
+    cancelada: { cls:"bg-red", label:"Cancelada",
       icon:'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>' },
   };
   const b = map[st] || map.pendiente;

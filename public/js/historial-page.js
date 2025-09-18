@@ -102,6 +102,12 @@ function renderHistorial(filteredData = null) {
     const data = filteredData || historialData;
     tbody.innerHTML = '';
     
+    const statusText = (estado) => ({
+        completada: 'Enviado',
+        pendiente: 'En tránsito',
+        cancelada: 'Cancelada'
+    }[estado] || estado);
+
     data.forEach(venta => {
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -110,7 +116,7 @@ function renderHistorial(filteredData = null) {
             <td>$${parseFloat(venta.total).toFixed(2)}</td>
             <td>
                 <span class="status-badge status-${venta.estado.toLowerCase()}">
-                    ${capitalizeFirst(venta.estado)}
+                    ${statusText(venta.estado.toLowerCase())}
                 </span>
             </td>
             <td>
@@ -133,6 +139,11 @@ function showDetails(ventaId) {
     
     const modal = document.getElementById('details-modal');
     const modalBody = document.getElementById('modal-body');
+    const statusText = (estado) => ({
+        completada: 'Enviado',
+        pendiente: 'En tránsito',
+        cancelada: 'Cancelada'
+    }[estado] || estado);
     
     // Crear estructura correcta con clases CSS apropiadas
     modalBody.innerHTML = `
@@ -146,7 +157,7 @@ function showDetails(ventaId) {
         <div class="detail-item">
             <span>Estado:</span>
             <span class="status-badge status-${venta.estado.toLowerCase()}">
-                ${capitalizeFirst(venta.estado)}
+                ${statusText(venta.estado.toLowerCase())}
             </span>
         </div>
         ${venta.payment_id ? `

@@ -103,6 +103,12 @@ function renderHistorial(filteredData = null) {
     
     tbody.innerHTML = '';
     
+    const statusText = (estado) => ({
+        completada: 'Enviado',
+        pendiente: 'En tránsito',
+        cancelada: 'Cancelada'
+    }[estado] || estado);
+
     data.forEach(venta => {
         const row = document.createElement('tr');
         
@@ -121,7 +127,7 @@ function renderHistorial(filteredData = null) {
             <td>${total}</td>
             <td>
                 <span class="status-badge status-${venta.estado}">
-                    ${capitalizeFirst(venta.estado)}
+                    ${statusText(venta.estado)}
                 </span>
             </td>
             <td class="text-right">
