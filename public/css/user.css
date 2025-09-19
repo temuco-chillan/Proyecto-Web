@@ -1075,7 +1075,7 @@ body {
 
 .marquee-content {
   display: flex;
-  animation: scroll-left 20s linear infinite;
+  animation: scroll-left 14s linear infinite;
   white-space: nowrap;
   align-items: center;
 }
@@ -1109,7 +1109,7 @@ body {
 
 @keyframes scroll-left {
   0% {
-      transform: translateX(100%);
+      transform: translateX(50%);
   }
   100% {
       transform: translateX(-100%);
